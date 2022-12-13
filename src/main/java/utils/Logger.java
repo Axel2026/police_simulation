@@ -1,9 +1,9 @@
 package utils;
 
-import csv_export.ExportChangingStateDetails;
-import entities.Patrol;
-import gui_components.LoggerPanel;
-import world.World;
+import Simulation.exported_data.ExportChangingStateDetails;
+import Visualisation.Patrol;
+import Visualisation.LoggerPanel;
+import Simulation.World;
 
 import java.io.File;
 import java.io.IOException;

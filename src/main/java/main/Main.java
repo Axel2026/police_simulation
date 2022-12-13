@@ -1,7 +1,7 @@
 package main;
 
-import gui_components.ConfigurationPanel;
-import gui_components.LoggerPanel;
+import Configuration.ConfigurationPanel;
+import Visualisation.LoggerPanel;
 import utils.Logger;
 
 public class Main {
