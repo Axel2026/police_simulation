@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id "org.sonarqube" version "3.3"
+    id 'application'
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+group 'org.'
+version '1.0-SNAPSHOT'
+mainClassName = 'main.Main'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+
+    implementation 'de.westnordost:osmapi:4.0'
+    implementation 'org.jxmapviewer:jxmapviewer2:2.6'
+    implementation 'com.io7m.jgrapht:jgrapht-io:1.2.1-MODULARIZED'
+    implementation 'com.io7m.jgrapht:jgrapht-core:1.2.1-MODULARIZED'
+    implementation 'com.io7m.jgrapht:jgrapht-ext:1.2.1-MODULARIZED'
+    implementation 'com.io7m.jgrapht:jgrapht:1.2.1-MODULARIZED'
+
+    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+    implementation group: 'math.geom2d', name: 'javaGeom', version: '0.11.1'
+    implementation group: 'com.opencsv', name: 'opencsv', version: '3.7'
+}
+
+test {
+    useJUnitPlatform()
+}
