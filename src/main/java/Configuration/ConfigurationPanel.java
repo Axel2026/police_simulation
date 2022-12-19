@@ -173,7 +173,7 @@ public class ConfigurationPanel {
         var jSeparator = new JSeparator();
         jSeparator.setOrientation(SwingConstants.HORIZONTAL);
         jSeparator.setBackground(Color.BLACK);
-        jSeparator.setPreferredSize(new Dimension(300, 10));
+        jSeparator.setPreferredSize(new Dimension(300, 5));
         citySelectionPanel.add(jSeparator);
 
         citySelectionPanel.add(new JLabel("      Select an area for the simulation:      "));
@@ -204,7 +204,7 @@ public class ConfigurationPanel {
         var jSeparator2 = new JSeparator();
         jSeparator2.setOrientation(SwingConstants.HORIZONTAL);
         jSeparator2.setBackground(Color.BLACK);
-        jSeparator2.setPreferredSize(new Dimension(300, 100));
+        jSeparator2.setPreferredSize(new Dimension(300, 90));
         citySelectionPanel.add(jSeparator2);
 
         citySelectionPanel.add(new JLabel(anstar));
@@ -217,7 +217,7 @@ public class ConfigurationPanel {
         scrollContent.setBackground(Color.decode("#F9F9F9"));
 
         var districtScrollPane = new JScrollPane(scrollContent);
-        districtScrollPane.setPreferredSize(new Dimension(300, 500));
+        districtScrollPane.setPreferredSize(new Dimension(300, 533));
         districtScrollPane.setBackground(Color.decode("#F9F9F9"));
         districtScrollPane.setBounds(300, 0, 300, 500);
         districtScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -231,6 +231,7 @@ public class ConfigurationPanel {
         mainFrame.add(simulationConfigurationPanel);
 
         simulationConfigurationPanel.add(new JLabel("Simulation Time Rate"));
+
         simulationConfigurationPanel.setBackground(Color.decode("#F9F9F9"));
         addRestrictionOfEnteringOnlyIntegers(timeRateTextField);
         timeRateTextField.setInputVerifier(new PositiveIntegerInputVerifier());
@@ -240,6 +241,8 @@ public class ConfigurationPanel {
         simulationConfigurationPanel.add(new JLabel("Simulation Duration"));
         var simulationDurationPanel = new JPanel();
         simulationDurationPanel.add(new JLabel("Days:"));
+        simulationDurationPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        simulationDurationPanel.setPreferredSize(new Dimension(270, 32));
         addRestrictionOfEnteringOnlyIntegers(simulationDurationDaysTextField);
         simulationDurationDaysTextField.setInputVerifier(new NonNegativeIntegerInputVerifier());
         simulationDurationDaysTextField.setColumns(3);
@@ -275,24 +278,32 @@ public class ConfigurationPanel {
 
         var drawDistrictsPanel = new JPanel();
         drawDistrictsPanel.add(new JLabel("Draw districts boundaries"));
+        drawDistrictsPanel.setPreferredSize(new Dimension(270, 32));
+        drawDistrictsPanel.setBorder(new LineBorder(Color.BLACK, 1));
         drawDistrictsBoundariesCheckBox.setSelected(true);
         drawDistrictsPanel.add(drawDistrictsBoundariesCheckBox);
         simulationConfigurationPanel.add(drawDistrictsPanel);
 
         var drawFiringDetailsPanel = new JPanel();
         drawFiringDetailsPanel.add(new JLabel("Draw firing details"));
+        drawFiringDetailsPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        drawFiringDetailsPanel.setPreferredSize(new Dimension(150, 32));
         drawFiringDetailsCheckBox.setSelected(true);
         drawFiringDetailsPanel.add(drawFiringDetailsCheckBox);
         simulationConfigurationPanel.add(drawFiringDetailsPanel);
 
         var drawLegendPanel = new JPanel();
         drawLegendPanel.add(new JLabel("Draw legend"));
+        drawLegendPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        drawLegendPanel.setPreferredSize(new Dimension(115, 32));
         drawLegendCheckBox.setSelected(true);
         drawLegendPanel.add(drawLegendCheckBox);
         simulationConfigurationPanel.add(drawLegendPanel);
 
         var drawInterventionDetailsPanel = new JPanel();
         drawInterventionDetailsPanel.add(new JLabel("Draw intervention details while paused"));
+        drawInterventionDetailsPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        drawInterventionDetailsPanel.setPreferredSize(new Dimension(270, 32));
         drawInterventionDetailsCheckBox.setSelected(true);
         drawInterventionDetailsPanel.add(drawInterventionDetailsCheckBox);
         simulationConfigurationPanel.add(drawInterventionDetailsPanel);
@@ -302,6 +313,7 @@ public class ConfigurationPanel {
         var threatLevelToMaxIncidentsConfigurationPanel = new JPanel();
         threatLevelToMaxIncidentsConfigurationPanel.setLayout(new BoxLayout(threatLevelToMaxIncidentsConfigurationPanel, BoxLayout.Y_AXIS));
         threatLevelToMaxIncidentsConfigurationPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        threatLevelToMaxIncidentsConfigurationPanel.setPreferredSize(new Dimension(270, 100));
 
         JLabel descriptionLabel = new JLabel("Set the maximum number of incidents per");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -314,6 +326,7 @@ public class ConfigurationPanel {
         panel.setLayout(new GridLayout(3, 2));
         panel.add(new JLabel(District.ThreatLevelEnum.NOT_SAFE + ": "));
         threatLevelMaxIncidentsTextFieldNOTSAFE.setColumns(11);
+        threatLevelMaxIncidentsTextFieldNOTSAFE.setPreferredSize(new Dimension(270, 100));
         threatLevelMaxIncidentsTextFieldNOTSAFE.setText(String.valueOf(World.getInstance().getConfig().getMaxIncidentForThreatLevel(District.ThreatLevelEnum.NOT_SAFE)));
         addRestrictionOfEnteringOnlyIntegers(threatLevelMaxIncidentsTextFieldNOTSAFE);
         threatLevelMaxIncidentsTextFieldNOTSAFE.setInputVerifier(new MaxNumberOfIncidentsInputVerifier(District.ThreatLevelEnum.NOT_SAFE));
@@ -337,6 +350,7 @@ public class ConfigurationPanel {
         var threatLevelToFiringChanceConfigurationPanel = new JPanel();
         threatLevelToFiringChanceConfigurationPanel.setLayout(new BoxLayout(threatLevelToFiringChanceConfigurationPanel, BoxLayout.Y_AXIS));
         threatLevelToFiringChanceConfigurationPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        threatLevelToFiringChanceConfigurationPanel.setPreferredSize(new Dimension(270, 120));
 
         descriptionLabel = new JLabel("Set the chance for the intervention to");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -380,6 +394,7 @@ public class ConfigurationPanel {
         var interventionDurationConfigurationPanel = new JPanel();
         interventionDurationConfigurationPanel.setLayout(new BoxLayout(interventionDurationConfigurationPanel, BoxLayout.Y_AXIS));
         interventionDurationConfigurationPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        interventionDurationConfigurationPanel.setPreferredSize(new Dimension(280, 80));
 
         descriptionLabel = new JLabel("Set the time range for the duration");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -411,6 +426,7 @@ public class ConfigurationPanel {
         var firingStrengthConfigurationPanel = new JPanel();
         firingStrengthConfigurationPanel.setLayout(new BoxLayout(firingStrengthConfigurationPanel, BoxLayout.Y_AXIS));
         firingStrengthConfigurationPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        firingStrengthConfigurationPanel.setPreferredSize(new Dimension(280, 80));
 
         descriptionLabel = new JLabel("Set the time range for the duration");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -442,6 +458,7 @@ public class ConfigurationPanel {
         var baseSpeedConfigurationPanel = new JPanel();
         baseSpeedConfigurationPanel.setLayout(new BoxLayout(baseSpeedConfigurationPanel, BoxLayout.Y_AXIS));
         baseSpeedConfigurationPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        baseSpeedConfigurationPanel.setPreferredSize(new Dimension(280, 100));
 
         descriptionLabel = new JLabel("Set the speed of the patrols ");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -478,6 +495,7 @@ public class ConfigurationPanel {
         var considerTimeOfDayPanel = new JPanel();
         considerTimeOfDayPanel.setLayout(new BoxLayout(considerTimeOfDayPanel, BoxLayout.Y_AXIS));
         considerTimeOfDayPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        considerTimeOfDayPanel.setPreferredSize(new Dimension(280, 110));
 
         var label = new JPanel();
         label.add(new JLabel("Consider the time of day (day/night)"));
@@ -517,6 +535,7 @@ public class ConfigurationPanel {
         var periodOfTimeToExportDetailsPanel = new JPanel();
         periodOfTimeToExportDetailsPanel.setLayout(new BoxLayout(periodOfTimeToExportDetailsPanel, BoxLayout.Y_AXIS));
         periodOfTimeToExportDetailsPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        periodOfTimeToExportDetailsPanel.setPreferredSize(new Dimension(280, 55));
         periodOfTimeToExportDetailsPanel.add(new JLabel("Set the period of time to export simulation"));
         periodOfTimeToExportDetailsPanel.add(new JLabel(" and districts details [simulated minutes]"));
         addRestrictionOfEnteringOnlyFloats(periodOfTimeToExportDetails);
@@ -530,7 +549,8 @@ public class ConfigurationPanel {
         // line separating the components
         jSeparator = new JSeparator();
         jSeparator.setOrientation(SwingConstants.HORIZONTAL);
-        jSeparator.setPreferredSize(new Dimension(300, 20));
+        jSeparator.setPreferredSize(new Dimension(280, 25));
+        jSeparator.setBackground(Color.BLACK);
         buttonsPanel.add(jSeparator);
 
 //----------------------------------------------------
