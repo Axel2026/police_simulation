@@ -64,6 +64,7 @@ public class ConfigurationPanel {
     private JPanel buttonsPanel;
     private JComboBox<String> countrySelectionComboBox;
     private JComboBox<String> citySelectionComboBox;
+    ImageIcon anstar = new ImageIcon("ans.png");
 
     public ConfigurationPanel() {
         getAvailableCitiesFromFile();
@@ -92,7 +93,7 @@ public class ConfigurationPanel {
         var citiesList = new ArrayList<String>();
         for (var city : cities) {
             var bytes = ((String) city).getBytes(StandardCharsets.UTF_8);
-            citiesList.add(new String (bytes, StandardCharsets.UTF_8));
+            citiesList.add(new String(bytes, StandardCharsets.UTF_8));
         }
 
         int size = citiesList.size();
@@ -171,6 +172,7 @@ public class ConfigurationPanel {
         // line separating the components
         var jSeparator = new JSeparator();
         jSeparator.setOrientation(SwingConstants.HORIZONTAL);
+        jSeparator.setBackground(Color.BLACK);
         jSeparator.setPreferredSize(new Dimension(300, 10));
         citySelectionPanel.add(jSeparator);
 
@@ -178,6 +180,7 @@ public class ConfigurationPanel {
 
         // drop-down list with country selection
         countrySelectionComboBox = new JComboBox<>(availablePlaces.keySet().toArray(new String[0]));
+        countrySelectionComboBox.setBackground(Color.decode("#EDEDED"));
         countrySelectionComboBox.addActionListener(e -> {
             var selectedItem = countrySelectionComboBox.getSelectedItem().toString();
             var newModel = new DefaultComboBoxModel<>(availablePlaces.get(selectedItem));
@@ -185,36 +188,50 @@ public class ConfigurationPanel {
         });
 
         //drop-down list with city selection
+        //pierwsza kolumna
         citySelectionPanel.add(countrySelectionComboBox);
+        citySelectionPanel.setBackground(Color.decode("#F9F9F9"));
         citySelectionComboBox = new JComboBox<>(availablePlaces.get(availablePlaces.keySet().stream().findFirst().orElseThrow()));
         citySelectionPanel.add(citySelectionComboBox);
 
         // city select button
         var citySelectionButton = new Button("Select");
+        citySelectionButton.setBackground(Color.decode("#EDEDED"));
         citySelectionButton.addActionListener(e -> citySelectionButtonClicked());
 
         citySelectionPanel.add(citySelectionButton);
 
+        var jSeparator2 = new JSeparator();
+        jSeparator2.setOrientation(SwingConstants.HORIZONTAL);
+        jSeparator2.setBackground(Color.BLACK);
+        jSeparator2.setPreferredSize(new Dimension(300, 100));
+        citySelectionPanel.add(jSeparator2);
+
+        citySelectionPanel.add(new JLabel(anstar));
 //----------------------------------------------------
         districtConfigurationPanel = new JPanel();
         mainFrame.add(districtConfigurationPanel);
 
         var scrollContent = new JPanel();
         scrollContent.setLayout(new BoxLayout(scrollContent, BoxLayout.Y_AXIS));
+        scrollContent.setBackground(Color.decode("#F9F9F9"));
 
         var districtScrollPane = new JScrollPane(scrollContent);
         districtScrollPane.setPreferredSize(new Dimension(300, 500));
+        districtScrollPane.setBackground(Color.decode("#F9F9F9"));
         districtScrollPane.setBounds(300, 0, 300, 500);
         districtScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         districtScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         districtConfigurationPanel.add(districtScrollPane);
+        districtConfigurationPanel.setBackground(Color.decode("#F9F9F9"));
 
 //----------------------------------------------------
         simulationConfigurationPanel = new JPanel();
         mainFrame.add(simulationConfigurationPanel);
 
         simulationConfigurationPanel.add(new JLabel("Simulation Time Rate"));
+        simulationConfigurationPanel.setBackground(Color.decode("#F9F9F9"));
         addRestrictionOfEnteringOnlyIntegers(timeRateTextField);
         timeRateTextField.setInputVerifier(new PositiveIntegerInputVerifier());
         timeRateTextField.setColumns(TEXT_INPUT_COLUMNS);
@@ -356,10 +373,10 @@ public class ConfigurationPanel {
 //----------------------------------------------------
 
         buttonsPanel = new JPanel();
+        buttonsPanel.setBackground(Color.decode("#F9F9F9"));
         mainFrame.add(buttonsPanel);
 
 //----------------------------------------------------
-
         var interventionDurationConfigurationPanel = new JPanel();
         interventionDurationConfigurationPanel.setLayout(new BoxLayout(interventionDurationConfigurationPanel, BoxLayout.Y_AXIS));
         interventionDurationConfigurationPanel.setBorder(new LineBorder(Color.BLACK, 1));
@@ -567,9 +584,10 @@ public class ConfigurationPanel {
         World.getInstance().getConfig().setCityName(cityName);
         if (loadMapIntoWorld(cityName)) {
             var scrollContent = (JPanel) ((JScrollPane) Arrays.stream(districtConfigurationPanel.getComponents()).filter(JScrollPane.class::isInstance).findFirst().orElseThrow()).getViewport().getView();
+            scrollContent.setBackground(Color.decode("#F9F9F9"));
             scrollContent.removeAll();
             for (var district : World.getInstance().getMap().getDistricts()) {
-                scrollContent.add(new DistrictConfigComponent(district));
+                scrollContent.add(new DistrictConfigComponent(district)).setBackground(Color.decode("#F9F9F9"));;
             }
             scrollContent.revalidate();
 
