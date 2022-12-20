@@ -217,7 +217,7 @@ public class ConfigurationPanel {
         scrollContent.setBackground(Color.decode("#F9F9F9"));
 
         var districtScrollPane = new JScrollPane(scrollContent);
-        districtScrollPane.setPreferredSize(new Dimension(300, 533));
+        districtScrollPane.setPreferredSize(new Dimension(300, 522));
         districtScrollPane.setBackground(Color.decode("#F9F9F9"));
         districtScrollPane.setBounds(300, 0, 300, 500);
         districtScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -230,19 +230,25 @@ public class ConfigurationPanel {
         simulationConfigurationPanel = new JPanel();
         mainFrame.add(simulationConfigurationPanel);
 
-        simulationConfigurationPanel.add(new JLabel("Simulation Time Rate"));
-
-        simulationConfigurationPanel.setBackground(Color.decode("#F9F9F9"));
+        var simulationTimeRatePanel = new JPanel();
+        simulationTimeRatePanel.setLayout(new BoxLayout(simulationTimeRatePanel, BoxLayout.Y_AXIS));
+        simulationTimeRatePanel.setBorder(new LineBorder(Color.BLACK, 1));
+        simulationTimeRatePanel.setPreferredSize(new Dimension(270, 40));
+        simulationTimeRatePanel.add(new JLabel("                         Simulation Time Rate"));
         addRestrictionOfEnteringOnlyIntegers(timeRateTextField);
-        timeRateTextField.setInputVerifier(new PositiveIntegerInputVerifier());
-        timeRateTextField.setColumns(TEXT_INPUT_COLUMNS);
-        simulationConfigurationPanel.add(timeRateTextField);
+        simulationTimeRatePanel.setInputVerifier(new PositiveIntegerInputVerifier());
+        simulationTimeRatePanel.add(timeRateTextField);
+        simulationConfigurationPanel.add(simulationTimeRatePanel);
+        simulationConfigurationPanel.setBackground(Color.decode("#F9F9F9"));
 
-        simulationConfigurationPanel.add(new JLabel("Simulation Duration"));
         var simulationDurationPanel = new JPanel();
+        JLabel simulationDurationLabel = new JLabel("                           Simulation Duration");
+        simulationDurationLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
+        simulationDurationLabel.setPreferredSize(new Dimension(270, 10));
+        simulationDurationPanel.add(simulationDurationLabel);
         simulationDurationPanel.add(new JLabel("Days:"));
         simulationDurationPanel.setBorder(new LineBorder(Color.BLACK, 1));
-        simulationDurationPanel.setPreferredSize(new Dimension(270, 32));
+        simulationDurationPanel.setPreferredSize(new Dimension(270, 45));
         addRestrictionOfEnteringOnlyIntegers(simulationDurationDaysTextField);
         simulationDurationDaysTextField.setInputVerifier(new NonNegativeIntegerInputVerifier());
         simulationDurationDaysTextField.setColumns(3);
@@ -264,17 +270,41 @@ public class ConfigurationPanel {
         simulationDurationPanel.add(simulationDurationSecondsTextField);
         simulationConfigurationPanel.add(simulationDurationPanel);
 
-        simulationConfigurationPanel.add(new JLabel("Number of City Patrols"));
-        addRestrictionOfEnteringOnlyIntegers(numberOfCityPatrolsTextField);
-        numberOfCityPatrolsTextField.setInputVerifier(new PositiveIntegerInputVerifier());
-        numberOfCityPatrolsTextField.setColumns(TEXT_INPUT_COLUMNS);
-        simulationConfigurationPanel.add(numberOfCityPatrolsTextField);
+//        simulationConfigurationPanel.add(new JLabel("Number of City Patrols"));
+//        addRestrictionOfEnteringOnlyIntegers(numberOfCityPatrolsTextField);
+//        numberOfCityPatrolsTextField.setInputVerifier(new PositiveIntegerInputVerifier());
+//        numberOfCityPatrolsTextField.setColumns(TEXT_INPUT_COLUMNS);
+//        simulationConfigurationPanel.add(numberOfCityPatrolsTextField);
 
-        simulationConfigurationPanel.add(new JLabel("Basic search range for police support [meters]"));
+        ////////////////////
+
+        var numberOfCityPatrols = new JPanel();
+        numberOfCityPatrols.setLayout(new BoxLayout(numberOfCityPatrols, BoxLayout.Y_AXIS));
+        numberOfCityPatrols.setBorder(new LineBorder(Color.BLACK, 1));
+        numberOfCityPatrols.setPreferredSize(new Dimension(270, 40));
+        numberOfCityPatrols.add(new JLabel("Number of City Patrols"));
+        addRestrictionOfEnteringOnlyIntegers(numberOfCityPatrolsTextField);
+        numberOfCityPatrols.setInputVerifier(new PositiveIntegerInputVerifier());
+        numberOfCityPatrols.add(numberOfCityPatrolsTextField);
+        simulationConfigurationPanel.add(numberOfCityPatrols);
+
+        ///////////////////
+
+        var basicSearchRangePanel = new JPanel();
+        basicSearchRangePanel.setLayout(new BoxLayout(basicSearchRangePanel, BoxLayout.Y_AXIS));
+        basicSearchRangePanel.setBorder(new LineBorder(Color.BLACK, 1));
+        basicSearchRangePanel.setPreferredSize(new Dimension(270, 40));
+        basicSearchRangePanel.add(new JLabel("Basic search range for police support [meters]"));
         addRestrictionOfEnteringOnlyFloats(basicSearchDistanceTextField);
-        basicSearchDistanceTextField.setInputVerifier(new FloatInputVerifier());
-        basicSearchDistanceTextField.setColumns(TEXT_INPUT_COLUMNS);
-        simulationConfigurationPanel.add(basicSearchDistanceTextField);
+        basicSearchRangePanel.setInputVerifier(new FloatInputVerifier());
+        basicSearchRangePanel.add(basicSearchDistanceTextField);
+        simulationConfigurationPanel.add(basicSearchRangePanel);
+
+//        simulationConfigurationPanel.add(new JLabel("Basic search range for police support [meters]"));
+//        addRestrictionOfEnteringOnlyFloats(basicSearchDistanceTextField);
+//        basicSearchDistanceTextField.setInputVerifier(new FloatInputVerifier());
+//        basicSearchDistanceTextField.setColumns(TEXT_INPUT_COLUMNS);
+//        simulationConfigurationPanel.add(basicSearchDistanceTextField);
 
         var drawDistrictsPanel = new JPanel();
         drawDistrictsPanel.add(new JLabel("Draw districts boundaries"));
@@ -519,7 +549,7 @@ public class ConfigurationPanel {
 
         panel = new JPanel();
         panel.setLayout(new GridLayout(2, 1));
-        panel.add(new JLabel("Set a multiplier of statistics for the night: "));
+        panel.add(new JLabel("        Set a multiplier of statistics for the night: "));
         nightStatisticMultiplier.setText(String.valueOf(World.getInstance().getConfig().getNightStatisticMultiplier()));
         addRestrictionOfEnteringOnlyFloats(nightStatisticMultiplier);
         nightStatisticMultiplier.setColumns(11);
@@ -536,8 +566,8 @@ public class ConfigurationPanel {
         periodOfTimeToExportDetailsPanel.setLayout(new BoxLayout(periodOfTimeToExportDetailsPanel, BoxLayout.Y_AXIS));
         periodOfTimeToExportDetailsPanel.setBorder(new LineBorder(Color.BLACK, 1));
         periodOfTimeToExportDetailsPanel.setPreferredSize(new Dimension(280, 55));
-        periodOfTimeToExportDetailsPanel.add(new JLabel("Set the period of time to export simulation"));
-        periodOfTimeToExportDetailsPanel.add(new JLabel(" and districts details [simulated minutes]"));
+        periodOfTimeToExportDetailsPanel.add(new JLabel("      Set the period of time to export simulation"));
+        periodOfTimeToExportDetailsPanel.add(new JLabel("       and districts details [simulated minutes]"));
         addRestrictionOfEnteringOnlyFloats(periodOfTimeToExportDetails);
         periodOfTimeToExportDetails.setInputVerifier(new FloatInputVerifier());
 //        periodOfTimeToExportDetails.setColumns(TEXT_INPUT_COLUMNS);
@@ -549,13 +579,16 @@ public class ConfigurationPanel {
         // line separating the components
         jSeparator = new JSeparator();
         jSeparator.setOrientation(SwingConstants.HORIZONTAL);
-        jSeparator.setPreferredSize(new Dimension(280, 25));
+        jSeparator.setPreferredSize(new Dimension(280, 2));
         jSeparator.setBackground(Color.BLACK);
         buttonsPanel.add(jSeparator);
 
 //----------------------------------------------------
 
-        var runSimulationButton = new Button("Run the simulation!");
+        var runSimulationButton = new Button("Start!");
+        runSimulationButton.setPreferredSize(new Dimension(280, 63));
+        runSimulationButton.setFont(new Font("Arial", Font.PLAIN, 30));
+        runSimulationButton.setBackground(Color.decode("#D8FFD7"));
         runSimulationButton.addActionListener(e -> runSimulationButtonClicked());
         buttonsPanel.add(runSimulationButton);
 
