@@ -29,7 +29,7 @@ public class SimulationThread extends Thread {
             }
         }
 
-        while (!world.hasSimulationDurationElapsed()) {
+        while (!world.hasSimulationDurationElapsed() && !world.isSimulationFinished()) {
             if (!world.isSimulationPaused()) {
                 try {
                     hqAssignTasks();

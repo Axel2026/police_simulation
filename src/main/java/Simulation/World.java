@@ -27,6 +27,7 @@ public class World {
     private LocalDateTime startTime;
     private double timePassedUntilPause = 0;
     private boolean isSimulationPaused = false;
+    private boolean isSimulationFinished = false;
     private LatLon position;
     private Map map;
     private boolean hasSimulationStarted = false;
@@ -173,6 +174,10 @@ public class World {
         return isSimulationPaused;
     }
 
+    public boolean isSimulationFinished() {
+        return isSimulationFinished;
+    }
+
     public LatLon getPosition() {
         return position;
     }
@@ -191,6 +196,11 @@ public class World {
         new EventUpdater().start();
         new ExportSimulationAndDistrictDetails().start();
         Logger.getInstance().logNewOtherMessage("Simulation has started.");
+    }
+
+    public void finishSimulation() {
+        isSimulationFinished = true;
+        Logger.getInstance().logNewOtherMessage("Simulation has been finished.");
     }
 
     public void pauseSimulation() {

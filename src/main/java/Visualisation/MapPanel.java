@@ -25,6 +25,7 @@ public class MapPanel {
     private final JFrame frame = new JFrame();
     private final JXMapViewer mapViewer = new JXMapViewer();
     private final JButton simulationPauseButton = new JButton("Pause");
+    private final JButton simulationFinishButton = new JButton("Finish");
 
     public MapPanel() {
         var info = new OSMTileFactoryInfo();
@@ -69,7 +70,20 @@ public class MapPanel {
             }
 
         });
+
+        simulationFinishButton.setMaximumSize(new Dimension(50, 50));
+
+        simulationFinishButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                World.getInstance().finishSimulation();
+                System.out.println("Simulation finished!");
+            }
+
+        });
         mapViewer.add(simulationPauseButton);
+        mapViewer.add(simulationFinishButton);
 
         frame.getContentPane().add(mapViewer);
         frame.setVisible(true);
@@ -87,7 +101,7 @@ public class MapPanel {
 
                 // GUI Drawing thread
                 new Thread(() -> {
-                    while (!World.getInstance().hasSimulationDurationElapsed()) {
+                    while (!World.getInstance().hasSimulationDurationElapsed() && !World.getInstance().isSimulationFinished()) {
                         mapViewer.repaint();
                         try {
                             Thread.sleep(1000 / 30);

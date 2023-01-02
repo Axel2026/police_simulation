@@ -16,7 +16,7 @@ public class EventsDirector extends Thread {
 
     @Override
     public void run() {
-        while (!world.hasSimulationDurationElapsed()) {
+        while (!world.hasSimulationDurationElapsed() && !world.isSimulationFinished()) {
             if (!world.isSimulationPaused() && eventSpawnCounter <= (world.getSimulationTimeLong() / 3600)) {
                 eventSpawnCounter++;
 

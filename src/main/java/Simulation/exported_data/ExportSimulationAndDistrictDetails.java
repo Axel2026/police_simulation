@@ -88,7 +88,7 @@ public class ExportSimulationAndDistrictDetails extends Thread {
 
     @Override
     public void run() {
-        while (!world.hasSimulationDurationElapsed()) {
+        while (!world.hasSimulationDurationElapsed() && !world.isSimulationFinished()) {
             if (!world.isSimulationPaused() && exportCounter <= (world.getSimulationTimeLong() / periodOfTimeToExportDetailsInSeconds)) {
                 exportCounter++;
                 var allEntities = world.getAllEntities();
