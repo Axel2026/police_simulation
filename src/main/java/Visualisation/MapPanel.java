@@ -2,6 +2,7 @@ package Visualisation;
 
 import Simulation.World;
 import Simulation.entities.Headquarters;
+import main.LineChartExample;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.input.PanMouseInputListener;
@@ -144,7 +145,20 @@ public class MapPanel {
         JOptionPane.showMessageDialog(frame, "Please select HQ location.");
     }
 
+    private void showSimulationCharts() {
+        SwingUtilities.invokeLater(() -> {
+            LineChartExample example = new LineChartExample("123", "321", "213");
+            example.setAlwaysOnTop(true);
+            example.pack();
+            example.setSize(600, 400);
+            example.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            example.setVisible(true);
+        });
+    }
+
     private void showSummary() {
+        showSimulationCharts();
+
         var simulationSummaryMessage = new StringBuilder();
 
         simulationSummaryMessage.append("Simulation has finished.\n\n");

@@ -18,7 +18,11 @@ import java.util.stream.Collectors;
 public class ExportSimulationAndDistrictDetails extends Thread {
 
     private static final String CSV_DIRECTORY_PATH = "results";
-    private static final String[] simulationDetailsHeader = new String[]{
+    private final DateTimeFormatter dateFormat = new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy_HH-mm-ss").toFormatter();
+
+    /*private final String simulationDetailsCsvFileName = dateFormat.format(LocalDateTime.now()) + "--Simulation Details.csv";
+    private final String districtsDetailsCsvFileName = dateFormat.format(LocalDateTime.now()) + "--Simulation Details.csv";
+    */private static final String[] simulationDetailsHeader = new String[]{
             "simulationTime",
             "amountOfPatrols",
             "amountOfPatrollingPatrols",
@@ -54,8 +58,6 @@ public class ExportSimulationAndDistrictDetails extends Thread {
             "amountOfIncidents",
             "isNight"
     };
-
-    private final DateTimeFormatter dateFormat = new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy_HH-mm-ss").toFormatter();
     private final int periodOfTimeToExportDetailsInSeconds = (int) (world.getConfig().getPeriodOfTimeToExportDetails() * 60);
     private int exportCounter = 1;
 
@@ -65,7 +67,9 @@ public class ExportSimulationAndDistrictDetails extends Thread {
             csvDirectory.mkdir();
         }
 
-        simulationDetailsCsvFile = new File(CSV_DIRECTORY_PATH, dateFormat.format(LocalDateTime.now()) + "--Simulation Details.csv");
+/*        simulationDetailsCsvFile = new File(CSV_DIRECTORY_PATH, simulationDetailsCsvFileName);
+        districtsDetailsCsvFile = new File(CSV_DIRECTORY_PATH, districtsDetailsCsvFileName);
+       */ simulationDetailsCsvFile = new File(CSV_DIRECTORY_PATH, dateFormat.format(LocalDateTime.now()) + "--Simulation Details.csv");
         districtsDetailsCsvFile = new File(CSV_DIRECTORY_PATH, dateFormat.format(LocalDateTime.now()) + "--Districts Details.csv");
         try {
             if (!simulationDetailsCsvFile.createNewFile()) {
@@ -85,6 +89,14 @@ public class ExportSimulationAndDistrictDetails extends Thread {
             e.printStackTrace();
         }
     }
+/*
+    public String getSimulationDetailsCsvFileName() {
+        return simulationDetailsCsvFileName;
+    }
+
+    public String getDistrictsDetailsCsvFileName() {
+        return districtsDetailsCsvFileName;
+    }*/
 
     @Override
     public void run() {

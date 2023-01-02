@@ -24,6 +24,7 @@ dependencies {
 
     implementation 'de.westnordost:osmapi:4.0'
     implementation 'org.jxmapviewer:jxmapviewer2:2.6'
+    implementation 'org.jfree:jfreechart:1.5.3'
     implementation 'com.io7m.jgrapht:jgrapht-io:1.2.1-MODULARIZED'
     implementation 'com.io7m.jgrapht:jgrapht-core:1.2.1-MODULARIZED'
     implementation 'com.io7m.jgrapht:jgrapht-ext:1.2.1-MODULARIZED'
