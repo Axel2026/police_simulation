@@ -2,6 +2,7 @@ package Configuration;
 
 import Visualisation.District;
 import Visualisation.MapPanel;
+import Visualisation.SettingSeparator;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -195,7 +196,7 @@ public class ConfigurationPanel {
         jSeparator.setBackground(new Color(91, 192, 248, 0));
         jSeparator.setForeground(new Color(91, 192, 248, 0));
         jSeparator.setPreferredSize(new Dimension(300, 60));
-        citySelectionPanel.add(jSeparator);
+        citySelectionPanel.add(new SettingSeparator(SwingConstants.HORIZONTAL, new Color(91, 192, 248, 0), new Color(91, 192, 248, 0), new Dimension(300, 20)).getJSeparator());
 
         citySelectionPanel.add(new JLabel("                     Select an area for the simulation:                        "));
 
@@ -228,7 +229,12 @@ public class ConfigurationPanel {
         jSeparator2.setBackground(new Color(91, 192, 248, 0));
         jSeparator2.setForeground(new Color(91, 192, 248, 0));
         jSeparator2.setPreferredSize(new Dimension(300, 40));
-        citySelectionPanel.add(jSeparator2);
+
+        var fieldSeparator = new JSeparator();
+        fieldSeparator.setOrientation(SwingConstants.HORIZONTAL);
+        fieldSeparator.setBackground(new Color(91, 192, 248, 100));
+        fieldSeparator.setForeground(new Color(91, 192, 248, 100));
+        fieldSeparator.setPreferredSize(new Dimension(300, 5));
 
         JLabel anstarLabel = new JLabel(anstar);
         anstarLabel.setToolTipText("""
@@ -239,23 +245,6 @@ public class ConfigurationPanel {
                 parameters to bring the logic and\s
                 operation of the police in each city\s
                 as close as possible.""");
-//----------------------------------------------------
-        districtConfigurationPanel = new JPanel();
-        mainFrame.add(districtConfigurationPanel);
-
-        var scrollContent = new JPanel();
-        scrollContent.setLayout(new BoxLayout(scrollContent, BoxLayout.Y_AXIS));
-        scrollContent.setBackground(Color.decode("#FFFFFF"));
-
-        var districtScrollPane = new JScrollPane(scrollContent);
-        districtScrollPane.setPreferredSize(new Dimension(300, 522));
-        districtScrollPane.setBackground(Color.decode("#FFFFFF"));
-        districtScrollPane.setBounds(300, 0, 300, 500);
-        districtScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        districtScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-        districtConfigurationPanel.add(districtScrollPane);
-        districtConfigurationPanel.setBackground(Color.decode("#FFFFFF"));
 
 //----------------------------------------------------
         simulationConfigurationPanel = new JPanel();
@@ -270,8 +259,9 @@ public class ConfigurationPanel {
         simulationTimeRatePanel.setInputVerifier(new PositiveIntegerInputVerifier());
         simulationTimeRatePanel.add(timeRateTextField);
         simulationConfigurationPanel.add(simulationTimeRatePanel);
-        jSeparator2.setPreferredSize(new Dimension(300, 15));
-        simulationConfigurationPanel.add(jSeparator2);
+        jSeparator2.setPreferredSize(new Dimension(300, 50));
+        simulationConfigurationPanel.add(new SettingSeparator(SwingConstants.HORIZONTAL, new Color(91, 192, 248, 100), new Color(91, 192, 248, 100), new Dimension(300, 10)).getJSeparator());
+
         simulationConfigurationPanel.setBackground(Color.decode("#FFFFFF"));
 
         var simulationDurationPanel = new JPanel();
@@ -302,7 +292,7 @@ public class ConfigurationPanel {
         simulationDurationSecondsTextField.setColumns(2);
         simulationDurationPanel.add(simulationDurationSecondsTextField);
         simulationConfigurationPanel.add(simulationDurationPanel);
-        simulationConfigurationPanel.add(jSeparator2);
+        simulationConfigurationPanel.add(new SettingSeparator(SwingConstants.HORIZONTAL, new Color(91, 192, 248, 100), new Color(91, 192, 248, 100), new Dimension(300, 10)).getJSeparator());
 
 //        simulationConfigurationPanel.add(new JLabel("Number of City Patrols"));
 //        addRestrictionOfEnteringOnlyIntegers(numberOfCityPatrolsTextField);
@@ -321,7 +311,7 @@ public class ConfigurationPanel {
         numberOfCityPatrols.setInputVerifier(new PositiveIntegerInputVerifier());
         numberOfCityPatrols.add(numberOfCityPatrolsTextField);
         simulationConfigurationPanel.add(numberOfCityPatrols);
-        simulationConfigurationPanel.add(jSeparator2);
+        simulationConfigurationPanel.add(new SettingSeparator(SwingConstants.HORIZONTAL, new Color(91, 192, 248, 100), new Color(91, 192, 248, 100), new Dimension(300, 10)).getJSeparator());
 
         ///////////////////
 
@@ -334,7 +324,7 @@ public class ConfigurationPanel {
         basicSearchRangePanel.setInputVerifier(new FloatInputVerifier());
         basicSearchRangePanel.add(basicSearchDistanceTextField);
         simulationConfigurationPanel.add(basicSearchRangePanel);
-        simulationConfigurationPanel.add(jSeparator2);
+        simulationConfigurationPanel.add(new SettingSeparator(SwingConstants.HORIZONTAL, new Color(91, 192, 248, 100), new Color(91, 192, 248, 100), new Dimension(300, 10)).getJSeparator());
 
 //        simulationConfigurationPanel.add(new JLabel("Basic search range for police support [meters]"));
 //        addRestrictionOfEnteringOnlyFloats(basicSearchDistanceTextField);
@@ -350,7 +340,7 @@ public class ConfigurationPanel {
         drawDistrictsBoundariesCheckBox.setBackground(new Color(255, 255, 255, 255));
         drawDistrictsPanel.add(drawDistrictsBoundariesCheckBox);
         simulationConfigurationPanel.add(drawDistrictsPanel);
-        simulationConfigurationPanel.add(jSeparator2);
+        simulationConfigurationPanel.add(new SettingSeparator(SwingConstants.HORIZONTAL, new Color(91, 192, 248, 100), new Color(91, 192, 248, 100), new Dimension(300, 10)).getJSeparator());
 
         var drawFiringDetailsPanel = new JPanel();
         drawFiringDetailsPanel.add(new JLabel("Draw firing details"));
@@ -360,7 +350,7 @@ public class ConfigurationPanel {
         drawFiringDetailsCheckBox.setBackground(new Color(255, 255, 255, 255));
         drawFiringDetailsPanel.add(drawFiringDetailsCheckBox);
         simulationConfigurationPanel.add(drawFiringDetailsPanel);
-        simulationConfigurationPanel.add(jSeparator2);
+        simulationConfigurationPanel.add(new SettingSeparator(SwingConstants.HORIZONTAL, new Color(91, 192, 248, 100), new Color(91, 192, 248, 100), new Dimension(300, 10)).getJSeparator());
 
         var drawLegendPanel = new JPanel();
         drawLegendPanel.add(new JLabel("Draw legend"));
@@ -370,7 +360,7 @@ public class ConfigurationPanel {
         drawLegendCheckBox.setBackground(new Color(255, 255, 255, 255));
         drawLegendPanel.add(drawLegendCheckBox);
         simulationConfigurationPanel.add(drawLegendPanel);
-        simulationConfigurationPanel.add(jSeparator2);
+        simulationConfigurationPanel.add(new SettingSeparator(SwingConstants.HORIZONTAL, new Color(91, 192, 248, 100), new Color(91, 192, 248, 100), new Dimension(300, 10)).getJSeparator());
 
         var drawInterventionDetailsPanel = new JPanel();
         drawInterventionDetailsPanel.add(new JLabel("Draw intervention details while paused"));
@@ -380,13 +370,13 @@ public class ConfigurationPanel {
         drawInterventionDetailsCheckBox.setBackground(new Color(255, 255, 255, 255));
         drawInterventionDetailsPanel.add(drawInterventionDetailsCheckBox);
         simulationConfigurationPanel.add(drawInterventionDetailsPanel);
-        simulationConfigurationPanel.add(jSeparator2);
+        simulationConfigurationPanel.add(new SettingSeparator(SwingConstants.HORIZONTAL, new Color(91, 192, 248, 100), new Color(91, 192, 248, 100), new Dimension(300, 10)).getJSeparator());
 
 //----------------------------------------------------
 
         var threatLevelToMaxIncidentsConfigurationPanel = new JPanel();
         threatLevelToMaxIncidentsConfigurationPanel.setLayout(new BoxLayout(threatLevelToMaxIncidentsConfigurationPanel, BoxLayout.Y_AXIS));
-        threatLevelToMaxIncidentsConfigurationPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        threatLevelToMaxIncidentsConfigurationPanel.setBackground(new Color(255, 255, 255, 255));
 
         JLabel descriptionLabel = new JLabel("Set the maximum number of incidents per");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -397,9 +387,10 @@ public class ConfigurationPanel {
 
         var panel = new JPanel();
         panel.setLayout(new GridLayout(3, 2));
+        panel.setBackground(new Color(255, 255, 255, 255));
         panel.add(new JLabel(District.ThreatLevelEnum.NOT_SAFE + ": "));
         threatLevelMaxIncidentsTextFieldNOTSAFE.setColumns(11);
-        threatLevelMaxIncidentsTextFieldNOTSAFE.setPreferredSize(new Dimension(270, 100));
+        threatLevelMaxIncidentsTextFieldNOTSAFE.setPreferredSize(new Dimension(270, 30));
         threatLevelMaxIncidentsTextFieldNOTSAFE.setText(String.valueOf(World.getInstance().getConfig().getMaxIncidentForThreatLevel(District.ThreatLevelEnum.NOT_SAFE)));
         addRestrictionOfEnteringOnlyIntegers(threatLevelMaxIncidentsTextFieldNOTSAFE);
         threatLevelMaxIncidentsTextFieldNOTSAFE.setInputVerifier(new MaxNumberOfIncidentsInputVerifier(District.ThreatLevelEnum.NOT_SAFE));
@@ -417,12 +408,13 @@ public class ConfigurationPanel {
         threatLevelToMaxIncidentsConfigurationPanel.add(panel);
 
         simulationConfigurationPanel.add(threatLevelToMaxIncidentsConfigurationPanel);
+        simulationConfigurationPanel.add(new SettingSeparator(SwingConstants.HORIZONTAL, new Color(91, 192, 248, 100), new Color(91, 192, 248, 100), new Dimension(300, 10)).getJSeparator());
 
 //----------------------------------------------------
 
         var threatLevelToFiringChanceConfigurationPanel = new JPanel();
         threatLevelToFiringChanceConfigurationPanel.setLayout(new BoxLayout(threatLevelToFiringChanceConfigurationPanel, BoxLayout.Y_AXIS));
-        threatLevelToFiringChanceConfigurationPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        threatLevelToFiringChanceConfigurationPanel.setBackground(new Color(255, 255, 255, 255));
         threatLevelToFiringChanceConfigurationPanel.setPreferredSize(new Dimension(270, 120));
 
         descriptionLabel = new JLabel("Set the chance for the intervention to");
@@ -437,8 +429,10 @@ public class ConfigurationPanel {
 
         panel = new JPanel();
         panel.setLayout(new GridLayout(3, 2));
+        panel.setBackground(new Color(255, 255, 255, 255));
         panel.add(new JLabel(District.ThreatLevelEnum.NOT_SAFE + ": "));
         threatLevelFiringChanceTextFieldNOTSAFE.setColumns(11);
+        threatLevelFiringChanceTextFieldNOTSAFE.setPreferredSize(new Dimension(270, 30));
         threatLevelFiringChanceTextFieldNOTSAFE.setText(String.valueOf(World.getInstance().getConfig().getFiringChanceForThreatLevel(District.ThreatLevelEnum.NOT_SAFE)));
         addRestrictionOfEnteringOnlyFloats(threatLevelFiringChanceTextFieldNOTSAFE);
         threatLevelFiringChanceTextFieldNOTSAFE.setInputVerifier(new ProbabilityInputVerifier(District.ThreatLevelEnum.NOT_SAFE));
@@ -613,11 +607,25 @@ public class ConfigurationPanel {
         periodOfTimeToExportDetailsPanel.add(new JLabel("       and districts details [simulated minutes]"));
         addRestrictionOfEnteringOnlyFloats(periodOfTimeToExportDetails);
         periodOfTimeToExportDetails.setInputVerifier(new FloatInputVerifier());
-//        periodOfTimeToExportDetails.setColumns(TEXT_INPUT_COLUMNS);
         periodOfTimeToExportDetailsPanel.add(periodOfTimeToExportDetails);
         buttonsPanel.add(periodOfTimeToExportDetailsPanel);
 
-//----------------------------------------------------
+        districtConfigurationPanel = new JPanel();
+        mainFrame.add(districtConfigurationPanel);
+
+        var scrollContent = new JPanel();
+        scrollContent.setLayout(new BoxLayout(scrollContent, BoxLayout.Y_AXIS));
+        scrollContent.setBackground(Color.decode("#FFFFFF"));
+
+        var districtScrollPane = new JScrollPane(scrollContent);
+        districtScrollPane.setPreferredSize(new Dimension(300, 522));
+        districtScrollPane.setBackground(Color.decode("#FFFFFF"));
+        districtScrollPane.setBounds(300, 0, 300, 500);
+        districtScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        districtScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        districtConfigurationPanel.add(districtScrollPane);
+        districtConfigurationPanel.setBackground(Color.decode("#FFFFFF"));
 
         var runSimulationPanel = new JPanel(new GridBagLayout());
         var runSimulationButton = new JButton("Start!");
@@ -626,7 +634,7 @@ public class ConfigurationPanel {
         runSimulationButton.setFont(new Font("Arial", Font.PLAIN, 30));
         runSimulationButton.setBackground(new Color(91, 192, 248, 240));
         runSimulationButton.addActionListener(e -> runSimulationButtonClicked());
-        citySelectionPanel.add(jSeparator);
+        citySelectionPanel.add(new SettingSeparator(SwingConstants.HORIZONTAL, new Color(91, 192, 248, 0), new Color(91, 192, 248, 0), new Dimension(300, 10)).getJSeparator());
         runSimulationPanel.add(runSimulationButton, gbc);
         runSimulationPanel.setBorder(shadow);
         citySelectionPanel.add(runSimulationPanel);

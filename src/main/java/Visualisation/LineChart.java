@@ -1,4 +1,4 @@
-package main;
+package Visualisation;
 
 import javax.swing.*;
 
