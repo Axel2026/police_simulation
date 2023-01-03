@@ -24,7 +24,7 @@ public class World {
     private static World instance;
     private final List<Entity> allEntities = new ArrayList<>();
     private final WorldConfiguration worldConfig = new WorldConfiguration();
-/*    private final ExportSimulationAndDistrictDetails exportSimulationAndDistrictDetails = new ExportSimulationAndDistrictDetails();*/
+    private ExportSimulationAndDistrictDetails exportSimulationAndDistrictDetails = null;
     private LocalDateTime startTime;
     private double timePassedUntilPause = 0;
     private boolean isSimulationPaused = false;
@@ -52,6 +52,14 @@ public class World {
         }
     }
 
+    public ExportSimulationAndDistrictDetails getExportSimulationAndDistrictDetails() {
+        return exportSimulationAndDistrictDetails;
+    }
+
+    public void setExportSimulationAndDistrictDetails(ExportSimulationAndDistrictDetails exportSimulationAndDistrictDetails) {
+        this.exportSimulationAndDistrictDetails = exportSimulationAndDistrictDetails;
+    }
+
     public WorldConfiguration getConfig() {
         return worldConfig;
     }
@@ -65,10 +73,6 @@ public class World {
             return this.allEntities.stream().filter(entity -> Haversine.distance(entity.getLatitude(), entity.getLongitude(), x, y) <= range).collect(Collectors.toList());
         }
     }
-
-/*    public ExportSimulationAndDistrictDetails getExportSimulationAndDistrictDetails() {
-        return exportSimulationAndDistrictDetails;
-    }*/
 
     public void addEntity(Entity entity) {
         synchronized (allEntities) {
@@ -199,8 +203,8 @@ public class World {
         hasSimulationStarted = true;
         new EventsDirector().start();
         new EventUpdater().start();
-        /*exportSimulationAndDistrictDetails.start();*/
-        new ExportSimulationAndDistrictDetails().start();
+        setExportSimulationAndDistrictDetails(new ExportSimulationAndDistrictDetails());
+        getExportSimulationAndDistrictDetails().start();
         Logger.getInstance().logNewOtherMessage("Simulation has started.");
     }
 

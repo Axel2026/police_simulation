@@ -2,7 +2,12 @@ package Visualisation;
 
 import Simulation.World;
 import Simulation.entities.Headquarters;
-import main.LineChartExample;
+import com.opencsv.CSVParser;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import main.LineChart;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jgrapht.io.CSVFormat;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.input.PanMouseInputListener;
@@ -16,32 +21,38 @@ import utils.Logger;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MapPanel {
 
-    private final JFrame frame = new JFrame();
+    private final JPanel panel;
+    private final JFrame frameCharts = new JFrame();
     private final JXMapViewer mapViewer = new JXMapViewer();
     private final JButton simulationPauseButton = new JButton("Pause");
     private final JButton simulationFinishButton = new JButton("Finish");
 
-    public MapPanel() {
+    public MapPanel(JPanel panel) {
         var info = new OSMTileFactoryInfo();
         var tileFactory = new DefaultTileFactory(info);
         mapViewer.setTileFactory(tileFactory);
         mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCursor(mapViewer));
         mapViewer.addMouseMotionListener(new PanMouseInputListener(mapViewer));
-
+        frameCharts.setLayout( new FlowLayout() );
         mapViewer.setOverlayPainter(new MapPainter());
+        this.panel = panel;
     }
 
     public void createMapWindow() {
-        frame.setSize(1000, 1000);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setResizable(false);
+        panel.setSize(1000, 1000);
 
         var position = World.getInstance().getPosition();
 
@@ -86,8 +97,8 @@ public class MapPanel {
         mapViewer.add(simulationPauseButton);
         mapViewer.add(simulationFinishButton);
 
-        frame.getContentPane().add(mapViewer);
-        frame.setVisible(true);
+        panel.add(mapViewer);
+        panel.setVisible(true);
     }
 
     public void selectHQLocation() {
@@ -113,7 +124,11 @@ public class MapPanel {
                         }
                     }
 
-                    showSummary();
+                    try {
+                        showSummary();
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
                 }).start();
 
                 // Simulation thread
@@ -142,21 +157,63 @@ public class MapPanel {
                 // nothing should be happening here
             }
         });
-        JOptionPane.showMessageDialog(frame, "Please select HQ location.");
+        JOptionPane.showMessageDialog(panel, "Please select HQ location.");
     }
 
-    private void showSimulationCharts() {
+    private void showSimulationCharts() throws IOException {
+        CSVReader reader = new CSVReaderBuilder(new FileReader("results/" + World.getInstance().getExportSimulationAndDistrictDetails().getSimulationDetailsCsvFileName())).build();
+
+        List<String> timeList = new ArrayList<String>();
+        List<String> incidentsList = new ArrayList<String>();
+        List<String> interventionsList = new ArrayList<String>();
+        List<String> firingsList = new ArrayList<String>();
+        DefaultCategoryDataset datasetIncidents = new DefaultCategoryDataset();
+        DefaultCategoryDataset datasetInterventionsAndFirings = new DefaultCategoryDataset();
+        String[] record = null;
+        String currentSimulationTime = "";
+
+        //Incidents per 10 minutes of simulation
+
+        while ((record = reader.readNext()) != null) {
+            if(!record[0].equals(currentSimulationTime) && reader.getLinesRead() > 1){
+                timeList.add(Integer.toString(Integer.parseInt(record[0])/60));
+                incidentsList.add(record[10]);
+                interventionsList.add(record[11]);
+                firingsList.add(record[13]);
+                currentSimulationTime = record[0];
+            }
+        }
+        System.out.println(Arrays.toString(timeList.toArray()));
+        System.out.println(Arrays.toString(incidentsList.toArray()));
+
+        for(int i = 0; i < timeList.size(); i++) {
+            datasetIncidents.addValue(Integer.parseInt(incidentsList.get(i)), "Number of incidents", timeList.get(i));
+        }
+
         SwingUtilities.invokeLater(() -> {
-            LineChartExample example = new LineChartExample("123", "321", "213");
-            example.setAlwaysOnTop(true);
-            example.pack();
-            example.setSize(600, 400);
-            example.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            example.setVisible(true);
+            new LineChart("Number of incidents", "Minutes of simulation", "Incidents", datasetIncidents, frameCharts);
         });
+
+        //Interventions and firings per 10 minutes of simulation
+
+        System.out.println("---------------");
+        System.out.println(Arrays.toString(timeList.toArray()));
+        System.out.println(Arrays.toString(interventionsList.toArray()));
+        System.out.println(Arrays.toString(firingsList.toArray()));
+
+        for(int i = 0; i < timeList.size(); i++) {
+            datasetInterventionsAndFirings.addValue(Integer.parseInt(interventionsList.get(i)), "Number of interventions", timeList.get(i));
+            datasetInterventionsAndFirings.addValue(Integer.parseInt(firingsList.get(i)), "Number of firings", timeList.get(i));
+        }
+
+        SwingUtilities.invokeLater(() -> {
+           new LineChart("Number of interventions and firings", "Minutes of simulation", "Incidents", datasetInterventionsAndFirings, frameCharts);
+        });
+
+        reader.close();
     }
 
-    private void showSummary() {
+    private void showSummary() throws IOException {
         showSimulationCharts();
 
         var simulationSummaryMessage = new StringBuilder();
@@ -170,9 +227,7 @@ public class MapPanel {
         simulationSummaryMessage.append("Solved Interventions: ").append(StatisticsCounter.getInstance().getNumberOfSolvedInterventions()).append("\n");
         simulationSummaryMessage.append("Solved Firings: ").append(StatisticsCounter.getInstance().getNumberOfSolvedFirings()).append("\n");
 
-        JOptionPane.showMessageDialog(frame, simulationSummaryMessage.toString());
-
-        frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+        JOptionPane.showMessageDialog(panel, simulationSummaryMessage.toString());
     }
 
     class MapPainter implements Painter<JXMapViewer> {

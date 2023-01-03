@@ -20,9 +20,9 @@ public class ExportSimulationAndDistrictDetails extends Thread {
     private static final String CSV_DIRECTORY_PATH = "results";
     private final DateTimeFormatter dateFormat = new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy_HH-mm-ss").toFormatter();
 
-    /*private final String simulationDetailsCsvFileName = dateFormat.format(LocalDateTime.now()) + "--Simulation Details.csv";
+    private final String simulationDetailsCsvFileName = dateFormat.format(LocalDateTime.now()) + "--Simulation Details.csv";
     private final String districtsDetailsCsvFileName = dateFormat.format(LocalDateTime.now()) + "--Simulation Details.csv";
-    */private static final String[] simulationDetailsHeader = new String[]{
+    private static final String[] simulationDetailsHeader = new String[]{
             "simulationTime",
             "amountOfPatrols",
             "amountOfPatrollingPatrols",
@@ -61,16 +61,22 @@ public class ExportSimulationAndDistrictDetails extends Thread {
     private final int periodOfTimeToExportDetailsInSeconds = (int) (world.getConfig().getPeriodOfTimeToExportDetails() * 60);
     private int exportCounter = 1;
 
+    public String getSimulationDetailsCsvFileName() {
+        return simulationDetailsCsvFileName;
+    }
+
+    public String getDistrictsDetailsCsvFileName() {
+        return districtsDetailsCsvFileName;
+    }
+
     public ExportSimulationAndDistrictDetails() {
         File csvDirectory = new File(CSV_DIRECTORY_PATH);
         if (!(csvDirectory.exists() && csvDirectory.isDirectory())) {
             csvDirectory.mkdir();
         }
 
-/*        simulationDetailsCsvFile = new File(CSV_DIRECTORY_PATH, simulationDetailsCsvFileName);
-        districtsDetailsCsvFile = new File(CSV_DIRECTORY_PATH, districtsDetailsCsvFileName);
-       */ simulationDetailsCsvFile = new File(CSV_DIRECTORY_PATH, dateFormat.format(LocalDateTime.now()) + "--Simulation Details.csv");
-        districtsDetailsCsvFile = new File(CSV_DIRECTORY_PATH, dateFormat.format(LocalDateTime.now()) + "--Districts Details.csv");
+        simulationDetailsCsvFile = new File(CSV_DIRECTORY_PATH, getSimulationDetailsCsvFileName());
+        districtsDetailsCsvFile = new File(CSV_DIRECTORY_PATH, getDistrictsDetailsCsvFileName());
         try {
             if (!simulationDetailsCsvFile.createNewFile()) {
                 throw new IOException("Unable to create file");
@@ -89,14 +95,6 @@ public class ExportSimulationAndDistrictDetails extends Thread {
             e.printStackTrace();
         }
     }
-/*
-    public String getSimulationDetailsCsvFileName() {
-        return simulationDetailsCsvFileName;
-    }
-
-    public String getDistrictsDetailsCsvFileName() {
-        return districtsDetailsCsvFileName;
-    }*/
 
     @Override
     public void run() {
