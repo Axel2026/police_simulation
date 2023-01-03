@@ -31,7 +31,7 @@ public class DistrictConfigComponent extends JPanel {
         this.districtThreatLevelInput.addChangeListener(event -> inputChanged());
         this.districtThreatLevelInput.setLabelTable(new Hashtable<>(labels));
         this.districtThreatLevelInput.setPaintLabels(true);
-        this.districtThreatLevelInput.setBackground(Color.decode("#F9F9F9"));
+        this.districtThreatLevelInput.setBackground(Color.decode("#FFFFFF"));
 
         var districtNameLabel = new JLabel(this.district.getName());
         districtNameLabel.setAlignmentX(CENTER_ALIGNMENT);
@@ -39,7 +39,7 @@ public class DistrictConfigComponent extends JPanel {
 
         var sliderContainer = new JPanel();
         sliderContainer.add(districtThreatLevelInput);
-        sliderContainer.setBackground(Color.decode("#F9F9F9"));
+        sliderContainer.setBackground(Color.decode("#FFFFFF"));
         this.add(sliderContainer);
     }
 

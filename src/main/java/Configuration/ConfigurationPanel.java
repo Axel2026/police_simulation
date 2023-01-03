@@ -2,6 +2,7 @@ package Configuration;
 
 import Visualisation.District;
 import Visualisation.MapPanel;
+import org.jdesktop.swingx.border.DropShadowBorder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -11,6 +12,9 @@ import utils.Logger;
 import Simulation.World;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ItemEvent;
@@ -24,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
+
 
 public class ConfigurationPanel {
 
@@ -58,7 +63,8 @@ public class ConfigurationPanel {
     private final JCheckBox considerTimeOfDayCheckBox = new JCheckBox();
     private final JTextField nightStatisticMultiplier = new JTextField();
     private final JTextField periodOfTimeToExportDetails = new JTextField();
-    private final JFrame mainFrame = new JFrame("City Police Simulation");
+    private final JPanel mainFrame;
+    private final JPanel mapPanel;
     private JPanel districtConfigurationPanel;
     private JPanel simulationConfigurationPanel;
     private JPanel buttonsPanel;
@@ -66,8 +72,12 @@ public class ConfigurationPanel {
     private JComboBox<String> citySelectionComboBox;
     ImageIcon anstar = new ImageIcon("ans.png");
 
-    public ConfigurationPanel() {
+    public ConfigurationPanel(JPanel panel, JPanel mapPanel) {
         getAvailableCitiesFromFile();
+        this.mainFrame = panel;
+        this.mapPanel = mapPanel;
+        this.mainFrame.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        this.mainFrame.setBackground(new Color(255, 255, 255, 255));
     }
 
     private void getAvailableCitiesFromFile() {
@@ -82,6 +92,10 @@ public class ConfigurationPanel {
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    public JPanel getMapPanel() {
+        return mapPanel;
     }
 
     private void parseCountryObject(JSONObject country) {
@@ -138,25 +152,86 @@ public class ConfigurationPanel {
     }
 
     public void createWindow() {
-        mainFrame.setSize(1200, 600);
-        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        mainFrame.setResizable(false);
         mainFrame.setLayout(new GridLayout(1, 4));
 
-        JPanel citySelectionPanel = new JPanel();
+        JPanel citySelectionPanel = new JPanel(new FlowLayout());
+        DropShadowBorder shadow = new DropShadowBorder();
+        shadow.setShadowColor(Color.BLACK);
+        shadow.setShowLeftShadow(true);
+        shadow.setShowRightShadow(true);
+        shadow.setShowBottomShadow(true);
+        shadow.setShowTopShadow(true);
+        citySelectionPanel.setBorder(shadow);
+        citySelectionPanel.setPreferredSize(new Dimension(200, 200));
+        citySelectionPanel.setSize(new Dimension(200, 200));
         mainFrame.add(citySelectionPanel);
 
         // Simulation title
         var titlePane = new JTextPane();
-        titlePane.setText("City Police\nSimulation");
+        titlePane.setText("City Police Simulation");
         titlePane.setEditable(false);
         titlePane.setOpaque(false);
         titlePane.setFont(titlePane.getFont().deriveFont(30f));
+        titlePane.setToolTipText("""
+                <html><div style="padding:10; background-color: #FFFFFF;">The purpose of the application is to <br />
+                                
+                simulate the work of police units<br />
+                 
+                in any chosen city. It is possible<br />
+                                
+                to select additional simulation<br />
+                                
+                parameters to bring the logic and<br />
+                                
+                operation of the police in each city<br />
+                                
+                as close as possible.</div></html>""");
         citySelectionPanel.add(titlePane);
+        citySelectionPanel.setPreferredSize(new Dimension(200, 200));
 
-        // Simulation description
-        var descriptionPane = new JTextPane();
-        descriptionPane.setText("""
+        // line separating the components
+        var jSeparator = new JSeparator();
+        jSeparator.setOrientation(SwingConstants.HORIZONTAL);
+        jSeparator.setBackground(new Color(91, 192, 248, 0));
+        jSeparator.setForeground(new Color(91, 192, 248, 0));
+        jSeparator.setPreferredSize(new Dimension(300, 60));
+        citySelectionPanel.add(jSeparator);
+
+        citySelectionPanel.add(new JLabel("                     Select an area for the simulation:                        "));
+
+        // drop-down list with country selection
+        countrySelectionComboBox = new JComboBox<>(availablePlaces.keySet().toArray(new String[0]));
+        countrySelectionComboBox.setBackground(Color.decode("#FFFFFF"));
+        countrySelectionComboBox.setBorder(new EmptyBorder(0, 0,0,0));
+        countrySelectionComboBox.addActionListener(e -> {
+            var selectedItem = countrySelectionComboBox.getSelectedItem().toString();
+            var newModel = new DefaultComboBoxModel<>(availablePlaces.get(selectedItem));
+            citySelectionComboBox.setModel(newModel);
+        });
+
+        citySelectionPanel.add(countrySelectionComboBox);
+        citySelectionPanel.setBackground(Color.decode("#FFFFFF"));
+        citySelectionComboBox = new JComboBox<>(availablePlaces.get(availablePlaces.keySet().stream().findFirst().orElseThrow()));
+        citySelectionComboBox.setBackground(Color.decode("#FFFFFF"));
+        citySelectionPanel.add(citySelectionComboBox);
+
+
+        // city select button
+        var citySelectionButton = new JButton("Select");
+        citySelectionButton.setBackground(new Color(91, 192, 248, 240));
+        citySelectionButton.addActionListener(e -> citySelectionButtonClicked());
+
+        citySelectionPanel.add(citySelectionButton);
+
+        var jSeparator2 = new JSeparator();
+        jSeparator2.setOrientation(SwingConstants.HORIZONTAL);
+        jSeparator2.setBackground(new Color(91, 192, 248, 0));
+        jSeparator2.setForeground(new Color(91, 192, 248, 0));
+        jSeparator2.setPreferredSize(new Dimension(300, 40));
+        citySelectionPanel.add(jSeparator2);
+
+        JLabel anstarLabel = new JLabel(anstar);
+        anstarLabel.setToolTipText("""
                 The purpose of the application is to \s
                 simulate the work of police units\s 
                 in any chosen city. It is possible\s
@@ -164,67 +239,23 @@ public class ConfigurationPanel {
                 parameters to bring the logic and\s
                 operation of the police in each city\s
                 as close as possible.""");
-        descriptionPane.setEditable(false);
-        descriptionPane.setOpaque(false);
-        descriptionPane.setFont(descriptionPane.getFont().deriveFont(14f));
-        citySelectionPanel.add(descriptionPane);
-
-        // line separating the components
-        var jSeparator = new JSeparator();
-        jSeparator.setOrientation(SwingConstants.HORIZONTAL);
-        jSeparator.setBackground(Color.BLACK);
-        jSeparator.setPreferredSize(new Dimension(300, 5));
-        citySelectionPanel.add(jSeparator);
-
-        citySelectionPanel.add(new JLabel("      Select an area for the simulation:      "));
-
-        // drop-down list with country selection
-        countrySelectionComboBox = new JComboBox<>(availablePlaces.keySet().toArray(new String[0]));
-        countrySelectionComboBox.setBackground(Color.decode("#EDEDED"));
-        countrySelectionComboBox.addActionListener(e -> {
-            var selectedItem = countrySelectionComboBox.getSelectedItem().toString();
-            var newModel = new DefaultComboBoxModel<>(availablePlaces.get(selectedItem));
-            citySelectionComboBox.setModel(newModel);
-        });
-
-        //drop-down list with city selection
-        //pierwsza kolumna
-        citySelectionPanel.add(countrySelectionComboBox);
-        citySelectionPanel.setBackground(Color.decode("#F9F9F9"));
-        citySelectionComboBox = new JComboBox<>(availablePlaces.get(availablePlaces.keySet().stream().findFirst().orElseThrow()));
-        citySelectionPanel.add(citySelectionComboBox);
-
-        // city select button
-        var citySelectionButton = new Button("Select");
-        citySelectionButton.setBackground(Color.decode("#EDEDED"));
-        citySelectionButton.addActionListener(e -> citySelectionButtonClicked());
-
-        citySelectionPanel.add(citySelectionButton);
-
-        var jSeparator2 = new JSeparator();
-        jSeparator2.setOrientation(SwingConstants.HORIZONTAL);
-        jSeparator2.setBackground(Color.BLACK);
-        jSeparator2.setPreferredSize(new Dimension(300, 90));
-        citySelectionPanel.add(jSeparator2);
-
-        citySelectionPanel.add(new JLabel(anstar));
 //----------------------------------------------------
         districtConfigurationPanel = new JPanel();
         mainFrame.add(districtConfigurationPanel);
 
         var scrollContent = new JPanel();
         scrollContent.setLayout(new BoxLayout(scrollContent, BoxLayout.Y_AXIS));
-        scrollContent.setBackground(Color.decode("#F9F9F9"));
+        scrollContent.setBackground(Color.decode("#FFFFFF"));
 
         var districtScrollPane = new JScrollPane(scrollContent);
         districtScrollPane.setPreferredSize(new Dimension(300, 522));
-        districtScrollPane.setBackground(Color.decode("#F9F9F9"));
+        districtScrollPane.setBackground(Color.decode("#FFFFFF"));
         districtScrollPane.setBounds(300, 0, 300, 500);
         districtScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         districtScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         districtConfigurationPanel.add(districtScrollPane);
-        districtConfigurationPanel.setBackground(Color.decode("#F9F9F9"));
+        districtConfigurationPanel.setBackground(Color.decode("#FFFFFF"));
 
 //----------------------------------------------------
         simulationConfigurationPanel = new JPanel();
@@ -232,14 +263,16 @@ public class ConfigurationPanel {
 
         var simulationTimeRatePanel = new JPanel();
         simulationTimeRatePanel.setLayout(new BoxLayout(simulationTimeRatePanel, BoxLayout.Y_AXIS));
-        simulationTimeRatePanel.setBorder(new LineBorder(Color.BLACK, 1));
         simulationTimeRatePanel.setPreferredSize(new Dimension(270, 40));
         simulationTimeRatePanel.add(new JLabel("                         Simulation Time Rate"));
+        simulationTimeRatePanel.setBackground(new Color(255, 255, 255, 255));
         addRestrictionOfEnteringOnlyIntegers(timeRateTextField);
         simulationTimeRatePanel.setInputVerifier(new PositiveIntegerInputVerifier());
         simulationTimeRatePanel.add(timeRateTextField);
         simulationConfigurationPanel.add(simulationTimeRatePanel);
-        simulationConfigurationPanel.setBackground(Color.decode("#F9F9F9"));
+        jSeparator2.setPreferredSize(new Dimension(300, 15));
+        simulationConfigurationPanel.add(jSeparator2);
+        simulationConfigurationPanel.setBackground(Color.decode("#FFFFFF"));
 
         var simulationDurationPanel = new JPanel();
         JLabel simulationDurationLabel = new JLabel("                           Simulation Duration");
@@ -247,7 +280,7 @@ public class ConfigurationPanel {
         simulationDurationLabel.setPreferredSize(new Dimension(270, 10));
         simulationDurationPanel.add(simulationDurationLabel);
         simulationDurationPanel.add(new JLabel("Days:"));
-        simulationDurationPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        simulationDurationPanel.setBackground(new Color(255, 255, 255, 255));
         simulationDurationPanel.setPreferredSize(new Dimension(270, 45));
         addRestrictionOfEnteringOnlyIntegers(simulationDurationDaysTextField);
         simulationDurationDaysTextField.setInputVerifier(new NonNegativeIntegerInputVerifier());
@@ -269,6 +302,7 @@ public class ConfigurationPanel {
         simulationDurationSecondsTextField.setColumns(2);
         simulationDurationPanel.add(simulationDurationSecondsTextField);
         simulationConfigurationPanel.add(simulationDurationPanel);
+        simulationConfigurationPanel.add(jSeparator2);
 
 //        simulationConfigurationPanel.add(new JLabel("Number of City Patrols"));
 //        addRestrictionOfEnteringOnlyIntegers(numberOfCityPatrolsTextField);
@@ -280,25 +314,27 @@ public class ConfigurationPanel {
 
         var numberOfCityPatrols = new JPanel();
         numberOfCityPatrols.setLayout(new BoxLayout(numberOfCityPatrols, BoxLayout.Y_AXIS));
-        numberOfCityPatrols.setBorder(new LineBorder(Color.BLACK, 1));
+        numberOfCityPatrols.setBackground(new Color(255, 255, 255, 255));
         numberOfCityPatrols.setPreferredSize(new Dimension(270, 40));
-        numberOfCityPatrols.add(new JLabel("Number of City Patrols"));
+        numberOfCityPatrols.add(new JLabel("                           Number of City Patrols"));
         addRestrictionOfEnteringOnlyIntegers(numberOfCityPatrolsTextField);
         numberOfCityPatrols.setInputVerifier(new PositiveIntegerInputVerifier());
         numberOfCityPatrols.add(numberOfCityPatrolsTextField);
         simulationConfigurationPanel.add(numberOfCityPatrols);
+        simulationConfigurationPanel.add(jSeparator2);
 
         ///////////////////
 
         var basicSearchRangePanel = new JPanel();
         basicSearchRangePanel.setLayout(new BoxLayout(basicSearchRangePanel, BoxLayout.Y_AXIS));
-        basicSearchRangePanel.setBorder(new LineBorder(Color.BLACK, 1));
+        basicSearchRangePanel.setBackground(new Color(255, 255, 255, 255));
         basicSearchRangePanel.setPreferredSize(new Dimension(270, 40));
         basicSearchRangePanel.add(new JLabel("Basic search range for police support [meters]"));
         addRestrictionOfEnteringOnlyFloats(basicSearchDistanceTextField);
         basicSearchRangePanel.setInputVerifier(new FloatInputVerifier());
         basicSearchRangePanel.add(basicSearchDistanceTextField);
         simulationConfigurationPanel.add(basicSearchRangePanel);
+        simulationConfigurationPanel.add(jSeparator2);
 
 //        simulationConfigurationPanel.add(new JLabel("Basic search range for police support [meters]"));
 //        addRestrictionOfEnteringOnlyFloats(basicSearchDistanceTextField);
@@ -309,41 +345,48 @@ public class ConfigurationPanel {
         var drawDistrictsPanel = new JPanel();
         drawDistrictsPanel.add(new JLabel("Draw districts boundaries"));
         drawDistrictsPanel.setPreferredSize(new Dimension(270, 32));
-        drawDistrictsPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        drawDistrictsPanel.setBackground(new Color(255, 255, 255, 255));
         drawDistrictsBoundariesCheckBox.setSelected(true);
+        drawDistrictsBoundariesCheckBox.setBackground(new Color(255, 255, 255, 255));
         drawDistrictsPanel.add(drawDistrictsBoundariesCheckBox);
         simulationConfigurationPanel.add(drawDistrictsPanel);
+        simulationConfigurationPanel.add(jSeparator2);
 
         var drawFiringDetailsPanel = new JPanel();
         drawFiringDetailsPanel.add(new JLabel("Draw firing details"));
-        drawFiringDetailsPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        drawFiringDetailsPanel.setBackground(new Color(255, 255, 255, 255));
         drawFiringDetailsPanel.setPreferredSize(new Dimension(150, 32));
         drawFiringDetailsCheckBox.setSelected(true);
+        drawFiringDetailsCheckBox.setBackground(new Color(255, 255, 255, 255));
         drawFiringDetailsPanel.add(drawFiringDetailsCheckBox);
         simulationConfigurationPanel.add(drawFiringDetailsPanel);
+        simulationConfigurationPanel.add(jSeparator2);
 
         var drawLegendPanel = new JPanel();
         drawLegendPanel.add(new JLabel("Draw legend"));
-        drawLegendPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        drawLegendPanel.setBackground(new Color(255, 255, 255, 255));
         drawLegendPanel.setPreferredSize(new Dimension(115, 32));
         drawLegendCheckBox.setSelected(true);
+        drawLegendCheckBox.setBackground(new Color(255, 255, 255, 255));
         drawLegendPanel.add(drawLegendCheckBox);
         simulationConfigurationPanel.add(drawLegendPanel);
+        simulationConfigurationPanel.add(jSeparator2);
 
         var drawInterventionDetailsPanel = new JPanel();
         drawInterventionDetailsPanel.add(new JLabel("Draw intervention details while paused"));
-        drawInterventionDetailsPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        drawInterventionDetailsPanel.setBackground(new Color(255, 255, 255, 255));
         drawInterventionDetailsPanel.setPreferredSize(new Dimension(270, 32));
         drawInterventionDetailsCheckBox.setSelected(true);
+        drawInterventionDetailsCheckBox.setBackground(new Color(255, 255, 255, 255));
         drawInterventionDetailsPanel.add(drawInterventionDetailsCheckBox);
         simulationConfigurationPanel.add(drawInterventionDetailsPanel);
+        simulationConfigurationPanel.add(jSeparator2);
 
 //----------------------------------------------------
 
         var threatLevelToMaxIncidentsConfigurationPanel = new JPanel();
         threatLevelToMaxIncidentsConfigurationPanel.setLayout(new BoxLayout(threatLevelToMaxIncidentsConfigurationPanel, BoxLayout.Y_AXIS));
         threatLevelToMaxIncidentsConfigurationPanel.setBorder(new LineBorder(Color.BLACK, 1));
-        threatLevelToMaxIncidentsConfigurationPanel.setPreferredSize(new Dimension(270, 100));
 
         JLabel descriptionLabel = new JLabel("Set the maximum number of incidents per");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -417,7 +460,7 @@ public class ConfigurationPanel {
 //----------------------------------------------------
 
         buttonsPanel = new JPanel();
-        buttonsPanel.setBackground(Color.decode("#F9F9F9"));
+        buttonsPanel.setBackground(Color.decode("#FFFFFF"));
         mainFrame.add(buttonsPanel);
 
 //----------------------------------------------------
@@ -576,30 +619,27 @@ public class ConfigurationPanel {
 
 //----------------------------------------------------
 
-        // line separating the components
-        jSeparator = new JSeparator();
-        jSeparator.setOrientation(SwingConstants.HORIZONTAL);
-        jSeparator.setPreferredSize(new Dimension(280, 2));
-        jSeparator.setBackground(Color.BLACK);
-        buttonsPanel.add(jSeparator);
-
-//----------------------------------------------------
-
-        var runSimulationButton = new Button("Start!");
+        var runSimulationPanel = new JPanel(new GridBagLayout());
+        var runSimulationButton = new JButton("Start!");
+        GridBagConstraints gbc = new GridBagConstraints();
         runSimulationButton.setPreferredSize(new Dimension(280, 63));
         runSimulationButton.setFont(new Font("Arial", Font.PLAIN, 30));
-        runSimulationButton.setBackground(Color.decode("#D8FFD7"));
+        runSimulationButton.setBackground(new Color(91, 192, 248, 240));
         runSimulationButton.addActionListener(e -> runSimulationButtonClicked());
-        buttonsPanel.add(runSimulationButton);
+        citySelectionPanel.add(jSeparator);
+        runSimulationPanel.add(runSimulationButton, gbc);
+        runSimulationPanel.setBorder(shadow);
+        citySelectionPanel.add(runSimulationPanel);
+        jSeparator2.setPreferredSize(new Dimension(300, 40));
+        citySelectionPanel.add(jSeparator2);
+        citySelectionPanel.add(new JLabel(anstar));
 
-        // Disable further sections
         setComponentEnabledRecursively(districtConfigurationPanel, false);
         setComponentEnabledRecursively(simulationConfigurationPanel, false);
         setComponentEnabledRecursively(buttonsPanel, false);
 
         setDefaultValues();
 
-        mainFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         mainFrame.setVisible(true);
     }
 
@@ -637,10 +677,10 @@ public class ConfigurationPanel {
         World.getInstance().getConfig().setCityName(cityName);
         if (loadMapIntoWorld(cityName)) {
             var scrollContent = (JPanel) ((JScrollPane) Arrays.stream(districtConfigurationPanel.getComponents()).filter(JScrollPane.class::isInstance).findFirst().orElseThrow()).getViewport().getView();
-            scrollContent.setBackground(Color.decode("#F9F9F9"));
+            scrollContent.setBackground(Color.decode("#FFFFFF"));
             scrollContent.removeAll();
             for (var district : World.getInstance().getMap().getDistricts()) {
-                scrollContent.add(new DistrictConfigComponent(district)).setBackground(Color.decode("#F9F9F9"));;
+                scrollContent.add(new DistrictConfigComponent(district)).setBackground(Color.decode("#FFFFFF"));;
             }
             scrollContent.revalidate();
 
@@ -651,14 +691,13 @@ public class ConfigurationPanel {
     }
 
     private void runSimulationButtonClicked() {
-        var mapPanel = new MapPanel();
+        var mapPanel = new MapPanel(this.getMapPanel());
         mapPanel.createMapWindow();
 
         var config = World.getInstance().getConfig();
         setDataFromConfigurationPanel(config);
         Logger.getInstance().logNewOtherMessage("World config has been set.");
 
-        mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
         mapPanel.selectHQLocation();
     }
 

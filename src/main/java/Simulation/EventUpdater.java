@@ -9,7 +9,6 @@ public class EventUpdater extends Thread {
     @Override
     public void run() {
         while (!world.hasSimulationDurationElapsed() && !world.isSimulationFinished()) {
-            System.out.println("world.isSimulationFinished()" + !world.isSimulationFinished());
             if (!world.isSimulationPaused()) {
                 var activeEvents = world.getEvents();
                 for (var incident : activeEvents) {

@@ -11,14 +11,15 @@ import java.util.List;
 public class LoggerPanel {
 
     private static final int MAX_NUMBER_OF_COMPONENTS = 1000;
-    private final JFrame frame = new JFrame("Logger");
+    private final JPanel frame;
     private final JPanelWithComponentsOrder scrollContent = new JPanelWithComponentsOrder();
     private final JScrollPane scrollPane = new JScrollPane(scrollContent);
 
+    public LoggerPanel(JPanel panel) {
+        this.frame = panel;
+    }
+
     public void createWindow() {
-        frame.setSize(1000, 400);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setResizable(false);
 
         scrollContent.setLayout(new BoxLayout(scrollContent, BoxLayout.Y_AXIS));
 
