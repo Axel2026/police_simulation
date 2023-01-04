@@ -57,7 +57,7 @@ public class EventsDirector extends Thread {
         var numberOfIncidentsInNextHour = ThreadLocalRandom.current().nextInt(world.getConfig().getMaxIncidentForThreatLevel(district.getThreatLevel()) + 1);
 
         for (var i = 0; i < numberOfIncidentsInNextHour; i++) {
-            if (!district.getAllNodesInDistrict().isEmpty()){
+            if (!district.getAllNodesInDistrict().isEmpty()) {
                 var newEvent = IncidentFactory.createRandomInterventionForDistrict(district);
                 var sleepTime = ThreadLocalRandom.current().nextInt(3600);
                 new DelayedActionWithTargetSimulationTime(sleepTime, () -> world.addEntity(newEvent)).start();

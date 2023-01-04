@@ -2,12 +2,11 @@ package Visualisation;
 
 import Simulation.World;
 import Simulation.entities.Headquarters;
-import com.opencsv.CSVParser;
+import Simulation.entities.Intervention;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import main.LineChart;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jgrapht.io.CSVFormat;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.input.PanMouseInputListener;
@@ -39,6 +38,7 @@ public class MapPanel {
     private final JXMapViewer mapViewer = new JXMapViewer();
     private final JButton simulationPauseButton = new JButton("Pause");
     private final JButton simulationFinishButton = new JButton("Finish");
+    private final JCheckBox willChangeIntoFiringCheckbox = new JCheckBox();
 
     public MapPanel(JPanel panel) {
         var info = new OSMTileFactoryInfo();
@@ -110,7 +110,7 @@ public class MapPanel {
 
                 var hq = new Headquarters(position.getLatitude(), position.getLongitude());
                 World.getInstance().addEntity(hq);
-
+                selectInterventionLocation();
                 // GUI Drawing thread
                 new Thread(() -> {
                     while (!World.getInstance().hasSimulationDurationElapsed() && !World.getInstance().isSimulationFinished()) {
@@ -158,6 +158,40 @@ public class MapPanel {
             }
         });
         JOptionPane.showMessageDialog(panel, "Please select HQ location.");
+    }
+    public void selectInterventionLocation() {
+        mapViewer.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
+
+                    var position = mapViewer.convertPointToGeoPosition(e.getPoint());
+//                    addInterventionWindow();
+                    addInterventionWindow(position);
+
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // nothing should be happening here
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                // nothing should be happening here
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // nothing should be happening here
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // nothing should be happening here
+            }
+        });
     }
 
     private void showSimulationCharts() throws IOException {
@@ -213,6 +247,58 @@ public class MapPanel {
         reader.close();
     }
 
+    private void addInterventionWindow(GeoPosition position) {
+        JFrame frame = new JFrame("Insert values");
+        frame.setVisible(true);
+        frame.setSize(300, 300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JLabel interventionDurationLabel = new JLabel("Intervention duration");
+        interventionDurationLabel.setPreferredSize(new Dimension(130, 20));
+        JPanel addInterventionPanel = new JPanel();
+        frame.add(addInterventionPanel);
+        addInterventionPanel.add(interventionDurationLabel);
+
+        final JTextField interventionDurationInput = new JTextField(10);
+        addInterventionPanel.add(interventionDurationInput);
+
+        JLabel willChangeIntoFiringLabel = new JLabel("will change into firing");
+        willChangeIntoFiringLabel.setPreferredSize(new Dimension(220, 20));
+        addInterventionPanel.add(willChangeIntoFiringLabel);
+
+        willChangeIntoFiringCheckbox.setSelected(false); // The input field with a width of 5 columns
+        addInterventionPanel.add(willChangeIntoFiringCheckbox);
+
+        JLabel patrolsRequiredLabel = new JLabel("patrols required");
+        patrolsRequiredLabel.setPreferredSize(new Dimension(130, 20));
+        addInterventionPanel.add(patrolsRequiredLabel);
+
+        final JTextField patrolsRequiredInput = new JTextField(10); // The input field with a width of 5 columns
+        addInterventionPanel.add(patrolsRequiredInput);
+
+        JButton generateIntervention = new JButton("Generate Intervention");
+        addInterventionPanel.add(generateIntervention);
+
+        final JLabel output = new JLabel(); // A label for your output
+        addInterventionPanel.add(output);
+
+        generateIntervention.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+//                var intervention = new Intervention(position.getLatitude(), position.getLongitude());
+                var intervention = new Intervention(
+                        position.getLatitude(),
+                        position.getLongitude(),
+                        (long) (Integer.parseInt(interventionDurationInput.getText()) * (60.0)),
+                        willChangeIntoFiringCheckbox.isSelected(),
+                        60
+                );
+
+                World.getInstance().addEntity(intervention);
+                frame.setVisible(false);
+            }
+        });
+    }
+
     private void showSummary() throws IOException {
         showSimulationCharts();
 
@@ -239,9 +325,8 @@ public class MapPanel {
             }
 
             World.getInstance().getAllEntities().stream().filter(IDrawable.class::isInstance).forEach(x -> ((IDrawable) x).drawSelf(g, mapViewer));
-
             drawSimulationClock(g);
-            if (World.getInstance().getConfig().isDrawLegend()){
+            if (World.getInstance().getConfig().isDrawLegend()) {
                 drawLegend(g);
             }
         }
