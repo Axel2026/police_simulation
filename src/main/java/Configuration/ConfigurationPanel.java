@@ -77,6 +77,7 @@ public class ConfigurationPanel {
         this.mainFrame = panel;
         this.mapPanel = mapPanel;
         this.mainFrame.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        this.mainFrame.setPreferredSize(new Dimension(1000, 570));
         this.mainFrame.setBackground(new Color(255, 255, 255, 255));
     }
 
@@ -387,7 +388,7 @@ public class ConfigurationPanel {
         var threatLevelToMaxIncidentsConfigurationPanel = new JPanel();
         threatLevelToMaxIncidentsConfigurationPanel.setLayout(new BoxLayout(threatLevelToMaxIncidentsConfigurationPanel, BoxLayout.Y_AXIS));
         threatLevelToMaxIncidentsConfigurationPanel.setBorder(new LineBorder(Color.BLACK, 1));
-
+        threatLevelToMaxIncidentsConfigurationPanel.setPreferredSize(new Dimension(270, 100));
         JLabel descriptionLabel = new JLabel("Set the maximum number of incidents per");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         threatLevelToMaxIncidentsConfigurationPanel.add(descriptionLabel);
@@ -399,7 +400,7 @@ public class ConfigurationPanel {
         panel.setLayout(new GridLayout(3, 2));
         panel.add(new JLabel(District.ThreatLevelEnum.NOT_SAFE + ": "));
         threatLevelMaxIncidentsTextFieldNOTSAFE.setColumns(11);
-        threatLevelMaxIncidentsTextFieldNOTSAFE.setPreferredSize(new Dimension(270, 100));
+//        threatLevelMaxIncidentsTextFieldNOTSAFE.setPreferredSize(new Dimension(270, 25));
         threatLevelMaxIncidentsTextFieldNOTSAFE.setText(String.valueOf(World.getInstance().getConfig().getMaxIncidentForThreatLevel(District.ThreatLevelEnum.NOT_SAFE)));
         addRestrictionOfEnteringOnlyIntegers(threatLevelMaxIncidentsTextFieldNOTSAFE);
         threatLevelMaxIncidentsTextFieldNOTSAFE.setInputVerifier(new MaxNumberOfIncidentsInputVerifier(District.ThreatLevelEnum.NOT_SAFE));

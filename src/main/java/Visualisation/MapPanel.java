@@ -23,7 +23,6 @@ import java.awt.*;
 import java.util.List;
 import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,8 +38,10 @@ public class MapPanel {
     private final JXMapViewer mapViewer = new JXMapViewer();
     private final JButton simulationPauseButton = new JButton("Pause");
     private final JButton simulationFinishButton = new JButton("Finish");
+    private final JButton hqButton = new JButton("HQ");
     private final JCheckBox willChangeIntoFiringCheckbox = new JCheckBox();
     private final World world = World.getInstance();
+    private GeoPosition hqPosition;
 
     public MapPanel(JPanel panel) {
         var info = new OSMTileFactoryInfo();
@@ -86,6 +87,7 @@ public class MapPanel {
         });
 
         simulationFinishButton.setMaximumSize(new Dimension(50, 50));
+        hqButton.setMaximumSize(new Dimension(50, 50));
 
         simulationFinishButton.addActionListener(new ActionListener() {
 
@@ -96,8 +98,18 @@ public class MapPanel {
             }
 
         });
+
+        hqButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addPatrolWindow(hqPosition);
+            }
+
+        });
         mapViewer.add(simulationPauseButton);
         mapViewer.add(simulationFinishButton);
+        mapViewer.add(hqButton);
 
         panel.add(mapViewer);
         panel.setVisible(true);
@@ -109,10 +121,11 @@ public class MapPanel {
             public void mouseClicked(MouseEvent e) {
                 var position = mapViewer.convertPointToGeoPosition(e.getPoint());
                 Logger.getInstance().logNewOtherMessage("HQ position has been selected.");
-
+                hqPosition = mapViewer.convertPointToGeoPosition(e.getPoint());
                 var hq = new Headquarters(position.getLatitude(), position.getLongitude());
                 World.getInstance().addEntity(hq);
                 selectInterventionLocation();
+                addPatrolWindow(hqPosition);
                 // GUI Drawing thread
                 new Thread(() -> {
                     while (!World.getInstance().hasSimulationDurationElapsed() && !World.getInstance().isSimulationFinished()) {
@@ -169,7 +182,6 @@ public class MapPanel {
                 if (e.getButton() == MouseEvent.BUTTON3) {
 
                     var position = mapViewer.convertPointToGeoPosition(e.getPoint());
-//                    addInterventionWindow();
                     addInterventionWindow(position);
 
                 }
@@ -273,6 +285,12 @@ public class MapPanel {
                 frame.setVisible(false);
             }
         });
+    }
+
+    private void addPatrolWindow(GeoPosition position) {
+        Patrol patrol = new Patrol(position.getLatitude(), position.getLongitude());
+        patrol.setState(Patrol.State.PATROLLING);
+        World.getInstance().addEntity(patrol);
     }
 
     private void showSimulationCharts() throws IOException {
