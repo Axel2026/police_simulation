@@ -33,7 +33,6 @@ public class Intervention extends Incident implements IDrawable {
         super(latitude, longitude);
         this.duration = duration;
         this.district = district;
-
         this.willChangeIntoFiring = false;
         this.timeToChange = -1;
     }
@@ -43,11 +42,14 @@ public class Intervention extends Incident implements IDrawable {
         this.duration = duration;
         this.willChangeIntoFiring = willChangeIntoFiring;
         this.district = district;
+        System.out.println("district "+district);
         if (timeToChange < 0) {
             throw new IllegalArgumentException("timeToChange must be greater than or equal to zero");
         }
         this.timeToChange = timeToChange;
     }
+
+    //prawdopodobnie do usuniecia
     public Intervention(double latitude, double longitude, long duration, boolean willChangeIntoFiring, long timeToChange) {
         super(latitude, longitude);
         this.duration = duration;

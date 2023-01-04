@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MapPanel {
 
@@ -39,6 +40,7 @@ public class MapPanel {
     private final JButton simulationPauseButton = new JButton("Pause");
     private final JButton simulationFinishButton = new JButton("Finish");
     private final JCheckBox willChangeIntoFiringCheckbox = new JCheckBox();
+    private final World world = World.getInstance();
 
     public MapPanel(JPanel panel) {
         var info = new OSMTileFactoryInfo();
@@ -46,7 +48,7 @@ public class MapPanel {
         mapViewer.setTileFactory(tileFactory);
         mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCursor(mapViewer));
         mapViewer.addMouseMotionListener(new PanMouseInputListener(mapViewer));
-        frameCharts.setLayout( new FlowLayout() );
+        frameCharts.setLayout(new FlowLayout());
         mapViewer.setOverlayPainter(new MapPainter());
         this.panel = panel;
     }
@@ -159,6 +161,7 @@ public class MapPanel {
         });
         JOptionPane.showMessageDialog(panel, "Please select HQ location.");
     }
+
     public void selectInterventionLocation() {
         mapViewer.addMouseListener(new MouseListener() {
             @Override
@@ -194,6 +197,84 @@ public class MapPanel {
         });
     }
 
+    private void addInterventionWindow(GeoPosition position) {
+        JFrame frame = new JFrame("Insert values");
+        frame.setVisible(true);
+        frame.setSize(300, 250);
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.setResizable(false);
+
+        JLabel interventionDurationLabel = new JLabel("Intervention duration [min]");
+        interventionDurationLabel.setPreferredSize(new Dimension(180, 40));
+        JPanel addInterventionPanel = new JPanel();
+        frame.add(addInterventionPanel);
+        addInterventionPanel.add(interventionDurationLabel);
+
+        final JTextField interventionDurationInput = new JTextField(4);
+        interventionDurationInput.setText(String.valueOf(30));
+        addInterventionPanel.add(interventionDurationInput);
+
+        JLabel willChangeIntoFiringLabel = new JLabel("will change into firing");
+        willChangeIntoFiringLabel.setPreferredSize(new Dimension(180, 40));
+        addInterventionPanel.add(willChangeIntoFiringLabel);
+        willChangeIntoFiringCheckbox.setPreferredSize(new Dimension(50, 20));
+        addInterventionPanel.add(willChangeIntoFiringCheckbox);
+
+        JLabel timeToChangeIntoFiringLabel = new JLabel("time to change into firing [min]");
+        timeToChangeIntoFiringLabel.setPreferredSize(new Dimension(180, 40));
+        timeToChangeIntoFiringLabel.setVisible(false);
+        addInterventionPanel.add(timeToChangeIntoFiringLabel);
+
+        final JTextField timeToChangeIntoFiringInput = new JTextField(4);
+        timeToChangeIntoFiringInput.setVisible(false);
+        timeToChangeIntoFiringInput.setText(String.valueOf(10));
+
+        addInterventionPanel.add(timeToChangeIntoFiringInput);
+
+        var jSeparator = new JSeparator();
+        jSeparator.setOrientation(SwingConstants.HORIZONTAL);
+        jSeparator.setPreferredSize(new Dimension(240, 10));
+        addInterventionPanel.add(jSeparator);
+
+        JButton generateIntervention = new JButton("Generate Intervention");
+        generateIntervention.setPreferredSize(new Dimension(240, 40));
+        addInterventionPanel.add(generateIntervention);
+
+        final JLabel output = new JLabel(); // A label for your output
+        addInterventionPanel.add(output);
+
+        willChangeIntoFiringCheckbox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (willChangeIntoFiringCheckbox.isSelected()) {
+                    timeToChangeIntoFiringInput.setVisible(true);
+                    timeToChangeIntoFiringLabel.setVisible(true);
+                } else {
+                    timeToChangeIntoFiringInput.setVisible(false);
+                    timeToChangeIntoFiringLabel.setVisible(false);
+                }
+            }
+        });
+
+        generateIntervention.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                var districtAmount = world.getDistricts().size();
+                var district = ThreadLocalRandom.current().nextInt(0, districtAmount + 1);
+                var intervention = new Intervention(
+                        position.getLatitude(),
+                        position.getLongitude(),
+                        (long) (Integer.parseInt(interventionDurationInput.getText()) * (60.0)),
+                        willChangeIntoFiringCheckbox.isSelected(),
+                        (long) (Integer.parseInt(timeToChangeIntoFiringInput.getText()) * (60.0)),
+                        world.getDistricts().get(district)
+                );
+                World.getInstance().addEntity(intervention);
+                willChangeIntoFiringCheckbox.setSelected(false);
+                frame.setVisible(false);
+            }
+        });
+    }
+
     private void showSimulationCharts() throws IOException {
         CSVReader reader = new CSVReaderBuilder(new FileReader("results/" + World.getInstance().getExportSimulationAndDistrictDetails().getSimulationDetailsCsvFileName())).build();
 
@@ -209,8 +290,8 @@ public class MapPanel {
         //Incidents per 10 minutes of simulation
 
         while ((record = reader.readNext()) != null) {
-            if(!record[0].equals(currentSimulationTime) && reader.getLinesRead() > 1){
-                timeList.add(Integer.toString(Integer.parseInt(record[0])/60));
+            if (!record[0].equals(currentSimulationTime) && reader.getLinesRead() > 1) {
+                timeList.add(Integer.toString(Integer.parseInt(record[0]) / 60));
                 incidentsList.add(record[10]);
                 interventionsList.add(record[11]);
                 firingsList.add(record[13]);
@@ -220,7 +301,7 @@ public class MapPanel {
         System.out.println(Arrays.toString(timeList.toArray()));
         System.out.println(Arrays.toString(incidentsList.toArray()));
 
-        for(int i = 0; i < timeList.size(); i++) {
+        for (int i = 0; i < timeList.size(); i++) {
             datasetIncidents.addValue(Integer.parseInt(incidentsList.get(i)), "Number of incidents", timeList.get(i));
         }
 
@@ -235,68 +316,16 @@ public class MapPanel {
         System.out.println(Arrays.toString(interventionsList.toArray()));
         System.out.println(Arrays.toString(firingsList.toArray()));
 
-        for(int i = 0; i < timeList.size(); i++) {
+        for (int i = 0; i < timeList.size(); i++) {
             datasetInterventionsAndFirings.addValue(Integer.parseInt(interventionsList.get(i)), "Number of interventions", timeList.get(i));
             datasetInterventionsAndFirings.addValue(Integer.parseInt(firingsList.get(i)), "Number of firings", timeList.get(i));
         }
 
         SwingUtilities.invokeLater(() -> {
-           new LineChart("Number of interventions and firings", "Minutes of simulation", "Incidents", datasetInterventionsAndFirings, frameCharts);
+            new LineChart("Number of interventions and firings", "Minutes of simulation", "Incidents", datasetInterventionsAndFirings, frameCharts);
         });
 
         reader.close();
-    }
-
-    private void addInterventionWindow(GeoPosition position) {
-        JFrame frame = new JFrame("Insert values");
-        frame.setVisible(true);
-        frame.setSize(300, 300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        JLabel interventionDurationLabel = new JLabel("Intervention duration");
-        interventionDurationLabel.setPreferredSize(new Dimension(130, 20));
-        JPanel addInterventionPanel = new JPanel();
-        frame.add(addInterventionPanel);
-        addInterventionPanel.add(interventionDurationLabel);
-
-        final JTextField interventionDurationInput = new JTextField(10);
-        addInterventionPanel.add(interventionDurationInput);
-
-        JLabel willChangeIntoFiringLabel = new JLabel("will change into firing");
-        willChangeIntoFiringLabel.setPreferredSize(new Dimension(220, 20));
-        addInterventionPanel.add(willChangeIntoFiringLabel);
-
-        willChangeIntoFiringCheckbox.setSelected(false); // The input field with a width of 5 columns
-        addInterventionPanel.add(willChangeIntoFiringCheckbox);
-
-        JLabel patrolsRequiredLabel = new JLabel("patrols required");
-        patrolsRequiredLabel.setPreferredSize(new Dimension(130, 20));
-        addInterventionPanel.add(patrolsRequiredLabel);
-
-        final JTextField patrolsRequiredInput = new JTextField(10); // The input field with a width of 5 columns
-        addInterventionPanel.add(patrolsRequiredInput);
-
-        JButton generateIntervention = new JButton("Generate Intervention");
-        addInterventionPanel.add(generateIntervention);
-
-        final JLabel output = new JLabel(); // A label for your output
-        addInterventionPanel.add(output);
-
-        generateIntervention.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-//                var intervention = new Intervention(position.getLatitude(), position.getLongitude());
-                var intervention = new Intervention(
-                        position.getLatitude(),
-                        position.getLongitude(),
-                        (long) (Integer.parseInt(interventionDurationInput.getText()) * (60.0)),
-                        willChangeIntoFiringCheckbox.isSelected(),
-                        60
-                );
-
-                World.getInstance().addEntity(intervention);
-                frame.setVisible(false);
-            }
-        });
     }
 
     private void showSummary() throws IOException {
