@@ -125,7 +125,6 @@ public class MapPanel {
                 var hq = new Headquarters(position.getLatitude(), position.getLongitude());
                 World.getInstance().addEntity(hq);
                 selectInterventionLocation();
-                addPatrolWindow(hqPosition);
                 // GUI Drawing thread
                 new Thread(() -> {
                     while (!World.getInstance().hasSimulationDurationElapsed() && !World.getInstance().isSimulationFinished()) {
@@ -213,7 +212,7 @@ public class MapPanel {
         JFrame frame = new JFrame("Insert values");
         frame.setVisible(true);
         frame.setSize(300, 250);
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
 
         JLabel interventionDurationLabel = new JLabel("Intervention duration [min]");
@@ -288,9 +287,44 @@ public class MapPanel {
     }
 
     private void addPatrolWindow(GeoPosition position) {
-        Patrol patrol = new Patrol(position.getLatitude(), position.getLongitude());
-        patrol.setState(Patrol.State.PATROLLING);
-        World.getInstance().addEntity(patrol);
+        JFrame frame = new JFrame("Insert number of patrols");
+        frame.setVisible(true);
+        frame.setSize(300, 250);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setResizable(false);
+
+        JLabel numberOfPatrolsLabel = new JLabel("number of patrols");
+        numberOfPatrolsLabel.setPreferredSize(new Dimension(180, 40));
+        JPanel addPatrolsPanel = new JPanel();
+        frame.add(addPatrolsPanel);
+        addPatrolsPanel.add(numberOfPatrolsLabel);
+
+        final JTextField numberOfPatrols = new JTextField(4);
+        numberOfPatrols.setText(String.valueOf(1));
+        addPatrolsPanel.add(numberOfPatrols);
+
+        var jSeparator = new JSeparator();
+        jSeparator.setOrientation(SwingConstants.HORIZONTAL);
+        jSeparator.setPreferredSize(new Dimension(240, 10));
+        addPatrolsPanel.add(jSeparator);
+
+        JButton addPatrols = new JButton("add patrols");
+        addPatrols.setPreferredSize(new Dimension(240, 40));
+        addPatrolsPanel.add(addPatrols);
+
+        final JLabel output = new JLabel(); // A label for your output
+        addPatrolsPanel.add(output);
+
+        addPatrols.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                for (int i = 0; i < (Integer.parseInt(numberOfPatrols.getText())); i++) {
+                    Patrol patrol = new Patrol(position.getLatitude(), position.getLongitude());
+                    patrol.setState(Patrol.State.PATROLLING);
+                    World.getInstance().addEntity(patrol);
+                }
+                frame.setVisible(false);
+            }
+        });
     }
 
     private void showSimulationCharts() throws IOException {
