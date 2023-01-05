@@ -436,15 +436,14 @@ public class MapPanel {
 
         private void drawLegend(Graphics2D g) {
 
-            var topLeftCornerX = 800;
-            var topLeftCornerY = 750;
+            var topLeftCornerX = 1800;
             final var size = 10;
             final String newFont = "TimesRoman";
 
             // Draw background
             var oldColor = g.getColor();
             g.setColor(new Color(244, 226, 198, 225));
-            g.fillRect(topLeftCornerX, topLeftCornerY, 1000 - topLeftCornerX, 1000 - topLeftCornerY);
+            g.fillRect(topLeftCornerX, 0, 1450 - topLeftCornerX, 240);
             g.setColor(oldColor);
 
             var patrolStates = new HashMap<String, Color>();
@@ -460,16 +459,16 @@ public class MapPanel {
             int i = 0;
             for (Map.Entry<String, Color> entry : patrolStates.entrySet()) {
                 g.setColor(entry.getValue());
-                var mark = new Ellipse2D.Double((int) (topLeftCornerX + 10 - size / 2.0), 1000 - 60 - i * 15.0, size, size);
+                var mark = new Ellipse2D.Double((int) 1475, 260 - 50 - i * 15.0, size, size);
                 g.fill(mark);
 
                 g.setColor(oldColor);
-                g.drawString(entry.getKey(), topLeftCornerX + 25, 1000 - 50 - i * 15);
+                g.drawString(entry.getKey(), 1475 + 18, 260 - 40 - i * 15);
                 i++;
             }
             var oldFont = g.getFont();
             g.setFont(new Font(newFont, Font.BOLD, 13));
-            g.drawString("Patrol's states:", topLeftCornerX + 5, 1000 - 50 - i * 15);
+            g.drawString("Patrol's states:", 1475, 260 - 40 - i * 15);
             g.setFont(oldFont);
             i++;
             var places = new HashMap<String, Color>();
@@ -479,16 +478,16 @@ public class MapPanel {
 
             for (Map.Entry<String, Color> entry : places.entrySet()) {
                 g.setColor(entry.getValue());
-                var mark = new Ellipse2D.Double((int) (topLeftCornerX + 10 - size / 2.0), 1000 - 60 - i * 15.0, size, size);
+                var mark = new Ellipse2D.Double((int) 1475, 260 - 60 - i * 15.0, size, size);
                 g.fill(mark);
 
                 g.setColor(oldColor);
-                g.drawString(entry.getKey(), topLeftCornerX + 25, 1000 - 50 - i * 15);
+                g.drawString(entry.getKey(), 1475 + 18, 260 - 50 - i * 15);
                 i++;
             }
             oldFont = g.getFont();
             g.setFont(new Font(newFont, Font.BOLD, 13));
-            g.drawString("Places:", topLeftCornerX + 5, 1000 - 50 - i * 15);
+            g.drawString("Places:", 1475, 260 - 50 - i * 15);
             g.setFont(oldFont);
         }
     }
