@@ -49,5 +49,8 @@ public class Main {
         var logPan = new LoggerPanel(LoggerPanelTab);
         logPan.createWindow();
         Logger.getInstance().addLoggingPanel(logPan);
+
+        tabbedPane.setSelectedIndex(1);
+        tabbedPane.setSelectedIndex(0);
     }
 }
