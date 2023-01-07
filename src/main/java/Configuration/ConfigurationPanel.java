@@ -705,7 +705,7 @@ public class ConfigurationPanel {
     private void setDataFromConfigurationPanel(WorldConfiguration config) {
         config.setNumberOfPolicePatrols(numberOfCityPatrolsTextField.getText().equals("") ? 1 : convertInputToInteger(numberOfCityPatrolsTextField, 1));
         config.setBasicSearchDistance(basicSearchDistanceTextField.getText().equals("") ? 1.0 : convertInputToDouble(basicSearchDistanceTextField, 1.0));
-        config.setPeriodOfTimeToExportDetails(periodOfTimeToExportDetails.getText().equals("") ? 1.0 : convertInputToDouble(periodOfTimeToExportDetails, 1.0));
+        config.setPeriodOfTimeToExportDetails(periodOfTimeToExportDetails.getText().equals("") ? 2.0 : convertInputToDouble(periodOfTimeToExportDetails, 1.0));
         config.setTimeRate(timeRateTextField.getText().equals("") ? 1 : convertInputToInteger(timeRateTextField, 1));
         config.setSimulationDuration(getDurationFromInputs());
         config.setDrawDistrictsBorders(drawDistrictsBoundariesCheckBox.isSelected());

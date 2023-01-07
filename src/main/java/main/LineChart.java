@@ -5,6 +5,8 @@ import javax.swing.*;
 import org.jfree.chart.*;
 import org.jfree.data.category.*;
 
+import java.awt.*;
+
 public class LineChart extends JFrame {
     String title;
     String xAxisTitle;
@@ -24,6 +26,7 @@ public class LineChart extends JFrame {
         );
 
         ChartPanel panel = new ChartPanel(chart);
+        panel.setPreferredSize(new Dimension(500, 500));
         frameCharts.getContentPane().add(panel);
         frameCharts.pack();
         frameCharts.setVisible(true);

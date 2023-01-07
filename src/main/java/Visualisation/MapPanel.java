@@ -49,7 +49,8 @@ public class MapPanel {
         mapViewer.setTileFactory(tileFactory);
         mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCursor(mapViewer));
         mapViewer.addMouseMotionListener(new PanMouseInputListener(mapViewer));
-        frameCharts.setLayout(new FlowLayout());
+        JScrollPane scrollPane = new JScrollPane();
+        frameCharts.setLayout(new GridLayout(0, 2));
         mapViewer.setOverlayPainter(new MapPainter());
         this.panel = panel;
     }
@@ -334,8 +335,16 @@ public class MapPanel {
         List<String> incidentsList = new ArrayList<String>();
         List<String> interventionsList = new ArrayList<String>();
         List<String> firingsList = new ArrayList<String>();
+        List<String> notSafeList = new ArrayList<String>();
+        List<String> ratherSafeList = new ArrayList<String>();
+        List<String> safeList = new ArrayList<String>();
+        List<String> patrollingList = new ArrayList<String>();
+        List<String> interventionList = new ArrayList<String>();
+        List<String> firingList = new ArrayList<String>();
         DefaultCategoryDataset datasetIncidents = new DefaultCategoryDataset();
         DefaultCategoryDataset datasetInterventionsAndFirings = new DefaultCategoryDataset();
+        DefaultCategoryDataset datasetIncidentsPerSafetyLevel = new DefaultCategoryDataset();
+        DefaultCategoryDataset datasetPatrolsStates = new DefaultCategoryDataset();
         String[] record = null;
         String currentSimulationTime = "";
 
@@ -343,30 +352,51 @@ public class MapPanel {
 
         while ((record = reader.readNext()) != null) {
             if (!record[0].equals(currentSimulationTime) && reader.getLinesRead() > 1) {
-                timeList.add(Integer.toString(Integer.parseInt(record[0]) / 60));
+                timeList.add(Integer.toString(Integer.parseInt(record[0]) / 3600));
                 incidentsList.add(record[10]);
                 interventionsList.add(record[11]);
                 firingsList.add(record[13]);
                 currentSimulationTime = record[0];
+                notSafeList.add("0");
+                ratherSafeList.add("0");
+                safeList.add("0");
+                patrollingList.add(record[2]);
+                interventionList.add(record[6]);
+                firingList.add(record[7]);
+
+            } else if(record[0].equals(currentSimulationTime) && reader.getLinesRead() > 1) {
+                int lastIndex = notSafeList.size() - 1;
+                switch (record[2]) {
+                    case "NotSafe":
+                        int lastValueNotSafe = Integer.parseInt(notSafeList.get(lastIndex));
+                        notSafeList.remove(lastIndex);
+                        notSafeList.add(Integer.toString(lastValueNotSafe + Integer.parseInt(record[11])));
+                        break;
+                    case "RatherSafe":
+                        int lastValueRatherSafe = Integer.parseInt(ratherSafeList.get(lastIndex));
+                        ratherSafeList.remove(lastIndex);
+                        ratherSafeList.add(Integer.toString(lastValueRatherSafe + Integer.parseInt(record[11])));
+                        break;
+                    case "Safe":
+                        int lastValueSafe = Integer.parseInt(safeList.get(lastIndex));
+                        safeList.remove(lastIndex);
+                        safeList.add(Integer.toString(lastValueSafe + Integer.parseInt(record[11])));
+                        break;
+                    default:
+                        System.out.println("None of those were correct levels: " + record[2]);
+                }
             }
         }
-        System.out.println(Arrays.toString(timeList.toArray()));
-        System.out.println(Arrays.toString(incidentsList.toArray()));
 
         for (int i = 0; i < timeList.size(); i++) {
             datasetIncidents.addValue(Integer.parseInt(incidentsList.get(i)), "Number of incidents", timeList.get(i));
         }
 
         SwingUtilities.invokeLater(() -> {
-            new LineChart("Number of incidents", "Minutes of simulation", "Incidents", datasetIncidents, frameCharts);
+            new LineChart("Number of incidents", "Simulation time[h]", "Incidents", datasetIncidents, frameCharts);
         });
 
         //Interventions and firings per 10 minutes of simulation
-
-        System.out.println("---------------");
-        System.out.println(Arrays.toString(timeList.toArray()));
-        System.out.println(Arrays.toString(interventionsList.toArray()));
-        System.out.println(Arrays.toString(firingsList.toArray()));
 
         for (int i = 0; i < timeList.size(); i++) {
             datasetInterventionsAndFirings.addValue(Integer.parseInt(interventionsList.get(i)), "Number of interventions", timeList.get(i));
@@ -374,7 +404,39 @@ public class MapPanel {
         }
 
         SwingUtilities.invokeLater(() -> {
-            new LineChart("Number of interventions and firings", "Minutes of simulation", "Incidents", datasetInterventionsAndFirings, frameCharts);
+            new LineChart("Number of interventions and firings", "Simulation time[h]", "Incidents", datasetInterventionsAndFirings, frameCharts);
+        });
+
+        //Incidents per safety level
+
+        for (int i = 0; i < timeList.size(); i++) {
+            if(notSafeList.size() > i) {
+                datasetIncidentsPerSafetyLevel.addValue(Integer.parseInt(notSafeList.get(i)), "Not Safe", timeList.get(i));
+            }
+
+            if(ratherSafeList.size() > i) {
+                datasetIncidentsPerSafetyLevel.addValue(Integer.parseInt(ratherSafeList.get(i)), "Rather Safe", timeList.get(i));
+            }
+
+            if(safeList.size() > i) {
+                datasetIncidentsPerSafetyLevel.addValue(Integer.parseInt(safeList.get(i)), "Safe", timeList.get(i));
+            }
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            new LineChart("Number of incidents per safety level", "Simulation time[h]", "Incidents", datasetIncidentsPerSafetyLevel, frameCharts);
+        });
+
+        //Patrols states per hour
+
+        for (int i = 0; i < timeList.size(); i++) {
+            datasetPatrolsStates.addValue(Integer.parseInt(patrollingList.get(i)), "Number of patrolling patrols", timeList.get(i));
+            datasetPatrolsStates.addValue(Integer.parseInt(interventionList.get(i)), "Number of intervening patrols", timeList.get(i));
+            datasetPatrolsStates.addValue(Integer.parseInt(firingList.get(i)), "Number of firing patrols", timeList.get(i));
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            new LineChart("Number of patrols in different states", "Simulation time[h]", "Patrols", datasetPatrolsStates, frameCharts);
         });
 
         reader.close();
@@ -383,18 +445,14 @@ public class MapPanel {
     private void showSummary() throws IOException {
         showSimulationCharts();
 
-        var simulationSummaryMessage = new StringBuilder();
-
-        simulationSummaryMessage.append("Simulation has finished.\n\n");
-
-        simulationSummaryMessage.append("Simulated Patrols: ").append(StatisticsCounter.getInstance().getNumberOfPatrols()).append("\n");
-        simulationSummaryMessage.append("Simulated Interventions: ").append(StatisticsCounter.getInstance().getNumberOfInterventions()).append("\n");
-        simulationSummaryMessage.append("Simulated Firings: ").append(StatisticsCounter.getInstance().getNumberOfFirings()).append("\n");
-        simulationSummaryMessage.append("Neutralized Patrols: ").append(StatisticsCounter.getInstance().getNumberOfNeutralizedPatrols()).append("\n");
-        simulationSummaryMessage.append("Solved Interventions: ").append(StatisticsCounter.getInstance().getNumberOfSolvedInterventions()).append("\n");
-        simulationSummaryMessage.append("Solved Firings: ").append(StatisticsCounter.getInstance().getNumberOfSolvedFirings()).append("\n");
-
-        JOptionPane.showMessageDialog(panel, simulationSummaryMessage.toString());
+        String simulationSummaryMessage = "Simulation has finished.\n\n" +
+                "Simulated Patrols: " + StatisticsCounter.getInstance().getNumberOfPatrols() + "\n" +
+                "Simulated Interventions: " + StatisticsCounter.getInstance().getNumberOfInterventions() + "\n" +
+                "Simulated Firings: " + StatisticsCounter.getInstance().getNumberOfFirings() + "\n" +
+                "Neutralized Patrols: " + StatisticsCounter.getInstance().getNumberOfNeutralizedPatrols() + "\n" +
+                "Solved Interventions: " + StatisticsCounter.getInstance().getNumberOfSolvedInterventions() + "\n" +
+                "Solved Firings: " + StatisticsCounter.getInstance().getNumberOfSolvedFirings() + "\n";
+        JOptionPane.showMessageDialog(panel, simulationSummaryMessage);
     }
 
     class MapPainter implements Painter<JXMapViewer> {
