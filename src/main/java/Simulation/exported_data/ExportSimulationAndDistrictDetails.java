@@ -21,7 +21,7 @@ public class ExportSimulationAndDistrictDetails extends Thread {
     private final DateTimeFormatter dateFormat = new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy_HH-mm-ss").toFormatter();
 
     private final String simulationDetailsCsvFileName = dateFormat.format(LocalDateTime.now()) + "--Simulation Details.csv";
-    private final String districtsDetailsCsvFileName = dateFormat.format(LocalDateTime.now()) + "--Simulation Details.csv";
+    private final String districtsDetailsCsvFileName = dateFormat.format(LocalDateTime.now()) + "--District Details.csv";
     private static final String[] simulationDetailsHeader = new String[]{
             "simulationTime",
             "amountOfPatrols",
