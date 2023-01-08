@@ -288,21 +288,39 @@ public class MapPanel {
     }
 
     private void addPatrolWindow(GeoPosition position) {
-        JFrame frame = new JFrame("Insert number of patrols");
+        JFrame frame = new JFrame("Headquaters");
         frame.setVisible(true);
-        frame.setSize(300, 250);
+        frame.setSize(330, 300);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setResizable(false);
 
-        JLabel numberOfPatrolsLabel = new JLabel("number of patrols");
-        numberOfPatrolsLabel.setPreferredSize(new Dimension(180, 40));
         JPanel addPatrolsPanel = new JPanel();
         frame.add(addPatrolsPanel);
-        addPatrolsPanel.add(numberOfPatrolsLabel);
 
-        final JTextField numberOfPatrols = new JTextField(4);
-        numberOfPatrols.setText(String.valueOf(1));
-        addPatrolsPanel.add(numberOfPatrols);
+        JLabel numberOfPatrolsLabel = new JLabel("current number of patrols: " + StatisticsCounter.getInstance().getNumberOfPatrols());
+        numberOfPatrolsLabel.setPreferredSize(new Dimension(240, 30));
+
+        JLabel neutralizedPatrolsLabel = new JLabel("neutralized patrols: " + StatisticsCounter.getInstance().getNumberOfNeutralizedPatrols());
+        neutralizedPatrolsLabel.setPreferredSize(new Dimension(240, 30));
+
+        JLabel numberOfInterventionsLabel = new JLabel("number of interventions [solved]: " + StatisticsCounter.getInstance().getNumberOfInterventions() + " [" +StatisticsCounter.getInstance().getNumberOfSolvedInterventions() + "]");
+        numberOfInterventionsLabel.setPreferredSize(new Dimension(240, 30));
+
+        JLabel numberOfFiringsLabel = new JLabel("number of firings [solved]: " + StatisticsCounter.getInstance().getNumberOfFirings() + " [" +StatisticsCounter.getInstance().getNumberOfSolvedFirings() + "]");
+        numberOfFiringsLabel.setPreferredSize(new Dimension(240, 30));
+
+        JLabel addNumberOfPatrolsLabel = new JLabel("add patrols");
+        addNumberOfPatrolsLabel.setPreferredSize(new Dimension(180, 30));
+
+        addPatrolsPanel.add(numberOfPatrolsLabel);
+        addPatrolsPanel.add(neutralizedPatrolsLabel);
+        addPatrolsPanel.add(numberOfInterventionsLabel);
+        addPatrolsPanel.add(numberOfFiringsLabel);
+        addPatrolsPanel.add(addNumberOfPatrolsLabel);
+
+        final JTextField addNumberOfPatrols = new JTextField(4);
+        addNumberOfPatrols.setText(String.valueOf(1));
+        addPatrolsPanel.add(addNumberOfPatrols);
 
         var jSeparator = new JSeparator();
         jSeparator.setOrientation(SwingConstants.HORIZONTAL);
@@ -318,7 +336,7 @@ public class MapPanel {
 
         addPatrols.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                for (int i = 0; i < (Integer.parseInt(numberOfPatrols.getText())); i++) {
+                for (int i = 0; i < (Integer.parseInt(addNumberOfPatrols.getText())); i++) {
                     Patrol patrol = new Patrol(position.getLatitude(), position.getLongitude());
                     patrol.setState(Patrol.State.PATROLLING);
                     World.getInstance().addEntity(patrol);
