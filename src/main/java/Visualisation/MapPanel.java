@@ -1,6 +1,7 @@
 package Visualisation;
 
 import Simulation.World;
+import Simulation.entities.Entity;
 import Simulation.entities.Headquarters;
 import Simulation.entities.Intervention;
 import com.opencsv.CSVReader;
@@ -21,14 +22,12 @@ import utils.Logger;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
+import java.util.*;
 import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -288,6 +287,18 @@ public class MapPanel {
         });
     }
 
+    private int amountOfPatrols() {
+        String allEntites = World.getInstance().getAllEntities().toString();
+        int index = allEntites.indexOf("Visualisation.Patrol");
+        int patrolsCounter = -1;
+        while (index != -1) {
+            patrolsCounter++;
+            allEntites = allEntites.substring(index + 1);
+            index = allEntites.indexOf("Patrol");
+        }
+        return patrolsCounter;
+    }
+
     private void addPatrolWindow(GeoPosition position) {
         JFrame frame = new JFrame("Headquaters");
         frame.setVisible(true);
@@ -298,16 +309,16 @@ public class MapPanel {
         JPanel addPatrolsPanel = new JPanel();
         frame.add(addPatrolsPanel);
 
-        JLabel numberOfPatrolsLabel = new JLabel("current number of patrols: " + StatisticsCounter.getInstance().getNumberOfPatrols());
+        JLabel numberOfPatrolsLabel = new JLabel("current number of patrols: " + amountOfPatrols());
         numberOfPatrolsLabel.setPreferredSize(new Dimension(240, 30));
 
         JLabel neutralizedPatrolsLabel = new JLabel("neutralized patrols: " + StatisticsCounter.getInstance().getNumberOfNeutralizedPatrols());
         neutralizedPatrolsLabel.setPreferredSize(new Dimension(240, 30));
 
-        JLabel numberOfInterventionsLabel = new JLabel("number of interventions [solved]: " + StatisticsCounter.getInstance().getNumberOfInterventions() + " [" +StatisticsCounter.getInstance().getNumberOfSolvedInterventions() + "]");
+        JLabel numberOfInterventionsLabel = new JLabel("number of interventions [solved]: " + StatisticsCounter.getInstance().getNumberOfInterventions() + " [" + StatisticsCounter.getInstance().getNumberOfSolvedInterventions() + "]");
         numberOfInterventionsLabel.setPreferredSize(new Dimension(240, 30));
 
-        JLabel numberOfFiringsLabel = new JLabel("number of firings [solved]: " + StatisticsCounter.getInstance().getNumberOfFirings() + " [" +StatisticsCounter.getInstance().getNumberOfSolvedFirings() + "]");
+        JLabel numberOfFiringsLabel = new JLabel("number of firings [solved]: " + StatisticsCounter.getInstance().getNumberOfFirings() + " [" + StatisticsCounter.getInstance().getNumberOfSolvedFirings() + "]");
         numberOfFiringsLabel.setPreferredSize(new Dimension(240, 30));
 
         JLabel addNumberOfPatrolsLabel = new JLabel("add patrols");
@@ -383,7 +394,7 @@ public class MapPanel {
                 interventionList.add(record[6]);
                 firingList.add(record[7]);
 
-            } else if(record[0].equals(currentSimulationTime) && reader.getLinesRead() > 1) {
+            } else if (record[0].equals(currentSimulationTime) && reader.getLinesRead() > 1) {
                 int lastIndex = notSafeList.size() - 1;
                 switch (record[2]) {
                     case "NotSafe":
@@ -429,15 +440,15 @@ public class MapPanel {
         //Incidents per safety level
 
         for (int i = 0; i < timeList.size(); i++) {
-            if(notSafeList.size() > i) {
+            if (notSafeList.size() > i) {
                 datasetIncidentsPerSafetyLevel.addValue(Integer.parseInt(notSafeList.get(i)), "Not Safe", timeList.get(i));
             }
 
-            if(ratherSafeList.size() > i) {
+            if (ratherSafeList.size() > i) {
                 datasetIncidentsPerSafetyLevel.addValue(Integer.parseInt(ratherSafeList.get(i)), "Rather Safe", timeList.get(i));
             }
 
-            if(safeList.size() > i) {
+            if (safeList.size() > i) {
                 datasetIncidentsPerSafetyLevel.addValue(Integer.parseInt(safeList.get(i)), "Safe", timeList.get(i));
             }
         }
