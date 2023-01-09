@@ -1,5 +1,6 @@
 package Simulation;
 
+import Configuration.ConfigurationPanel;
 import Configuration.WorldConfiguration;
 import Simulation.exported_data.ExportSimulationAndDistrictDetails;
 import Visualisation.District;
@@ -219,7 +220,8 @@ public class World {
         Logger.getInstance().logNewOtherMessage("Simulation has been paused.");
     }
 
-    public void resumeSimulation() {
+    public void resumeSimulation(ConfigurationPanel panel) {
+        panel.resumeSimulationButtonClicked();
         startTime = LocalDateTime.now();
         isSimulationPaused = false;
         Logger.getInstance().logNewOtherMessage("Simulation has been resumed.");

@@ -68,6 +68,7 @@ public class ConfigurationPanel {
     private JPanel districtConfigurationPanel;
     private JPanel simulationConfigurationPanel;
     private JPanel buttonsPanel;
+    private JPanel runSimulationPanel = new JPanel(new GridBagLayout());
     private JComboBox<String> countrySelectionComboBox;
     private JComboBox<String> citySelectionComboBox;
     ImageIcon anstar = new ImageIcon("ans.png");
@@ -620,7 +621,6 @@ public class ConfigurationPanel {
 
 //----------------------------------------------------
 
-        var runSimulationPanel = new JPanel(new GridBagLayout());
         var runSimulationButton = new JButton("Start!");
         GridBagConstraints gbc = new GridBagConstraints();
         runSimulationButton.setPreferredSize(new Dimension(280, 63));
@@ -638,6 +638,7 @@ public class ConfigurationPanel {
         setComponentEnabledRecursively(districtConfigurationPanel, false);
         setComponentEnabledRecursively(simulationConfigurationPanel, false);
         setComponentEnabledRecursively(buttonsPanel, false);
+        setComponentEnabledRecursively(runSimulationPanel, false);
 
         setDefaultValues();
 
@@ -688,6 +689,7 @@ public class ConfigurationPanel {
             setComponentEnabledRecursively(districtConfigurationPanel, true);
             setComponentEnabledRecursively(simulationConfigurationPanel, true);
             setComponentEnabledRecursively(buttonsPanel, true);
+            setComponentEnabledRecursively(runSimulationPanel, true);
         }
     }
 
@@ -700,6 +702,11 @@ public class ConfigurationPanel {
         Logger.getInstance().logNewOtherMessage("World config has been set.");
 
         mapPanel.selectHQLocation();
+    }
+
+    public void resumeSimulationButtonClicked() {
+        var config = World.getInstance().getConfig();
+        setDataFromConfigurationPanel(config);
     }
 
     private void setDataFromConfigurationPanel(WorldConfiguration config) {

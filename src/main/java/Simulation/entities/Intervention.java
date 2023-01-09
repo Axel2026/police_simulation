@@ -42,7 +42,6 @@ public class Intervention extends Incident implements IDrawable {
         this.duration = duration;
         this.willChangeIntoFiring = willChangeIntoFiring;
         this.district = district;
-        System.out.println("district "+district);
         if (timeToChange < 0) {
             throw new IllegalArgumentException("timeToChange must be greater than or equal to zero");
         }

@@ -6,6 +6,7 @@ import Simulation.entities.Intervention;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import main.LineChart;
+import main.Main;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
@@ -78,7 +79,7 @@ public class MapPanel {
                     button.setText("Resume");
                     showingPause = false;
                 } else {
-                    World.getInstance().resumeSimulation();
+                    World.getInstance().resumeSimulation(Main.getPanel());
                     JButton button = (JButton) e.getSource();
                     button.setText("Pause");
                     showingPause = true;

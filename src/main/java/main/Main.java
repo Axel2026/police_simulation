@@ -9,6 +9,12 @@ import java.awt.*;
 
 public class Main {
 
+    static ConfigurationPanel panel;
+
+    public static ConfigurationPanel getPanel() {
+        return panel;
+    }
+
     /**
      * Entry point of the application.
      *
@@ -43,7 +49,7 @@ public class Main {
         frame.getContentPane().add(mapPanel);
         frame.getContentPane().add(tabbedPane);
 
-        var panel = new ConfigurationPanel(configurationPanelTab, mapPanel);
+        panel = new ConfigurationPanel(configurationPanelTab, mapPanel);
         panel.createWindow();
 
         var logPan = new LoggerPanel(LoggerPanelTab);
