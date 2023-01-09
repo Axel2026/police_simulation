@@ -8,4 +8,6 @@ public interface IAgent {
     void performAction() throws IllegalStateException;
 
     void takeOrder(Patrol.Action action);
+
+    Patrol.State getState();
 }

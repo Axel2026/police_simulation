@@ -35,6 +35,7 @@ public class SimulationThread extends Thread {
                     hqAssignTasks();
                     updateStatesOfAgents();
                     performAgentsActions();
+                    addAgents(world);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -67,6 +68,18 @@ public class SimulationThread extends Thread {
         var allAgents = World.getInstance().getAllEntities().stream().filter(IAgent.class::isInstance).collect(Collectors.toList());
         for (Entity agents : allAgents) {
             ((IAgent) agents).performAction();
+        }
+    }
+
+    private void addAgents(World world) {
+        var allPatrols = world.getAllEntities().stream().filter(Patrol.class::isInstance).map(Patrol.class::cast).collect(Collectors.toList());
+        var hq = world.getAllEntities().stream().filter(Headquarters.class::isInstance).findFirst().orElse(null);
+
+        while(allPatrols.stream().filter(x -> x.getState() == Patrol.State.PATROLLING).count() < world.getConfig().getMinimumNumberOfPatrollingUnits()) {
+            var newPatrol = new Patrol(hq.getPosition());
+            newPatrol.setState(Patrol.State.PATROLLING);
+            world.addEntity(newPatrol);
+            allPatrols = world.getAllEntities().stream().filter(Patrol.class::isInstance).map(Patrol.class::cast).collect(Collectors.toList());
         }
     }
 }

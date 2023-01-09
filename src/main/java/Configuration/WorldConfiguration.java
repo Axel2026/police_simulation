@@ -17,6 +17,7 @@ public class WorldConfiguration {
     private int timeRate = 250;
     private long simulationDuration = 259200;
     private int numberOfPolicePatrols = 40;
+    private int minimumNumberOfPatrollingUnits = 5;
     private double basicSearchDistance = 1200.0;
     private boolean drawDistrictsBorders = true;
     private boolean drawFiringDetails = true;
@@ -80,6 +81,14 @@ public class WorldConfiguration {
 
     public void setNumberOfPolicePatrols(int numberOfPolicePatrols) {
         this.numberOfPolicePatrols = numberOfPolicePatrols;
+    }
+
+    public int getMinimumNumberOfPatrollingUnits() {
+        return minimumNumberOfPatrollingUnits;
+    }
+
+    public void setMinimumNumberOfPatrollingUnits(int minimumNumberOfPatrollingUnits) {
+        this.minimumNumberOfPatrollingUnits = minimumNumberOfPatrollingUnits;
     }
 
     public double getBasicSearchDistance() {

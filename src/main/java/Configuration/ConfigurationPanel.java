@@ -37,6 +37,7 @@ public class ConfigurationPanel {
     private final HashMap<String, Integer> cityAdminLevelForAvailablePlaces = new HashMap<>();
     private final HashMap<String, Integer> districtAdminLevelForAvailablePlaces = new HashMap<>();
     private final JTextField numberOfCityPatrolsTextField = new JTextField();
+    private final JTextField minimumPatrollingUnitsTextField = new JTextField();
     private final JTextField timeRateTextField = new JTextField();
     private final JTextField simulationDurationDaysTextField = new JTextField();
     private final JTextField simulationDurationHoursTextField = new JTextField();
@@ -143,6 +144,7 @@ public class ConfigurationPanel {
         var worldConfig = World.getInstance().getConfig();
         timeRateTextField.setText(Integer.toString(worldConfig.getTimeRate()));
         numberOfCityPatrolsTextField.setText(Integer.toString(worldConfig.getNumberOfPolicePatrols()));
+        minimumPatrollingUnitsTextField.setText(Integer.toString(worldConfig.getMinimumNumberOfPatrollingUnits()));
         basicSearchDistanceTextField.setText(Double.toString(worldConfig.getBasicSearchDistance()));
         drawDistrictsBoundariesCheckBox.setSelected(worldConfig.isDrawDistrictsBorders());
         drawFiringDetailsCheckBox.setSelected(worldConfig.isDrawFiringDetails());
@@ -323,7 +325,6 @@ public class ConfigurationPanel {
         numberOfCityPatrols.setInputVerifier(new PositiveIntegerInputVerifier());
         numberOfCityPatrols.add(numberOfCityPatrolsTextField);
         simulationConfigurationPanel.add(numberOfCityPatrols);
-        simulationConfigurationPanel.add(jSeparator2);
 
         ///////////////////
 
@@ -620,6 +621,16 @@ public class ConfigurationPanel {
         buttonsPanel.add(periodOfTimeToExportDetailsPanel);
 
 //----------------------------------------------------
+        var minimumPatrollingUnits = new JPanel();
+        minimumPatrollingUnits.setLayout(new BoxLayout(minimumPatrollingUnits, BoxLayout.Y_AXIS));
+        minimumPatrollingUnits.setBackground(new Color(255, 255, 255, 255));
+        minimumPatrollingUnits.setPreferredSize(new Dimension(270, 40));
+        minimumPatrollingUnits.add(new JLabel("           Minimum number of patrolling units"));
+        addRestrictionOfEnteringOnlyIntegers(minimumPatrollingUnitsTextField);
+        minimumPatrollingUnits.setInputVerifier(new PositiveIntegerInputVerifier());
+        minimumPatrollingUnits.add(minimumPatrollingUnitsTextField);
+        buttonsPanel.add(minimumPatrollingUnits);
+// ----------------------------------------------------
 
         var runSimulationButton = new JButton("Start!");
         GridBagConstraints gbc = new GridBagConstraints();
@@ -711,6 +722,7 @@ public class ConfigurationPanel {
 
     private void setDataFromConfigurationPanel(WorldConfiguration config) {
         config.setNumberOfPolicePatrols(numberOfCityPatrolsTextField.getText().equals("") ? 1 : convertInputToInteger(numberOfCityPatrolsTextField, 1));
+        config.setMinimumNumberOfPatrollingUnits(minimumPatrollingUnitsTextField.getText().equals("") ? 1 : convertInputToInteger(minimumPatrollingUnitsTextField, 1));
         config.setBasicSearchDistance(basicSearchDistanceTextField.getText().equals("") ? 1.0 : convertInputToDouble(basicSearchDistanceTextField, 1.0));
         config.setPeriodOfTimeToExportDetails(periodOfTimeToExportDetails.getText().equals("") ? 2.0 : convertInputToDouble(periodOfTimeToExportDetails, 1.0));
         config.setTimeRate(timeRateTextField.getText().equals("") ? 1 : convertInputToInteger(timeRateTextField, 1));
