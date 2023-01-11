@@ -18,10 +18,11 @@ public class Firing extends Incident implements IDrawable {
     private final int requiredPatrols;
     private double strength;
     private List<Patrol> patrolsSolving = new ArrayList<>();
-    private List<Ambulance> ambulanceSolving = new ArrayList<>();
+    private List<Ambulance> ambulancesSolving = new ArrayList<>();
     private List<Patrol> patrolsReaching = new ArrayList<>();
-    private List<Ambulance> ambulanceReaching = new ArrayList<>();
+    private List<Ambulance> ambulancesReaching = new ArrayList<>();
     private District district;
+    private Ambulance ambulance;
 
     public Firing(double latitude, double longitude) {
         super(latitude, longitude);
@@ -44,13 +45,22 @@ public class Firing extends Incident implements IDrawable {
     public List<Patrol> getPatrolsSolving() {
         return patrolsSolving;
     }
+    public List<Ambulance> getAmbulanceSolving() {
+        return ambulancesSolving;
+    }
 
     public List<Patrol> getPatrolsReaching() {
         return patrolsReaching;
     }
+    public List<Ambulance> getAmbulancesReaching() {
+        return ambulancesReaching;
+    }
 
     public void addReachingPatrol(Patrol patrol) {
         patrolsReaching.add(patrol);
+    }
+    public void addReachingAmbulance(Ambulance ambulance) {
+        ambulancesReaching.add(ambulance);
     }
 
     public void removeReachingPatrol(Patrol patrol) {
@@ -58,15 +68,15 @@ public class Firing extends Incident implements IDrawable {
     }
 
     public void addSolvingAmbulance(Ambulance ambulance) {
-        ambulanceSolving.add(ambulance);
+        ambulancesSolving.add(ambulance);
     }
 
     public void removeSolvingAmbulance(Ambulance ambulance) {
-        ambulanceSolving.remove(ambulance);
+        ambulancesSolving.remove(ambulance);
     }
 
     public void removeReachingAmbulance(Ambulance ambulance) {
-        ambulanceReaching.remove(ambulance);
+        ambulancesReaching.remove(ambulance);
     }
 
     public void addSolvingPatrol(Patrol patrol) {

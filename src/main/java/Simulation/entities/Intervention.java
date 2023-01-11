@@ -1,6 +1,7 @@
 package Simulation.entities;
 
 import Simulation.IncidentFactory;
+import Visualisation.Ambulance;
 import Visualisation.District;
 import Visualisation.IDrawable;
 import Visualisation.Patrol;
@@ -18,6 +19,7 @@ public class Intervention extends Incident implements IDrawable {
     private District district;
 
     private Patrol patrolSolving;
+    private Ambulance ambulanceSolving;
 
     public Intervention(double latitude, double longitude) {
         super(latitude, longitude);
@@ -69,6 +71,8 @@ public class Intervention extends Incident implements IDrawable {
                 firing.addSolvingPatrol(this.patrolSolving);
                 World.getInstance().removeEntity(this);
                 World.getInstance().addEntity(firing);
+                Hospital hospital = new Hospital(firing.getLatitude(), firing.getLongitude());
+                hospital.sendAmbulances(firing);
             } else if (patrolSolving.getAction() instanceof Patrol.IncidentParticipation && patrolSolving.getAction().getStartTime() + this.getDuration() < World.getInstance().getSimulationTime()) {
                 setActive(false);
                 World.getInstance().removeEntity(this);
@@ -101,6 +105,9 @@ public class Intervention extends Incident implements IDrawable {
 
     public void setPatrolSolving(Patrol patrolSolving) {
         this.patrolSolving = patrolSolving;
+    }
+    public void setAmbulanceSolving(Ambulance ambulanceSolving) {
+        this.ambulanceSolving = ambulanceSolving;
     }
 
     public long getDuration() {

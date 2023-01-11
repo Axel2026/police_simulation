@@ -1,8 +1,11 @@
 package Simulation;
 
+import Simulation.entities.Hospital;
+import Visualisation.Ambulance;
 import Visualisation.District;
 import Simulation.entities.Firing;
 import Simulation.entities.Intervention;
+import Visualisation.Patrol;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -36,6 +39,7 @@ public class IncidentFactory {
         var ceil = (int) Math.ceil(strength / (15 * 60.0));
         var numberOfRequiredPatrols = ThreadLocalRandom.current().nextInt(ceil > 4 ? ceil - 3 : 1, ceil + 1);
         strength *= numberOfRequiredPatrols;
+
         return new Firing(intervention.getLatitude(), intervention.getLongitude(), numberOfRequiredPatrols, strength, intervention.getDistrict());
     }
 

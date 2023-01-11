@@ -1,49 +1,21 @@
 package Simulation.entities;
 
 import Simulation.World;
-import Simulation.exported_data.ExportFiringDetails;
-import Simulation.exported_data.ExportRevokingPatrolsDetails;
-import Simulation.exported_data.ExportSupportSummonDetails;
-import Visualisation.IDrawable;
-import Visualisation.Patrol;
+import Visualisation.*;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
-import utils.Logger;
-
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import Simulation.exported_data.ExportFiringDetails;
-import Simulation.exported_data.ExportRevokingPatrolsDetails;
-import Simulation.exported_data.ExportSupportSummonDetails;
 import Visualisation.IDrawable;
-import Visualisation.Patrol;
-import org.jxmapviewer.JXMapViewer;
-import org.jxmapviewer.viewer.GeoPosition;
-import utils.Logger;
-import Simulation.World;
-
-import java.awt.*;
-import java.awt.geom.Ellipse2D;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class Hospital extends Entity implements IDrawable {
-
-    private final double durationOfTheShift;
+    World world = World.getInstance();
     private List<Incident> incidents = new ArrayList<>();
-    private double endOfCurrentShift;
 
     public Hospital(double latitude, double longitude) {
         super(latitude, longitude);
-        this.durationOfTheShift = World.getInstance().getDurationOfTheShift();
-        this.endOfCurrentShift = World.getInstance().getSimulationTime() + durationOfTheShift;
     }
 
     @Override
@@ -60,20 +32,15 @@ public class Hospital extends Entity implements IDrawable {
         g.setColor(oldColor);
     }
 
-    public void assignTasks() {
-        var allInterventions = incidents.stream().filter(Intervention.class::isInstance).sorted(Comparator.comparingLong(Incident::getStartTime)).collect(Collectors.toList());
-        var allFirings = incidents.stream().filter(Firing.class::isInstance).sorted(Comparator.comparingLong(Incident::getStartTime)).collect(Collectors.toList());
-
-        checkAllFirings(allFirings);
+    public void sendAmbulances(Firing target) {
+        var hospital = world.getAllEntities().stream().filter(Hospital.class::isInstance).findFirst().orElse(null);
+        assert hospital != null;
+        Ambulance ambulance = new Ambulance(hospital.getLatitude(), hospital.getLongitude());
+        ambulance.setState(Ambulance.State.TRANSFER_TO_ACCIDENT);
+        World.getInstance().addEntity(ambulance);
+        ambulance.takeOrderAmbulance((
+                ambulance.new Transfer(World.getInstance().getSimulationTimeLong(),
+                        target, Ambulance.State.TRANSFER_TO_ACCIDENT)));
+        System.out.println("-----ambulance sent------");
     }
-
-    private void checkAllFirings(List<Incident> allFirings) {
-        for (var firing : allFirings) {
-            var requiredPatrols = ((Firing) firing).getRequiredPatrols();
-            var patrolsSolving = ((Firing) firing).getPatrolsSolving();
-            var patrolsReaching = ((Firing) firing).getPatrolsReaching();
-        }
-    }
-
-
 }

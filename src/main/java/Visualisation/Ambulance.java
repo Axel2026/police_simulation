@@ -65,98 +65,47 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
     }
 
     public void updateStateSelf() {
-        if (state == State.PATROLLING) {
+        if (state == State.WAIT_IN_HOSPITAL) {
             updateStateIfPatrolling();
-        } else if (state == State.TRANSFER_TO_INTERVENTION) {
-            updateStateIfTransferToIntervention();
-        } else if (state == State.INTERVENTION) {
-            updateStateIfIntervention();
-        } else if (state == State.TRANSFER_TO_FIRING) {
+        } else if (state == State.TRANSFER_TO_ACCIDENT) {
             updateStateIfTransferToFiring();
-        } else if (state == State.FIRING) {
+        } else if (state == State.ACCIDENT) {
             updateStateIfFiring();
-        } else if (state == State.CALCULATING_PATH) {
-            updateStateIfCalculatingPath();
-        } else if (state == State.RETURNING_TO_HQ) {
-            updateStateIfReturningToHQ();
+        } else if (state == State.RETURNING_TO_HOSPITAL) {
+            updateStateIfReturningToHospital();
         }
     }
 
     private void updateStateIfPatrolling() {
-        String currentStateToLog = "PATROLLING";
-        if (isShiftOver()) {
-            setState(State.RETURNING_TO_HQ);
-            var hq = World.getInstance().getAllEntities().stream().filter(Headquarters.class::isInstance).findFirst().orElse(null);
-            setAction(new Transfer(World.getInstance().getSimulationTimeLong(), hq, this.state));
-        } else if (action == null) {
-            drawNewTarget(currentStateToLog);
-        } else if (action instanceof Transfer) {
-            // if pathNodeList is empty, it draws a new patrol target
-            if (((Transfer) action).pathNodeList != null && ((Transfer) action).pathNodeList.isEmpty()) {
-                drawNewTarget(currentStateToLog);
-            }
-        } else {
-            drawNewTarget(currentStateToLog);
-        }
-    }
-
-    private void updateStateIfTransferToIntervention() {
-        // if patrol has reached his destination, patrol changes state to INTERVENTION
-        if (action instanceof Transfer) {
-            if (((Transfer) action).pathNodeList.isEmpty()) {
-                setState(State.INTERVENTION);
-                action = new IncidentParticipation(World.getInstance().getSimulationTimeLong(), (Incident) action.target);
-            }
-        } else {
-            throw new IllegalTransferStateException();
-        }
-    }
-
-    private void updateStateIfIntervention() {
-        if (action.target instanceof Firing) {
-            setState(State.FIRING);
-            action = new IncidentParticipation(World.getInstance().getSimulationTimeLong(), (Incident) action.target);
-        }
-        // if the duration of the intervention is over, patrol changes state to PATROLLING
-        else if (action instanceof IncidentParticipation) {
-            if (action.target == null) {
-                setState(State.PATROLLING);
-                drawNewTarget(null);
-            } else if (!(((Intervention) (action).target).isActive())) {
-                World.getInstance().removeEntity((action.target));
-                setState(State.PATROLLING);
-                drawNewTarget(null);
-            }
-        } else {
-            throw new IllegalStateException("Action should be 'IncidentParticipation' and it is not");
-        }
+        setState(State.RETURNING_TO_HOSPITAL);
+        var hq = World.getInstance().getAllEntities().stream().filter(Hospital.class::isInstance).findFirst().orElse(null);
+        setAction(new Ambulance.Transfer(World.getInstance().getSimulationTimeLong(), hq, this.state));
     }
 
     private void updateStateIfTransferToFiring() {
-        // if patrol has reached his destination, patrol changes state to FIRING
-        if (action instanceof Transfer) {
-            if (((Transfer) action).pathNodeList != null && ((Transfer) action).pathNodeList.isEmpty()) {
-                setState(State.FIRING);
-                ((Firing) action.target).removeReachingAmbulance(this);
-                ((Firing) action.target).addSolvingAmbulance(this);
-                action = new IncidentParticipation(World.getInstance().getSimulationTimeLong(), (Incident) action.target);
+        // if patrol has reached his destination, patrol changes state to INTERVENTION
+        if (action instanceof Ambulance.Transfer) {
+            if (((Ambulance.Transfer) action).pathNodeList.isEmpty()) {
+                setState(State.ACCIDENT);
+                System.out.println("elo dotarlem na strzelanine");
+                action = new Ambulance.IncidentParticipation(World.getInstance().getSimulationTimeLong(), (Incident) action.target);
             }
         } else {
-            throw new IllegalTransferStateException();
+            throw new Ambulance.IllegalTransferStateException();
         }
     }
 
     private void updateStateIfFiring() {
         // when the firing strength drops to zero, patrol changes state to PATROLLING
-        if (action instanceof IncidentParticipation) {
+//        System.out.println(action.target);
+        if (action instanceof Ambulance.IncidentParticipation) {
             if (action.target == null || !((Firing) action.target).isActive() || !(action.target instanceof Firing)) {
-                setState(State.PATROLLING);
+                System.out.println("koniec 3");
+                setState(State.RETURNING_TO_HOSPITAL);
                 drawNewTarget(null);
             } else if (World.getInstance().getSimulationTime() > timeOfLastDrawNeutralization + timeBetweenDrawNeutralization) {
-                if (ThreadLocalRandom.current().nextDouble() < 0.001) {
-                    ((Firing) this.action.target).removeSolvingAmbulance(this);
-                    setState(State.NEUTRALIZED);
-                }
+                System.out.println("koniec 4");
+                setState(State.RETURNING_TO_HOSPITAL);
                 timeOfLastDrawNeutralization = World.getInstance().getSimulationTime();
             }
         } else {
@@ -164,42 +113,34 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
         }
     }
 
-    private void updateStateIfCalculatingPath() {
-        if (((Transfer) getAction()).pathNodeList != null) {
-            setState(this.previousState);
-        }
-    }
 
-    private void updateStateIfReturningToHQ() {
-        if (action == null) {
-            World.getInstance().getAllEntities()
-                    .stream()
-                    .filter(Hospital.class::isInstance)
-                    .findFirst()
-                    .ifPresent(hospital -> action = new Transfer(World.getInstance().getSimulationTimeLong(), hospital, this.state));
-        } else if (!(action instanceof Transfer)) {
-            throw new IllegalTransferStateException();
-        }
+    private void updateStateIfReturningToHospital() {
+        var entities = World.getInstance().getEntitiesNear(this, 10);
+//        System.out.println(entities.get(0));
+        System.out.println("karetka powinna wracac");
+        World.getInstance().getAllEntities()
+                .stream()
+                .filter(Headquarters.class::isInstance)
+                .findFirst()
+                .ifPresent(hqs -> action = new Ambulance.Transfer(World.getInstance().getSimulationTimeLong(), hqs, this.state));
+        drawNewTarget(null);
     }
 
     private void drawNewTarget(String previousState) {
         var world = World.getInstance();
         var node = (Node) world.getMap().getMyNodes().values().toArray()[ThreadLocalRandom.current().nextInt(world.getMap().getMyNodes().size())];
-        this.action = new Transfer(World.getInstance().getSimulationTimeLong(), new Point(node.getPosition().getLatitude(), node.getPosition().getLongitude()), State.PATROLLING);
-//        if (previousState != null) {
-//            logChangingState(previousState, this.state.toString());
-//        }
+        this.action = new Transfer(World.getInstance().getSimulationTimeLong(), new Point(node.getPosition().getLatitude(), node.getPosition().getLongitude()), State.WAIT_IN_HOSPITAL);
     }
 
     public void performAction() {
         double simulationTime = World.getInstance().getSimulationTime();
         switch (state) {
-            case PATROLLING:
-                if (action instanceof Transfer && ((Transfer) this.action).pathNodeList != null) {
-                    move(simulationTime);
-                }
+            case WAIT_IN_HOSPITAL:
+//                if (action instanceof Transfer && ((Transfer) this.action).pathNodeList != null) {
+//                    move(simulationTime);
+//                }
                 break;
-            case RETURNING_TO_HQ:
+            case RETURNING_TO_HOSPITAL:
                 if (action instanceof Transfer && ((Transfer) this.action).pathNodeList != null) {
                     if (((Transfer) action).pathNodeList.isEmpty()) {
                         World.getInstance().removeEntity(this);
@@ -210,10 +151,12 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
                     }
                 }
                 break;
-            case TRANSFER_TO_INTERVENTION, TRANSFER_TO_FIRING:
-                move(simulationTime);
+            case TRANSFER_TO_ACCIDENT:
+                if (action instanceof Ambulance.Transfer && ((Ambulance.Transfer) this.action).pathNodeList != null) {
+                    move(simulationTime);
+                }
                 break;
-            case INTERVENTION, CALCULATING_PATH, FIRING, NEUTRALIZED:
+            case ACCIDENT:
                 // empty
                 break;
             default:
@@ -255,12 +198,8 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
         }
     }
 
-//    private void logChangingState(String previousState, String currentState) {
-//        Logger.getInstance().logNewMessageChangingState(this, previousState, currentState);
-//    }
-
     @Override
-    public void takeOrderAmbulance(Action action) {
+    public void takeOrderAmbulance(Ambulance.Action action) {
         this.action = action;
     }
 
@@ -278,22 +217,15 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
 
     public double getSpeed() {
         switch (state) {
-            case PATROLLING, RETURNING_TO_HQ:
+            case TRANSFER_TO_ACCIDENT, RETURNING_TO_HOSPITAL:
                 return basePatrollingSpeed - (ThreadLocalRandom.current().nextBoolean() ? ThreadLocalRandom.current().nextDouble(basePatrollingSpeed * 10 / 100) : 0);
-            case TRANSFER_TO_INTERVENTION:
-                return baseTransferSpeed;
-            case TRANSFER_TO_FIRING:
-                return basePrivilegedSpeed + (ThreadLocalRandom.current().nextBoolean() ? ThreadLocalRandom.current().nextDouble(basePrivilegedSpeed * 10 / 100) : 0);
+            case WAIT_IN_HOSPITAL:
+                return 0;
             default:
                 Logger.getInstance().logNewOtherMessage("The patrol is currently not moving");
                 return basePatrollingSpeed;
         }
     }
-
-    public boolean isShiftOver() {
-        return World.getInstance().getSimulationTime() > shiftEndTime;
-    }
-
 
     @Override
     public State getStateAmbulance() {
@@ -301,9 +233,7 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
     }
 
     public void setState(State state) {
-        var previousStateToLog = this.state;
         this.state = state;
-//        logChangingState(previousStateToLog != null ? previousStateToLog.toString() : " ", this.state.toString());
     }
 
     public Action getAction() {
@@ -314,23 +244,15 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
         this.action = action;
     }
 
-    public double getTimeSinceLastActive() {
-        return World.getInstance().getSimulationTime() - timeOfLastMove;
-    }
-
     @Override
     public void drawSelf(Graphics2D g, JXMapViewer mapViewer) {
         var oldColor = g.getColor();
 
         switch (this.state) {
-            case PATROLLING -> g.setColor(new Color(0, 153, 0)); // green
-            case RETURNING_TO_HQ -> g.setColor(new Color(0, 100, 0)); // dark green
-            case TRANSFER_TO_INTERVENTION -> g.setColor(new Color(255, 87, 36)); // yellowish
-            case TRANSFER_TO_FIRING -> g.setColor(new Color(255, 131, 54)); // orangeish
-            case INTERVENTION -> g.setColor(new Color(0, 92, 230)); // blue
-            case FIRING -> g.setColor(new Color(153, 0, 204)); // purple
-            case NEUTRALIZED -> g.setColor(new Color(255, 255, 255)); // white
-            case CALCULATING_PATH -> g.setColor(new Color(255, 123, 255)); // pink
+            case WAIT_IN_HOSPITAL -> g.setColor(new Color(70, 100, 200)); // green
+            case TRANSFER_TO_ACCIDENT -> g.setColor(new Color(200, 90, 255)); // dark green
+            case ACCIDENT -> g.setColor(new Color(255, 87, 36)); // yellowish
+            case RETURNING_TO_HOSPITAL -> g.setColor(new Color(255, 255, 0)); // orangeish
             default -> {
                 g.setColor(Color.BLACK); // black
                 throw new IllegalStateException("the patrol has no State");
@@ -346,14 +268,10 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
     }
 
     public enum State {
-        PATROLLING,
-        TRANSFER_TO_INTERVENTION,
-        TRANSFER_TO_FIRING,
-        INTERVENTION,
-        FIRING,
-        NEUTRALIZED,
-        CALCULATING_PATH,
-        RETURNING_TO_HQ
+        WAIT_IN_HOSPITAL,
+        TRANSFER_TO_ACCIDENT,
+        ACCIDENT,
+        RETURNING_TO_HOSPITAL,
     }
 
     private static class IllegalTransferStateException extends IllegalStateException {
@@ -394,15 +312,6 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
             super(startTime);
             this.target = target;
             new PathCalculator(Ambulance.this, target).start();
-//            Ambulance.this.previousState = nextState;
-//            if (nextState == State.TRANSFER_TO_FIRING || nextState == State.TRANSFER_TO_INTERVENTION) {
-//                Logger.getInstance().logNewMessageChangingState(Ambulance.this, nextState.toString(), State.CALCULATING_PATH.toString());
-//            }
-//            Ambulance.this.state = State.CALCULATING_PATH;
-        }
-
-        public List<Node> getPathNodeList() {
-            return pathNodeList;
         }
 
         public void setPathNodeList(java.util.List<Node> pathNodeList) {

@@ -31,23 +31,6 @@ public class SimulationThread extends Thread {
             }
         }
 
-        for (int i = 0; i < 5; i++) {
-            var hospital = world.getAllEntities().stream().filter(Hospital.class::isInstance).findFirst().orElse(null);
-            if (hospital != null) {
-                var ambulance = new Ambulance(hospital.getPosition());
-                //set state sprawdzam na razie tylko kolor czy sie dodaje
-                ambulance.setState(Ambulance.State.PATROLLING);
-                world.addEntity(ambulance);
-                System.out.println("ambulance " + ambulance );
-            } else {
-                try {
-                    throw new IllegalStateException("HQ location is not defined");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
         while (!world.hasSimulationDurationElapsed() && !world.isSimulationFinished()) {
             if (!world.isSimulationPaused()) {
                 try {
