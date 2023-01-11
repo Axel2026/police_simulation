@@ -1,5 +1,6 @@
 package Simulation.entities;
 
+import Visualisation.Ambulance;
 import Visualisation.District;
 import Visualisation.IDrawable;
 import Visualisation.Patrol;
@@ -17,7 +18,9 @@ public class Firing extends Incident implements IDrawable {
     private final int requiredPatrols;
     private double strength;
     private List<Patrol> patrolsSolving = new ArrayList<>();
+    private List<Ambulance> ambulanceSolving = new ArrayList<>();
     private List<Patrol> patrolsReaching = new ArrayList<>();
+    private List<Ambulance> ambulanceReaching = new ArrayList<>();
     private District district;
 
     public Firing(double latitude, double longitude) {
@@ -52,6 +55,18 @@ public class Firing extends Incident implements IDrawable {
 
     public void removeReachingPatrol(Patrol patrol) {
         patrolsReaching.remove(patrol);
+    }
+
+    public void addSolvingAmbulance(Ambulance ambulance) {
+        ambulanceSolving.add(ambulance);
+    }
+
+    public void removeSolvingAmbulance(Ambulance ambulance) {
+        ambulanceSolving.remove(ambulance);
+    }
+
+    public void removeReachingAmbulance(Ambulance ambulance) {
+        ambulanceReaching.remove(ambulance);
     }
 
     public void addSolvingPatrol(Patrol patrol) {

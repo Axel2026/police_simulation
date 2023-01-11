@@ -36,7 +36,7 @@ public class SimulationThread extends Thread {
             if (hospital != null) {
                 var ambulance = new Ambulance(hospital.getPosition());
                 //set state sprawdzam na razie tylko kolor czy sie dodaje
-                ambulance.setState(Patrol.State.FIRING);
+                ambulance.setState(Ambulance.State.PATROLLING);
                 world.addEntity(ambulance);
                 System.out.println("ambulance " + ambulance );
             } else {

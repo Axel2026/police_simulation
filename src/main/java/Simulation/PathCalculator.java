@@ -1,5 +1,6 @@
 package Simulation;
 
+import Visualisation.Ambulance;
 import de.westnordost.osmapi.map.data.LatLon;
 import de.westnordost.osmapi.map.data.Node;
 import de.westnordost.osmapi.map.data.OsmLatLon;
@@ -30,11 +31,17 @@ public class PathCalculator extends Thread {
     @Override
     public void run() {
         var pathNodeList = getPathNodeList(source.getLatitude(), source.getLongitude(), target.getLatitude(), target.getLongitude());
-        if (pathNodeList.size() == 1) {
+        if (pathNodeList.size() == 1 && source.toString().contains("Ambulance")) {
             var pathNodeList2 = new ArrayList<Node>();
             pathNodeList2.add(pathNodeList.get(0));
-            ((Patrol.Transfer) ((Patrol) source).getAction()).setPathNodeList(pathNodeList2);
-        } else {
+            ((Ambulance.Transfer) ((Ambulance) source).getAction()).setPathNodeList(pathNodeList2);
+        } else if (pathNodeList.size() != 1 && source.toString().contains("Ambulance")) {
+            ((Ambulance.Transfer) ((Ambulance) source).getAction()).setPathNodeList(pathNodeList);
+        } else if (pathNodeList.size() == 1 && source.toString().contains("Patrol")) {
+            var pathNodeList2 = new ArrayList<Node>();
+            pathNodeList2.add(pathNodeList.get(0));
+            ((Patrol.Transfer) ((Patrol) source).getAction()).setPathNodeList(pathNodeList);
+        } else if (pathNodeList.size() != 1 && source.toString().contains("Patrol")) {
             ((Patrol.Transfer) ((Patrol) source).getAction()).setPathNodeList(pathNodeList);
         }
     }

@@ -259,6 +259,11 @@ public class Patrol extends Entity implements IAgent, IDrawable {
         this.action = action;
     }
 
+    @Override
+    public void takeOrderAmbulance(Ambulance.Action action) {
+
+    }
+
     private double getDistanceToNearestNode() {
         if (((Transfer) action).pathNodeList.isEmpty()) throw new IllegalStateException("pathNodeList is empty!");
 
@@ -286,6 +291,11 @@ public class Patrol extends Entity implements IAgent, IDrawable {
 
     public State getState() {
         return state;
+    }
+
+    @Override
+    public Ambulance.State getStateAmbulance() {
+        return null;
     }
 
     public void setState(State state) {
