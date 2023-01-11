@@ -2,7 +2,9 @@ package Simulation;
 
 import Simulation.entities.Entity;
 import Simulation.entities.Headquarters;
+import Simulation.entities.Hospital;
 import Simulation.entities.IAgent;
+import Visualisation.Ambulance;
 import Visualisation.Patrol;
 
 import java.util.stream.Collectors;
@@ -20,6 +22,23 @@ public class SimulationThread extends Thread {
                 var newPatrol = new Patrol(hq.getPosition());
                 newPatrol.setState(Patrol.State.PATROLLING);
                 world.addEntity(newPatrol);
+            } else {
+                try {
+                    throw new IllegalStateException("HQ location is not defined");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        for (int i = 0; i < 5; i++) {
+            var hospital = world.getAllEntities().stream().filter(Hospital.class::isInstance).findFirst().orElse(null);
+            if (hospital != null) {
+                var ambulance = new Ambulance(hospital.getPosition());
+                //set state sprawdzam na razie tylko kolor czy sie dodaje
+                ambulance.setState(Patrol.State.FIRING);
+                world.addEntity(ambulance);
+                System.out.println("ambulance " + ambulance );
             } else {
                 try {
                     throw new IllegalStateException("HQ location is not defined");

@@ -3,6 +3,7 @@ package Visualisation;
 import Simulation.World;
 import Simulation.entities.Entity;
 import Simulation.entities.Headquarters;
+import Simulation.entities.Hospital;
 import Simulation.entities.Intervention;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
@@ -42,6 +43,7 @@ public class MapPanel {
     private final JCheckBox willChangeIntoFiringCheckbox = new JCheckBox();
     private final World world = World.getInstance();
     private GeoPosition hqPosition;
+    private GeoPosition hospitalPosition;
 
     public MapPanel(JPanel panel) {
         var info = new OSMTileFactoryInfo();
@@ -126,6 +128,74 @@ public class MapPanel {
                 var hq = new Headquarters(position.getLatitude(), position.getLongitude());
                 World.getInstance().addEntity(hq);
                 selectInterventionLocation();
+                selectHospitalLocation();
+                // GUI Drawing thread
+//                new Thread(() -> {
+//                    while (!World.getInstance().hasSimulationDurationElapsed() && !World.getInstance().isSimulationFinished()) {
+//                        mapViewer.repaint();
+//                        try {
+//                            Thread.sleep(1000 / 30);
+//                        } catch (Exception exception) {
+//                            // Ignore
+//                            exception.printStackTrace();
+//                            Thread.currentThread().interrupt();
+//                        }
+//                    }
+//
+//                    try {
+//                        showSummary();
+//                    } catch (IOException ioException) {
+//                        ioException.printStackTrace();
+//                    }
+//                }).start();
+//
+//                // Simulation thread
+//                new SimulationThread().start();
+
+                mapViewer.removeMouseListener(this);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // nothing should be happening here
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                // nothing should be happening here
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // nothing should be happening here
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // nothing should be happening here
+            }
+        });
+        JOptionPane.showMessageDialog(panel, "Please select HQ location.");
+    }
+
+    public void addAmbulances(GeoPosition position, int amountOfAmbulances){
+        for (int i = 0; i < amountOfAmbulances; i++) {
+            Ambulance ambulance = new Ambulance(position.getLatitude(), position.getLongitude());
+            World.getInstance().addEntity(ambulance);
+            System.out.println("ambulances added " + ambulance);
+        }
+    }
+
+    public void selectHospitalLocation() {
+        mapViewer.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                var position = mapViewer.convertPointToGeoPosition(e.getPoint());
+                Logger.getInstance().logNewOtherMessage("HQ position has been selected.");
+                hospitalPosition = mapViewer.convertPointToGeoPosition(e.getPoint());
+                var hospital = new Hospital(position.getLatitude(), position.getLongitude());
+                World.getInstance().addEntity(hospital);
+//                addAmbulances(hospitalPosition, 5);
                 // GUI Drawing thread
                 new Thread(() -> {
                     while (!World.getInstance().hasSimulationDurationElapsed() && !World.getInstance().isSimulationFinished()) {
@@ -172,7 +242,7 @@ public class MapPanel {
                 // nothing should be happening here
             }
         });
-        JOptionPane.showMessageDialog(panel, "Please select HQ location.");
+        JOptionPane.showMessageDialog(panel, "Please select hospital location.");
     }
 
     public void selectInterventionLocation() {
