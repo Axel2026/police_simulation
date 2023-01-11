@@ -4,6 +4,7 @@ import de.westnordost.osmapi.map.data.LatLon;
 import de.westnordost.osmapi.map.data.Node;
 import Simulation.entities.*;
 import Simulation.entities.Point;
+import main.Main;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
 import Simulation.PathCalculator;
@@ -15,6 +16,7 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Patrol extends Entity implements IAgent, IDrawable {
 
@@ -29,6 +31,8 @@ public class Patrol extends Entity implements IAgent, IDrawable {
     private State previousState;
     private Action action;
     private double timeOfLastDrawNeutralization;
+    private static final AtomicInteger nextId = new AtomicInteger();
+    private final int id = nextId.getAndIncrement();
 
     public Patrol() {
         this.basePatrollingSpeed = World.getInstance().getConfig().getBasePatrollingSpeed();
@@ -275,8 +279,7 @@ public class Patrol extends Entity implements IAgent, IDrawable {
             case TRANSFER_TO_FIRING:
                 return basePrivilegedSpeed + (ThreadLocalRandom.current().nextBoolean() ? ThreadLocalRandom.current().nextDouble(basePrivilegedSpeed * 10 / 100) : 0);
             default:
-                Logger.getInstance().logNewOtherMessage("The patrol is currently not moving");
-                return basePatrollingSpeed;
+                return 0;
         }
     }
 
@@ -304,6 +307,10 @@ public class Patrol extends Entity implements IAgent, IDrawable {
 
     public double getTimeSinceLastActive() {
         return World.getInstance().getSimulationTime() - timeOfLastMove;
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override

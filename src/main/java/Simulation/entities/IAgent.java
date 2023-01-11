@@ -10,4 +10,6 @@ public interface IAgent {
     void takeOrder(Patrol.Action action);
 
     Patrol.State getState();
+
+    int getId();
 }

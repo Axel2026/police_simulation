@@ -5,6 +5,7 @@ import Simulation.exported_data.ExportRevokingPatrolsDetails;
 import Simulation.exported_data.ExportSupportSummonDetails;
 import Visualisation.IDrawable;
 import Visualisation.Patrol;
+import main.Main;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
 import utils.Logger;
@@ -151,10 +152,12 @@ public class Headquarters extends Entity implements IDrawable {
     private void checkIfTheShiftIsOver() {
         var world = World.getInstance();
         if (world.getSimulationTime() > endOfCurrentShift) {
+            Main.createPatrolPanel();
             for (int i = 0; i < world.getConfig().getNumberOfPolicePatrols(); i++) {
                 var newPatrol = new Patrol(this.getPosition());
                 newPatrol.setState(Patrol.State.PATROLLING);
                 world.addEntity(newPatrol);
+                Main.getPatrolPanel().addNewPatrolUnit(newPatrol);
             }
             endOfCurrentShift += durationOfTheShift;
             Logger.getInstance().logNewOtherMessage("New shift has started");

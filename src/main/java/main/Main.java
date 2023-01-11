@@ -2,6 +2,7 @@ package main;
 
 import Configuration.ConfigurationPanel;
 import Visualisation.LoggerPanel;
+import Visualisation.PatrolPanel;
 import utils.Logger;
 
 import javax.swing.*;
@@ -10,9 +11,20 @@ import java.awt.*;
 public class Main {
 
     static ConfigurationPanel panel;
+    static PatrolPanel patrolPanel;
+    private static JPanel PatrolPanelTab = new JPanel();
 
     public static ConfigurationPanel getPanel() {
         return panel;
+    }
+    public static PatrolPanel getPatrolPanel() {
+        return patrolPanel;
+    }
+    public static PatrolPanel createPatrolPanel() {
+        PatrolPanelTab.removeAll();
+        patrolPanel = new PatrolPanel(PatrolPanelTab);
+        patrolPanel.createWindow();
+        return patrolPanel;
     }
 
     /**
@@ -43,8 +55,11 @@ public class Main {
         JPanel LoggerPanelTab = new JPanel();
         LoggerPanelTab.setLayout(new GridLayout(1, 1));
 
+        PatrolPanelTab.setLayout(new GridLayout(1, 1));
+
         tabbedPane.addTab("Configuration", scrollFrame);
         tabbedPane.addTab("Logger", LoggerPanelTab);
+        tabbedPane.addTab("Patrols", PatrolPanelTab);
 
         frame.getContentPane().add(mapPanel);
         frame.getContentPane().add(tabbedPane);
@@ -56,6 +71,10 @@ public class Main {
         logPan.createWindow();
         Logger.getInstance().addLoggingPanel(logPan);
 
+        patrolPanel = new PatrolPanel(PatrolPanelTab);
+        patrolPanel.createWindow();
+
+        tabbedPane.setSelectedIndex(2);
         tabbedPane.setSelectedIndex(1);
         tabbedPane.setSelectedIndex(0);
     }
