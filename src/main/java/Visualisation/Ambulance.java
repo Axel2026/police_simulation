@@ -56,7 +56,7 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
             updateStateIfFiring();
         } else if (state == State.RETURNING_TO_HOSPITAL) {
             updateStateIfReturningToHospital();
-        }else if (state == State.CALCULATING_PATH) {
+        } else if (state == State.CALCULATING_PATH) {
             updateStateIfCalculatingPath();
         }
     }
@@ -82,8 +82,9 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
         if (action instanceof Ambulance.IncidentParticipation) {
             if (action.target == null || !((Firing) action.target).isActive() || !(action.target instanceof Firing)) {
                 this.setState(State.RETURNING_TO_HOSPITAL);
-                this.takeOrderAmbulance(new Transfer(World.getInstance().getSimulationTimeLong(),
-                        hospital, State.RETURNING_TO_HOSPITAL));
+                this.setAction(new Transfer(World.getInstance().getSimulationTimeLong(), hospital, this.state));
+//                this.takeOrderAmbulance(new Transfer(World.getInstance().getSimulationTimeLong(),
+//                        hospital, State.RETURNING_TO_HOSPITAL));
                 System.out.println("koniec ");
             }
         } else {
@@ -93,7 +94,6 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
 
 
     private void updateStateIfReturningToHospital() {
-
         if (action instanceof Ambulance.Transfer) {
             if (((Ambulance.Transfer) action).pathNodeList.isEmpty()) {
                 System.out.println("elo wrocilem do szpitala");
@@ -110,13 +110,16 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
                 break;
             case RETURNING_TO_HOSPITAL:
                 if (action instanceof Ambulance.Transfer && ((Ambulance.Transfer) this.action).pathNodeList != null) {
-                    move(simulationTime);
+                    if (((Ambulance.Transfer) action).pathNodeList.isEmpty()) {
+//                        World.getInstance().removeEntity(this);
+                    } else {
+                        move(simulationTime);
+                    }
                 }
+
                 break;
             case TRANSFER_TO_ACCIDENT:
-                //if (action instanceof Ambulance.Transfer && ((Ambulance.Transfer) this.action).pathNodeList != null) {
                 move(simulationTime);
-                //}
                 break;
             default:
                 throw new IllegalStateException("Illegal state");
@@ -234,11 +237,13 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
         RETURNING_TO_HOSPITAL,
         CALCULATING_PATH
     }
+
     private void updateStateIfCalculatingPath() {
         if (((Ambulance.Transfer) getAction()).pathNodeList != null) {
             setState(this.previousState);
         }
     }
+
     private static class IllegalTransferStateException extends IllegalStateException {
         public IllegalTransferStateException() {
             super("Action should be 'Transfer' and it is not");
