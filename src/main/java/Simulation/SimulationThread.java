@@ -31,10 +31,27 @@ public class SimulationThread extends Thread {
             }
         }
 
+        for (int i = 0; i < 5; i++) {
+            var hospital = world.getAllEntities().stream().filter(Hospital.class::isInstance).findFirst().orElse(null);
+            if (hospital != null) {
+                var newAmbulance = new Ambulance(hospital.getPosition());
+                newAmbulance.setState(Ambulance.State.AVAILABLE);
+                world.addEntity(newAmbulance);
+                System.out.println("ambulans " + i);
+            } else {
+                try {
+                    throw new IllegalStateException("HQ location is not defined");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         while (!world.hasSimulationDurationElapsed() && !world.isSimulationFinished()) {
             if (!world.isSimulationPaused()) {
                 try {
                     hqAssignTasks();
+                    hsAssignTasks();
                     updateStatesOfAgents();
                     performAgentsActions();
                     addAgents(world);
@@ -56,6 +73,13 @@ public class SimulationThread extends Thread {
         var allHQs = World.getInstance().getAllEntities().stream().filter(Headquarters.class::isInstance).map(Headquarters.class::cast).collect(Collectors.toList());
         for (var hqs : allHQs) {
             hqs.assignTasks();
+        }
+    }
+
+    private void hsAssignTasks() {
+        var allHs = World.getInstance().getAllEntities().stream().filter(Hospital.class::isInstance).map(Hospital.class::cast).collect(Collectors.toList());
+        for (var hs : allHs) {
+            hs.assignTasksHospital();
         }
     }
 

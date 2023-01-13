@@ -45,7 +45,7 @@ public class Firing extends Incident implements IDrawable {
     public List<Patrol> getPatrolsSolving() {
         return patrolsSolving;
     }
-    public List<Ambulance> getAmbulanceSolving() {
+    public List<Ambulance> getAmbulancesSolving() {
         return ambulancesSolving;
     }
 

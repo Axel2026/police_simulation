@@ -18,27 +18,15 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Ambulance extends Entity implements IAgent, IDrawable {
     private final World world = World.getInstance();
-    private final double durationOfTheShift;
     private final double basePatrollingSpeed;
-    private final double baseTransferSpeed;
-    private final double basePrivilegedSpeed;
-    private final double shiftEndTime;
-    private final double timeBetweenDrawNeutralization;
     private double timeOfLastMove;
     private State state;
-    private State previousState;
     private Action action;
-    private double timeOfLastDrawNeutralization;
+    Entity hospital = world.getAllEntities().stream().filter(Hospital.class::isInstance).findFirst().orElse(null);
 
     public Ambulance() {
         this.basePatrollingSpeed = World.getInstance().getConfig().getBasePatrollingSpeed();
-        this.baseTransferSpeed = World.getInstance().getConfig().getBaseTransferSpeed();
-        this.basePrivilegedSpeed = World.getInstance().getConfig().getBasePrivilegedSpeed();
         this.timeOfLastMove = World.getInstance().getSimulationTime();
-        this.durationOfTheShift = World.getInstance().getDurationOfTheShift();
-        this.shiftEndTime = World.getInstance().getSimulationTime() + durationOfTheShift;
-        this.timeBetweenDrawNeutralization = ThreadLocalRandom.current().nextInt(1000) + 3000.0;
-        this.timeOfLastDrawNeutralization = World.getInstance().getSimulationTime();
     }
 
     public Ambulance(double latitude, double longitude) {
@@ -55,20 +43,14 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
         this.setLatitude(x);
         this.setLongitude(y);
         this.basePatrollingSpeed = basePatrollingSpeed;
-        this.baseTransferSpeed = baseTransferSpeed;
-        this.basePrivilegedSpeed = basePrivilegedSpeed;
         this.timeOfLastMove = World.getInstance().getSimulationTime();
-        this.durationOfTheShift = World.getInstance().getDurationOfTheShift();
-        this.shiftEndTime = World.getInstance().getSimulationTime() + durationOfTheShift;
-        this.timeBetweenDrawNeutralization = ThreadLocalRandom.current().nextInt(1000) + 3000.0;
-        this.timeOfLastDrawNeutralization = World.getInstance().getSimulationTime();
     }
 
     public void updateStateSelf() {
-        if (state == State.WAIT_IN_HOSPITAL) {
-            updateStateIfPatrolling();
+        if (state == State.AVAILABLE) {
+            updateStateIfAvailable();
         } else if (state == State.TRANSFER_TO_ACCIDENT) {
-            updateStateIfTransferToFiring();
+            updateStateIfTransferToAccident();
         } else if (state == State.ACCIDENT) {
             updateStateIfFiring();
         } else if (state == State.RETURNING_TO_HOSPITAL) {
@@ -76,18 +58,14 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
         }
     }
 
-    private void updateStateIfPatrolling() {
-        setState(State.RETURNING_TO_HOSPITAL);
-        var hq = World.getInstance().getAllEntities().stream().filter(Hospital.class::isInstance).findFirst().orElse(null);
-        setAction(new Ambulance.Transfer(World.getInstance().getSimulationTimeLong(), hq, this.state));
+    private void updateStateIfAvailable() {
+//        System.out.println("ambulance is available");
     }
 
-    private void updateStateIfTransferToFiring() {
-        // if patrol has reached his destination, patrol changes state to INTERVENTION
+    private void updateStateIfTransferToAccident() {
         if (action instanceof Ambulance.Transfer) {
-            if (((Ambulance.Transfer) action).pathNodeList.isEmpty()) {
+            if (((Ambulance.Transfer) action).pathNodeList.isEmpty() || ((Ambulance.Transfer) action).pathNodeList == null) {
                 setState(State.ACCIDENT);
-                System.out.println("elo dotarlem na strzelanine");
                 action = new Ambulance.IncidentParticipation(World.getInstance().getSimulationTimeLong(), (Incident) action.target);
             }
         } else {
@@ -96,17 +74,12 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
     }
 
     private void updateStateIfFiring() {
-        // when the firing strength drops to zero, patrol changes state to PATROLLING
-//        System.out.println(action.target);
         if (action instanceof Ambulance.IncidentParticipation) {
             if (action.target == null || !((Firing) action.target).isActive() || !(action.target instanceof Firing)) {
-                System.out.println("koniec 3");
-                setState(State.RETURNING_TO_HOSPITAL);
-                drawNewTarget(null);
-            } else if (World.getInstance().getSimulationTime() > timeOfLastDrawNeutralization + timeBetweenDrawNeutralization) {
-                System.out.println("koniec 4");
-                setState(State.RETURNING_TO_HOSPITAL);
-                timeOfLastDrawNeutralization = World.getInstance().getSimulationTime();
+                this.setState(State.RETURNING_TO_HOSPITAL);
+                this.takeOrderAmbulance(new Transfer(World.getInstance().getSimulationTimeLong(),
+                        hospital, State.RETURNING_TO_HOSPITAL));
+                System.out.println("koniec ");
             }
         } else {
             throw new IllegalStateException("Action should be 'IncidentParticipation' and it is not");
@@ -115,49 +88,30 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
 
 
     private void updateStateIfReturningToHospital() {
-        var entities = World.getInstance().getEntitiesNear(this, 10);
-//        System.out.println(entities.get(0));
-        System.out.println("karetka powinna wracac");
-        World.getInstance().getAllEntities()
-                .stream()
-                .filter(Headquarters.class::isInstance)
-                .findFirst()
-                .ifPresent(hqs -> action = new Ambulance.Transfer(World.getInstance().getSimulationTimeLong(), hqs, this.state));
-        drawNewTarget(null);
-    }
 
-    private void drawNewTarget(String previousState) {
-        var world = World.getInstance();
-        var node = (Node) world.getMap().getMyNodes().values().toArray()[ThreadLocalRandom.current().nextInt(world.getMap().getMyNodes().size())];
-        this.action = new Transfer(World.getInstance().getSimulationTimeLong(), new Point(node.getPosition().getLatitude(), node.getPosition().getLongitude()), State.WAIT_IN_HOSPITAL);
+        if (action instanceof Ambulance.Transfer) {
+            if (((Ambulance.Transfer) action).pathNodeList.isEmpty()) {
+                System.out.println("elo wrocilem do szpitala");
+                setState(State.AVAILABLE);
+            }
+        }
     }
 
     public void performAction() {
         double simulationTime = World.getInstance().getSimulationTime();
         switch (state) {
-            case WAIT_IN_HOSPITAL:
-//                if (action instanceof Transfer && ((Transfer) this.action).pathNodeList != null) {
-//                    move(simulationTime);
-//                }
+            case AVAILABLE,ACCIDENT:
+                //empty
                 break;
             case RETURNING_TO_HOSPITAL:
-                if (action instanceof Transfer && ((Transfer) this.action).pathNodeList != null) {
-                    if (((Transfer) action).pathNodeList.isEmpty()) {
-                        World.getInstance().removeEntity(this);
-                        Logger.getInstance().logNewOtherMessage(this + " removed itself after ending shift and coming back to HQ");
-
-                    } else {
-                        move(simulationTime);
-                    }
-                }
-                break;
-            case TRANSFER_TO_ACCIDENT:
                 if (action instanceof Ambulance.Transfer && ((Ambulance.Transfer) this.action).pathNodeList != null) {
                     move(simulationTime);
                 }
                 break;
-            case ACCIDENT:
-                // empty
+            case TRANSFER_TO_ACCIDENT:
+                //if (action instanceof Ambulance.Transfer && ((Ambulance.Transfer) this.action).pathNodeList != null) {
+                move(simulationTime);
+                //}
                 break;
             default:
                 throw new IllegalStateException("Illegal state");
@@ -219,8 +173,8 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
         switch (state) {
             case TRANSFER_TO_ACCIDENT, RETURNING_TO_HOSPITAL:
                 return basePatrollingSpeed - (ThreadLocalRandom.current().nextBoolean() ? ThreadLocalRandom.current().nextDouble(basePatrollingSpeed * 10 / 100) : 0);
-            case WAIT_IN_HOSPITAL:
-                return 0;
+            case AVAILABLE:
+                return basePatrollingSpeed - (ThreadLocalRandom.current().nextBoolean() ? ThreadLocalRandom.current().nextDouble(basePatrollingSpeed * 10 / 100) : 0);
             default:
                 Logger.getInstance().logNewOtherMessage("The patrol is currently not moving");
                 return basePatrollingSpeed;
@@ -249,8 +203,8 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
         var oldColor = g.getColor();
 
         switch (this.state) {
-            case WAIT_IN_HOSPITAL -> g.setColor(new Color(70, 100, 200)); // green
-            case TRANSFER_TO_ACCIDENT -> g.setColor(new Color(200, 90, 255)); // dark green
+            case AVAILABLE -> g.setColor(new Color(70, 100, 200)); // green
+            case TRANSFER_TO_ACCIDENT -> g.setColor(new Color(30, 180, 200)); // green
             case ACCIDENT -> g.setColor(new Color(255, 87, 36)); // yellowish
             case RETURNING_TO_HOSPITAL -> g.setColor(new Color(255, 255, 0)); // orangeish
             default -> {
@@ -268,10 +222,10 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
     }
 
     public enum State {
-        WAIT_IN_HOSPITAL,
+        AVAILABLE,
         TRANSFER_TO_ACCIDENT,
         ACCIDENT,
-        RETURNING_TO_HOSPITAL,
+        RETURNING_TO_HOSPITAL
     }
 
     private static class IllegalTransferStateException extends IllegalStateException {
