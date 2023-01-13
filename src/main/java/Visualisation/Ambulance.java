@@ -22,6 +22,7 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
     private double timeOfLastMove;
     private State state;
     private Action action;
+    private Ambulance.State previousState;
     Entity hospital = world.getAllEntities().stream().filter(Hospital.class::isInstance).findFirst().orElse(null);
 
     public Ambulance() {
@@ -55,6 +56,8 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
             updateStateIfFiring();
         } else if (state == State.RETURNING_TO_HOSPITAL) {
             updateStateIfReturningToHospital();
+        }else if (state == State.CALCULATING_PATH) {
+            updateStateIfCalculatingPath();
         }
     }
 
@@ -66,6 +69,8 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
         if (action instanceof Ambulance.Transfer) {
             if (((Ambulance.Transfer) action).pathNodeList.isEmpty() || ((Ambulance.Transfer) action).pathNodeList == null) {
                 setState(State.ACCIDENT);
+                ((Firing) action.target).removeReachingAmbulance(this);
+                ((Firing) action.target).addSolvingAmbulance(this);
                 action = new Ambulance.IncidentParticipation(World.getInstance().getSimulationTimeLong(), (Incident) action.target);
             }
         } else {
@@ -100,7 +105,7 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
     public void performAction() {
         double simulationTime = World.getInstance().getSimulationTime();
         switch (state) {
-            case AVAILABLE,ACCIDENT:
+            case AVAILABLE, ACCIDENT, CALCULATING_PATH:
                 //empty
                 break;
             case RETURNING_TO_HOSPITAL:
@@ -206,6 +211,7 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
             case AVAILABLE -> g.setColor(new Color(70, 100, 200)); // green
             case TRANSFER_TO_ACCIDENT -> g.setColor(new Color(30, 180, 200)); // green
             case ACCIDENT -> g.setColor(new Color(255, 87, 36)); // yellowish
+            case CALCULATING_PATH -> g.setColor(new Color(255, 123, 255)); // pink
             case RETURNING_TO_HOSPITAL -> g.setColor(new Color(255, 255, 0)); // orangeish
             default -> {
                 g.setColor(Color.BLACK); // black
@@ -225,9 +231,14 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
         AVAILABLE,
         TRANSFER_TO_ACCIDENT,
         ACCIDENT,
-        RETURNING_TO_HOSPITAL
+        RETURNING_TO_HOSPITAL,
+        CALCULATING_PATH
     }
-
+    private void updateStateIfCalculatingPath() {
+        if (((Ambulance.Transfer) getAction()).pathNodeList != null) {
+            setState(this.previousState);
+        }
+    }
     private static class IllegalTransferStateException extends IllegalStateException {
         public IllegalTransferStateException() {
             super("Action should be 'Transfer' and it is not");
@@ -266,6 +277,8 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
             super(startTime);
             this.target = target;
             new PathCalculator(Ambulance.this, target).start();
+            Ambulance.this.previousState = nextState;
+            Ambulance.this.state = Ambulance.State.CALCULATING_PATH;
         }
 
         public void setPathNodeList(java.util.List<Node> pathNodeList) {

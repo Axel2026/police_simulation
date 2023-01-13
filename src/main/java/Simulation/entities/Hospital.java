@@ -2,8 +2,9 @@ package Simulation.entities;
 
 import Simulation.World;
 import Simulation.exported_data.ExportFiringDetails;
+import Simulation.exported_data.ExportRevokingPatrolsDetails;
 import Simulation.exported_data.ExportSupportSummonDetails;
-import Visualisation.*;
+import Visualisation.Ambulance;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
 
@@ -18,10 +19,11 @@ import Visualisation.IDrawable;
 import utils.Logger;
 
 public class Hospital extends Entity implements IDrawable {
-
+    private final World world = World.getInstance();
     private final double durationOfTheShift;
     private List<Incident> incidents = new ArrayList<>();
     private double endOfCurrentShift;
+    Entity hospital = world.getAllEntities().stream().filter(Hospital.class::isInstance).findFirst().orElse(null);
 
     public Hospital(double latitude, double longitude) {
         super(latitude, longitude);
@@ -59,7 +61,7 @@ public class Hospital extends Entity implements IDrawable {
             System.out.println("im in ");
             var ambulancesSolving = ((Firing) firing).getAmbulancesSolving();
             var ambulancesReaching = ((Firing) firing).getAmbulancesReaching();
-//            revokeRedundantAmbulances((Firing) firing, ambulancesSolving, ambulancesReaching);
+            revokeRedundantAmbulances((Firing) firing, ambulancesSolving, ambulancesReaching);
             summonSupportForFiring((Firing) firing);
         }
     }
@@ -75,15 +77,29 @@ public class Hospital extends Entity implements IDrawable {
         giveOrdersToFoundAmbulance(firing, availableAmbulance);
     }
 
-    private void revokeRedundantAmbulances(Firing firing, List<Ambulance> patrolsSolving, List<Ambulance> ambulancesReaching) {
-        System.out.println("ambulancesReaching " + ambulancesReaching);
-        System.out.println("solv pat " + patrolsSolving);
-        if (patrolsSolving.size() >= 1) {
+    private void revokeRedundantAmbulances(Firing firing, List<Ambulance> ambulancesSolving, List<Ambulance> ambulancesReaching) {
+        System.out.println("ambulancesSolving size " + ambulancesSolving.size());
+        System.out.println("ambulancesSolving " + ambulancesSolving);
+        if (ambulancesSolving.size() >= 2) {
+            if (!ambulancesReaching.isEmpty()) {
+                ExportRevokingPatrolsDetails.getInstance().writeToCsvFileRevokedPatrols(firing, ambulancesReaching.size());
+            }
             for (int i = ambulancesReaching.size() - 1; i >= 0; i--) {
                 ambulancesReaching.get(i).setState(Ambulance.State.RETURNING_TO_HOSPITAL);
+//                ambulancesReaching.get(i).new Transfer(World.getInstance().getSimulationTimeLong(),
+//                        hospital, Ambulance.State.RETURNING_TO_HOSPITAL);
                 firing.removeReachingAmbulance(ambulancesReaching.get(i));
             }
         }
+
+//        System.out.println("ambulancesReaching " + ambulancesReaching);
+//        System.out.println("solv pat " + ambulancesSolving);
+//        if (!ambulancesSolving.isEmpty()) {
+//            for (int i = ambulancesReaching.size() - 1; i >= 0; i--) {
+//                ambulancesReaching.get(i).setState(Ambulance.State.RETURNING_TO_HOSPITAL);
+//                firing.removeReachingAmbulance(ambulancesReaching.get(i));
+//            }
+//        }
     }
 
     private void giveOrdersToFoundAmbulance(Incident firing, List<Ambulance> foundAmbulance) {
@@ -95,7 +111,7 @@ public class Hospital extends Entity implements IDrawable {
                     ambulance.new Transfer(World.getInstance().getSimulationTimeLong(),
                             firing, Ambulance.State.TRANSFER_TO_ACCIDENT)));
             ((Firing) firing).addReachingAmbulance(ambulance);
-            System.out.println("firing " + firing);
+            System.out.println("firing " + ((Firing) firing).getAmbulancesReaching());
         }
         if (!foundAmbulance.isEmpty()) {
             System.out.println("lista pusta ");
