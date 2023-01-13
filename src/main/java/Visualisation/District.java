@@ -1,5 +1,7 @@
 package Visualisation;
 
+import Simulation.World;
+import Simulation.entities.SWATHeadquarters;
 import de.westnordost.osmapi.map.data.LatLon;
 import de.westnordost.osmapi.map.data.Node;
 import org.jxmapviewer.JXMapViewer;
@@ -20,6 +22,7 @@ public class District implements IDrawable {
     private final Path2D boundaries;
     private final List<Node> allNodesInDistrict = new ArrayList<>();
     private ThreatLevelEnum threatLevel = ThreatLevelEnum.RATHER_SAFE;
+    private SWATHeadquarters swatHeadquarters;
 
     public District(Long id, String name, Path2D boundaries) {
         this.boundaries = boundaries;
@@ -60,6 +63,20 @@ public class District implements IDrawable {
 
     public List<Node> getAllNodesInDistrict() {
         return allNodesInDistrict;
+    }
+
+    public void createSWATHeadquarters() {
+        if(World.getInstance().getConfig().getEnableSWATIntervention()){
+            this.swatHeadquarters = new SWATHeadquarters(this.getBoundaries().getBounds2D().getCenterX(), this.getBoundaries().getBounds2D().getCenterY(), this);
+            System.out.println(this.getName());
+            System.out.println("Latitude: " + this.getBoundaries().getBounds2D().getCenterX());
+            System.out.println("Longitude: " + this.getBoundaries().getBounds2D().getCenterY());
+            World.getInstance().addEntity(this.swatHeadquarters);
+        }
+    }
+
+    public SWATHeadquarters getSwatHeadquarters(){
+        return swatHeadquarters;
     }
 
     @Override

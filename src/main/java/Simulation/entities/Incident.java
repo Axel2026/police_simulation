@@ -4,6 +4,7 @@ import Visualisation.IDrawable;
 import Simulation.World;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
+import utils.EntityTypes;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;

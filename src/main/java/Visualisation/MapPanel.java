@@ -300,7 +300,7 @@ public class MapPanel {
     }
 
     private void addPatrolWindow(GeoPosition position) {
-        JFrame frame = new JFrame("Headquaters");
+        JFrame frame = new JFrame("Headquarters");
         frame.setVisible(true);
         frame.setSize(330, 300);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

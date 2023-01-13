@@ -3,7 +3,10 @@ package Simulation;
 import Simulation.entities.Entity;
 import Simulation.entities.Headquarters;
 import Simulation.entities.IAgent;
+import Simulation.entities.SWATHeadquarters;
 import Visualisation.Patrol;
+import Visualisation.SWAT;
+import de.westnordost.osmapi.map.data.LatLon;
 
 import java.util.stream.Collectors;
 
@@ -59,15 +62,25 @@ public class SimulationThread extends Thread {
 
     private void updateStatesOfAgents() {
         var allAgents = World.getInstance().getAllEntities().stream().filter(IAgent.class::isInstance).collect(Collectors.toList());
+        var allSWATSquads = World.getInstance().getAllEntities().stream().filter(SWAT.class::isInstance).map(SWAT.class::cast).collect(Collectors.toList());
         for (Entity agents : allAgents) {
             ((IAgent) agents).updateStateSelf();
+        }
+
+        for (var squad : allSWATSquads) {
+            squad.updateStateSelf();
         }
     }
 
     private void performAgentsActions() {
         var allAgents = World.getInstance().getAllEntities().stream().filter(IAgent.class::isInstance).collect(Collectors.toList());
+        var allSWATSquads = World.getInstance().getAllEntities().stream().filter(SWAT.class::isInstance).map(SWAT.class::cast).collect(Collectors.toList());
         for (Entity agents : allAgents) {
             ((IAgent) agents).performAction();
+        }
+
+        for (var squad : allSWATSquads) {
+            squad.performAction();
         }
     }
 

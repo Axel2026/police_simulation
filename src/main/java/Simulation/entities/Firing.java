@@ -4,6 +4,7 @@ import Visualisation.District;
 import Visualisation.IDrawable;
 import Visualisation.Patrol;
 import Simulation.World;
+import Visualisation.SWAT;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
 
@@ -18,6 +19,8 @@ public class Firing extends Incident implements IDrawable {
     private double strength;
     private List<Patrol> patrolsSolving = new ArrayList<>();
     private List<Patrol> patrolsReaching = new ArrayList<>();
+    private List<SWAT> swatSolving = new ArrayList<>();
+    private List<SWAT> swatReaching = new ArrayList<>();
     private District district;
 
     public Firing(double latitude, double longitude) {
@@ -46,6 +49,14 @@ public class Firing extends Incident implements IDrawable {
         return patrolsReaching;
     }
 
+    public boolean getIsSWATSolving() {
+        return swatSolving.size() > 0;
+    }
+
+    public boolean getIsSWATReaching() {
+        return swatReaching.size() > 0;
+    }
+
     public void addReachingPatrol(Patrol patrol) {
         patrolsReaching.add(patrol);
     }
@@ -60,6 +71,22 @@ public class Firing extends Incident implements IDrawable {
 
     public void removeSolvingPatrol(Patrol patrol) {
         patrolsSolving.remove(patrol);
+    }
+
+    public void addReachingSWATSquad(SWAT swat) {
+        swatReaching.add(swat);
+    }
+
+    public void removeReachingSWATSquad(SWAT swat) {
+        swatReaching.remove(swat);
+    }
+
+    public void addSolvingSWATSquad(SWAT swat) {
+        swatSolving.add(swat);
+    }
+
+    public void removeSolvingSWATSquad(SWAT swat) {
+        swatSolving.remove(swat);
     }
 
     public double getStrength() {
@@ -87,6 +114,8 @@ public class Firing extends Incident implements IDrawable {
             drawString(g, (int) point.getX() + 5, (int) point.getY() - 15, String.format("Patrols Required: %d", requiredPatrols));
             drawString(g, (int) point.getX() + 5, (int) point.getY() - 30, String.format("Patrols Reaching: %d", patrolsReaching.size()));
             drawString(g, (int) point.getX() + 5, (int) point.getY() - 45, String.format("Patrols Solving :%d", patrolsSolving.size()));
+            drawString(g, (int) point.getX() + 5, (int) point.getY() - 60, "SWAT reaching: " + getIsSWATReaching());
+            drawString(g, (int) point.getX() + 5, (int) point.getY() - 75, "SWAT solving: " + getIsSWATSolving());
         }
 
         g.setColor(oldColor);
@@ -94,7 +123,7 @@ public class Firing extends Incident implements IDrawable {
 
     @Override
     public void updateState() {
-        this.strength -= patrolsSolving.size() * (World.getInstance().getSimulationTime() - timeOfLastUpdate);
+        this.strength -= swatSolving.size() * World.getInstance().getConfig().getSWATSoldiersPerSquad() + patrolsSolving.size() * (World.getInstance().getSimulationTime() - timeOfLastUpdate);
         timeOfLastUpdate = World.getInstance().getSimulationTime();
         if (this.strength <= 0) {
             setActive(false);

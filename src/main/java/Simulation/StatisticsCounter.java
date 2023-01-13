@@ -23,6 +23,7 @@ public class StatisticsCounter {
     }
 
     private int numberOfPatrols = 0;
+    private int numberOfSWATSquads = 0;
     private int numberOfInterventions = 0;
     private int numberOfFirings = 0;
     private int numberOfSolvedInterventions = 0;
@@ -31,6 +32,7 @@ public class StatisticsCounter {
 
     public void reset() {
         this.numberOfPatrols = 0;
+        this.numberOfSWATSquads = 0;
         this.numberOfInterventions = 0;
         this.numberOfFirings = 0;
         this.numberOfSolvedInterventions = 0;
@@ -40,6 +42,10 @@ public class StatisticsCounter {
 
     public void increaseNumberOfPatrols() {
         this.numberOfPatrols++;
+    }
+
+    public void increaseNumberOfSWATSquads() {
+        this.numberOfSWATSquads++;
     }
 
     public void increaseNumberOfInterventions() {
@@ -64,6 +70,10 @@ public class StatisticsCounter {
 
     public int getNumberOfPatrols() {
         return numberOfPatrols;
+    }
+
+    public int getNumberOfSWATSquads() {
+        return numberOfSWATSquads;
     }
 
     public int getNumberOfInterventions() {

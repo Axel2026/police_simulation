@@ -4,6 +4,7 @@ import Simulation.exported_data.ExportChangingStateDetails;
 import Visualisation.Patrol;
 import Visualisation.LoggerPanel;
 import Simulation.World;
+import Visualisation.SWAT;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,6 +73,16 @@ public class Logger {
             message = patrol + " state set from " + previousState + " to " + currentState + "; action: " + patrol.getAction().getClass().toString() + "; target: " + patrol.getAction().getTarget().toString();
         } else {
             message = patrol + " state set from " + previousState + " to " + currentState;
+        }
+        logNewMessage(message);
+    }
+
+    public void logNewMessageChangingState(SWAT swat, String previousState, String currentState) {
+        String message;
+        if (swat.getAction() != null) {
+            message = swat + " state set from " + previousState + " to " + currentState + "; action: " + swat.getAction().getClass().toString() + "; target: " + swat.getAction().getTarget().toString();
+        } else {
+            message = swat + " state set from " + previousState + " to " + currentState;
         }
         logNewMessage(message);
     }

@@ -2,6 +2,7 @@ package Simulation.entities;
 
 import de.westnordost.osmapi.map.data.LatLon;
 import de.westnordost.osmapi.map.data.OsmLatLon;
+import utils.EntityTypes;
 
 import java.util.UUID;
 
@@ -10,6 +11,7 @@ public abstract class Entity {
     private final UUID uniqueID = UUID.randomUUID();
     private double latitude = 0;
     private double longitude = 0;
+    private EntityTypes type;
 
     protected Entity() {
     }
@@ -50,6 +52,14 @@ public abstract class Entity {
 
     public UUID getUniqueID() {
         return uniqueID;
+    }
+
+    public EntityTypes getType() {
+        return this.type;
+    }
+
+    public void setType(EntityTypes type){
+        this.type = type;
     }
 
     @Override

@@ -6,6 +6,7 @@ import Simulation.exported_data.ExportSimulationAndDistrictDetails;
 import Visualisation.District;
 import Visualisation.Map;
 import Visualisation.Patrol;
+import Visualisation.SWAT;
 import de.westnordost.osmapi.map.data.LatLon;
 import de.westnordost.osmapi.map.data.OsmLatLon;
 import Simulation.entities.*;
@@ -33,6 +34,7 @@ public class World {
     private LatLon position;
     private Map map;
     private boolean hasSimulationStarted = false;
+    private boolean enableSWATIntervention = false;
     private int neutralizedPatrolsTotal = 0;
 
     private World() {
@@ -86,6 +88,8 @@ public class World {
                 StatisticsCounter.getInstance().increaseNumberOfInterventions();
             } else if (entity instanceof Firing) {
                 StatisticsCounter.getInstance().increaseNumberOfFirings();
+            } else if (entity instanceof SWAT) {
+                StatisticsCounter.getInstance().increaseNumberOfSWATSquads();
             }
         }
     }
@@ -230,5 +234,9 @@ public class World {
     public boolean isNight() {
         var x = World.getInstance().getSimulationTime() % 86400;
         return 57600 <= x && x <= 86400;
+    }
+
+    public boolean getEnableSWATIntervention() {
+        return enableSWATIntervention;
     }
 }

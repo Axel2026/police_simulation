@@ -7,6 +7,7 @@ import Visualisation.IDrawable;
 import Visualisation.Patrol;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
+import utils.EntityTypes;
 import utils.Logger;
 import Simulation.World;
 
@@ -26,6 +27,7 @@ public class Headquarters extends Entity implements IDrawable {
 
     public Headquarters(double latitude, double longitude) {
         super(latitude, longitude);
+        this.setType(EntityTypes.HEADQUARTERS);
         this.durationOfTheShift = World.getInstance().getDurationOfTheShift();
         this.endOfCurrentShift = World.getInstance().getSimulationTime() + durationOfTheShift;
         this.searchRange = World.getInstance().getConfig().getBasicSearchDistance();

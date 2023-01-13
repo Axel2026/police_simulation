@@ -1,5 +1,6 @@
 package Simulation;
 
+import Visualisation.SWAT;
 import de.westnordost.osmapi.map.data.LatLon;
 import de.westnordost.osmapi.map.data.Node;
 import de.westnordost.osmapi.map.data.OsmLatLon;
@@ -8,6 +9,7 @@ import Visualisation.Patrol;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.AStarShortestPath;
 import Support.ImportedEdge;
+import utils.EntityTypes;
 import utils.Haversine;
 
 import java.util.ArrayList;
@@ -30,12 +32,23 @@ public class PathCalculator extends Thread {
     @Override
     public void run() {
         var pathNodeList = getPathNodeList(source.getLatitude(), source.getLongitude(), target.getLatitude(), target.getLongitude());
-        if (pathNodeList.size() == 1) {
-            var pathNodeList2 = new ArrayList<Node>();
-            pathNodeList2.add(pathNodeList.get(0));
-            ((Patrol.Transfer) ((Patrol) source).getAction()).setPathNodeList(pathNodeList2);
-        } else {
-            ((Patrol.Transfer) ((Patrol) source).getAction()).setPathNodeList(pathNodeList);
+
+        if(source.getType() == EntityTypes.PATROL) {
+            if (pathNodeList.size() == 1) {
+                var pathNodeList2 = new ArrayList<Node>();
+                pathNodeList2.add(pathNodeList.get(0));
+                ((Patrol.Transfer) ((Patrol) source).getAction()).setPathNodeList(pathNodeList2);
+            } else {
+                ((Patrol.Transfer) ((Patrol) source).getAction()).setPathNodeList(pathNodeList);
+            }
+        } else if(source.getType() == EntityTypes.SWAT) {
+            if (pathNodeList.size() == 1) {
+                var pathNodeList2 = new ArrayList<Node>();
+                pathNodeList2.add(pathNodeList.get(0));
+                ((SWAT.Transfer) ((SWAT) source).getAction()).setPathNodeList(pathNodeList2);
+            } else {
+                ((SWAT.Transfer) ((SWAT) source).getAction()).setPathNodeList(pathNodeList);
+            }
         }
     }
 

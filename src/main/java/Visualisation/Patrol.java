@@ -7,6 +7,7 @@ import Simulation.entities.Point;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
 import Simulation.PathCalculator;
+import utils.EntityTypes;
 import utils.Haversine;
 import utils.Logger;
 import Simulation.World;
@@ -43,17 +44,20 @@ public class Patrol extends Entity implements IAgent, IDrawable {
 
     public Patrol(double latitude, double longitude) {
         this();
+        this.setType(EntityTypes.PATROL);
         this.setLatitude(latitude);
         this.setLongitude(longitude);
     }
 
     public Patrol(LatLon position) {
         this(position.getLatitude(), position.getLongitude());
+        this.setType(EntityTypes.PATROL);
     }
 
     public Patrol(double x, double y, double baseTransferSpeed, double basePatrollingSpeed, double basePrivilegedSpeed) {
         this.setLatitude(x);
         this.setLongitude(y);
+        this.setType(EntityTypes.PATROL);
         this.basePatrollingSpeed = basePatrollingSpeed;
         this.baseTransferSpeed = baseTransferSpeed;
         this.basePrivilegedSpeed = basePrivilegedSpeed;
@@ -172,6 +176,7 @@ public class Patrol extends Entity implements IAgent, IDrawable {
 
     private void updateStateIfReturningToHQ() {
         if (action == null) {
+            System.out.println("Test68 ");
             World.getInstance().getAllEntities()
                     .stream()
                     .filter(Headquarters.class::isInstance)
@@ -254,7 +259,6 @@ public class Patrol extends Entity implements IAgent, IDrawable {
         Logger.getInstance().logNewMessageChangingState(this, previousState, currentState);
     }
 
-    @Override
     public void takeOrder(Action action) {
         this.action = action;
     }

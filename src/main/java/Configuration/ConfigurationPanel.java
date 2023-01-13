@@ -38,6 +38,8 @@ public class ConfigurationPanel {
     private final HashMap<String, Integer> districtAdminLevelForAvailablePlaces = new HashMap<>();
     private final JTextField numberOfCityPatrolsTextField = new JTextField();
     private final JTextField minimumPatrollingUnitsTextField = new JTextField();
+    private final JTextField swatSquadsPerDistrict = new JTextField();
+    private final JTextField swatSoldiersPerSquad = new JTextField();
     private final JTextField timeRateTextField = new JTextField();
     private final JTextField simulationDurationDaysTextField = new JTextField();
     private final JTextField simulationDurationHoursTextField = new JTextField();
@@ -62,6 +64,7 @@ public class ConfigurationPanel {
     private final JTextField baseTransferSpeed = new JTextField();
     private final JTextField basePrivilegedSpeed = new JTextField();
     private final JCheckBox considerTimeOfDayCheckBox = new JCheckBox();
+    private final JCheckBox enableSWATInterventionCheckBox = new JCheckBox();
     private final JTextField nightStatisticMultiplier = new JTextField();
     private final JTextField periodOfTimeToExportDetails = new JTextField();
     private final JPanel mainFrame;
@@ -79,7 +82,7 @@ public class ConfigurationPanel {
         this.mainFrame = panel;
         this.mapPanel = mapPanel;
         this.mainFrame.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        this.mainFrame.setPreferredSize(new Dimension(1000, 570));
+        this.mainFrame.setPreferredSize(new Dimension(1000, 670));
         this.mainFrame.setBackground(new Color(255, 255, 255, 255));
     }
 
@@ -152,6 +155,9 @@ public class ConfigurationPanel {
         drawInterventionDetailsCheckBox.setSelected(worldConfig.isDrawInterventionDetails());
         considerTimeOfDayCheckBox.setSelected(worldConfig.getConsiderTimeOfDay());
         periodOfTimeToExportDetails.setText(Double.toString(worldConfig.getPeriodOfTimeToExportDetails()));
+        enableSWATInterventionCheckBox.setSelected(worldConfig.getEnableSWATIntervention());
+        swatSquadsPerDistrict.setText(Integer.toString(worldConfig.getSWATSquadsPerDistrict()));
+        swatSoldiersPerSquad.setText(Integer.toString(worldConfig.getSWATSoldiersPerSquad()));
         setDurationInputs(worldConfig.getSimulationDuration());
     }
 
@@ -383,7 +389,6 @@ public class ConfigurationPanel {
         drawInterventionDetailsCheckBox.setBackground(new Color(255, 255, 255, 255));
         drawInterventionDetailsPanel.add(drawInterventionDetailsCheckBox);
         simulationConfigurationPanel.add(drawInterventionDetailsPanel);
-        simulationConfigurationPanel.add(jSeparator2);
 
 //----------------------------------------------------
 
@@ -632,6 +637,54 @@ public class ConfigurationPanel {
         buttonsPanel.add(minimumPatrollingUnits);
 // ----------------------------------------------------
 
+        var enableSWATInterventionsPanel = new JPanel();
+        enableSWATInterventionsPanel.add(new JLabel("Enable SWAT interventions for firings"));
+        enableSWATInterventionsPanel.setBackground(new Color(255, 255, 255, 255));
+        enableSWATInterventionsPanel.setPreferredSize(new Dimension(270, 32));
+        enableSWATInterventionCheckBox.setSelected(true);
+        enableSWATInterventionCheckBox.setBackground(new Color(255, 255, 255, 255));
+        enableSWATInterventionCheckBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                swatSquadsPerDistrict.setEnabled(true);
+                swatSoldiersPerSquad.setEnabled(true);
+            } else if (e.getStateChange() == ItemEvent.DESELECTED) {
+                swatSquadsPerDistrict.setEnabled(false);
+                swatSoldiersPerSquad.setEnabled(false);
+            }
+        });
+        enableSWATInterventionsPanel.add(enableSWATInterventionCheckBox);
+        buttonsPanel.add(enableSWATInterventionsPanel);
+
+//----------------------------------------------------
+        var swatDetailsOptions = new JPanel();
+        swatDetailsOptions.setLayout(new BoxLayout(swatDetailsOptions, BoxLayout.Y_AXIS));
+        var swatSquadsPerDistrictPanel = new JPanel();
+        swatSquadsPerDistrictPanel.setLayout(new BoxLayout(swatSquadsPerDistrictPanel, BoxLayout.Y_AXIS));
+        swatSquadsPerDistrictPanel.setBackground(new Color(255, 255, 255, 255));
+        swatSquadsPerDistrictPanel.setPreferredSize(new Dimension(270, 40));
+        swatSquadsPerDistrictPanel.add(new JLabel("           SWAT squads per districts"));
+        addRestrictionOfEnteringOnlyIntegers(swatSquadsPerDistrict);
+        swatSquadsPerDistrict.setInputVerifier(new PositiveIntegerInputVerifier());
+        swatSquadsPerDistrictPanel.add(swatSquadsPerDistrict);
+        swatDetailsOptions.add(swatSquadsPerDistrictPanel);
+
+
+//----------------------------------------------------
+        var swatSoldiersPerSquadPanel = new JPanel();
+        swatSoldiersPerSquadPanel.setLayout(new BoxLayout(swatSoldiersPerSquadPanel, BoxLayout.Y_AXIS));
+        swatSoldiersPerSquadPanel.setBackground(new Color(255, 255, 255, 255));
+        swatSoldiersPerSquadPanel.setPreferredSize(new Dimension(270, 40));
+        swatSoldiersPerSquadPanel.add(new JLabel("           SWAT soldiers per squad"));
+        addRestrictionOfEnteringOnlyIntegers(swatSoldiersPerSquad);
+        swatSoldiersPerSquad.setInputVerifier(new PositiveIntegerInputVerifier());
+        swatSoldiersPerSquadPanel.add(swatSoldiersPerSquad);
+        swatDetailsOptions.add(swatSoldiersPerSquadPanel);
+
+
+        buttonsPanel.add(swatDetailsOptions);
+
+// ----------------------------------------------------
+
         var runSimulationButton = new JButton("Start!");
         GridBagConstraints gbc = new GridBagConstraints();
         runSimulationButton.setPreferredSize(new Dimension(280, 63));
@@ -713,6 +766,11 @@ public class ConfigurationPanel {
         Logger.getInstance().logNewOtherMessage("World config has been set.");
 
         mapPanel.selectHQLocation();
+        var allDistricts = World.getInstance().getDistricts();
+
+        for(var district : allDistricts) {
+            district.createSWATHeadquarters();
+        }
     }
 
     public void resumeSimulationButtonClicked() {
@@ -726,11 +784,15 @@ public class ConfigurationPanel {
         config.setBasicSearchDistance(basicSearchDistanceTextField.getText().equals("") ? 1.0 : convertInputToDouble(basicSearchDistanceTextField, 1.0));
         config.setPeriodOfTimeToExportDetails(periodOfTimeToExportDetails.getText().equals("") ? 2.0 : convertInputToDouble(periodOfTimeToExportDetails, 1.0));
         config.setTimeRate(timeRateTextField.getText().equals("") ? 1 : convertInputToInteger(timeRateTextField, 1));
+        config.setSWATSquadsPerDistrict(swatSquadsPerDistrict.getText().equals("") ? 1 : convertInputToInteger(swatSquadsPerDistrict, 1));
+        config.setSWATSoldiersPerSquad(swatSoldiersPerSquad.getText().equals("") ? 1 : convertInputToInteger(swatSoldiersPerSquad, 1));
+        config.setTimeRate(timeRateTextField.getText().equals("") ? 1 : convertInputToInteger(timeRateTextField, 1));
         config.setSimulationDuration(getDurationFromInputs());
         config.setDrawDistrictsBorders(drawDistrictsBoundariesCheckBox.isSelected());
         config.setDrawFiringDetails(drawFiringDetailsCheckBox.isSelected());
         config.setDrawLegend(drawLegendCheckBox.isSelected());
         config.setDrawInterventionDetails(drawInterventionDetailsCheckBox.isSelected());
+        config.setEnableSWATIntervention(enableSWATInterventionCheckBox.isSelected());
 
         config.setMaxIncidentsForThreatLevel(District.ThreatLevelEnum.SAFE, threatLevelMaxIncidentsTextFieldSAFE.getText().equals("") ? 0 : convertInputToInteger(threatLevelMaxIncidentsTextFieldSAFE, 0));
         config.setMaxIncidentsForThreatLevel(District.ThreatLevelEnum.RATHER_SAFE, threatLevelMaxIncidentsTextFieldRATHERSAFE.getText().equals("") ? 0 : convertInputToInteger(threatLevelMaxIncidentsTextFieldRATHERSAFE, 0));

@@ -30,8 +30,11 @@ public class WorldConfiguration {
     private int basePatrollingSpeed = 40;
     private int baseTransferSpeed = 60;
     private int basePrivilegedSpeed = 80;
+    private int SWATSquadsPerDistrict = 3;
+    private int SWATSoldiersPerSquad = 5;
     private double nightStatisticMultiplier = 1.3;
     private boolean considerTimeOfDay = true;
+    private boolean enableSWATIntervention = true;
     private double periodOfTimeToExportDetails = 60;
 
     public WorldConfiguration() {
@@ -283,5 +286,29 @@ public class WorldConfiguration {
 
     public void setPeriodOfTimeToExportDetails(double periodOfTimeToExportDetails) {
         this.periodOfTimeToExportDetails = periodOfTimeToExportDetails;
+    }
+
+    public int getSWATSquadsPerDistrict() {
+        return SWATSquadsPerDistrict;
+    }
+
+    public int getSWATSoldiersPerSquad() {
+        return SWATSoldiersPerSquad;
+    }
+
+    public void setSWATSquadsPerDistrict(int SWATSquadsPerDistrict) {
+        this.SWATSquadsPerDistrict = SWATSquadsPerDistrict;
+    }
+
+    public void setSWATSoldiersPerSquad(int SWATSoldiersPerSquad) {
+        this.SWATSoldiersPerSquad = SWATSoldiersPerSquad;
+    }
+
+    public boolean getEnableSWATIntervention() {
+        return enableSWATIntervention;
+    }
+
+    public void setEnableSWATIntervention(boolean enableSWATIntervention) {
+        this.enableSWATIntervention = enableSWATIntervention;
     }
 }
