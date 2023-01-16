@@ -18,16 +18,20 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Ambulance extends Entity implements IAgent, IDrawable {
     private final World world = World.getInstance();
-    private final double basePatrollingSpeed;
+    private final double basePrivilegedSpeed;
     private double timeOfLastMove;
     private State state;
     private Action action;
     private Ambulance.State previousState;
     Entity hospital = world.getAllEntities().stream().filter(Hospital.class::isInstance).findFirst().orElse(null);
+    private double timeOfLastDrawNeutralization;
+    private final double timeBetweenDrawNeutralization;
 
     public Ambulance() {
-        this.basePatrollingSpeed = World.getInstance().getConfig().getBasePatrollingSpeed();
+        this.basePrivilegedSpeed = World.getInstance().getConfig().getBasePrivilegedSpeed();
         this.timeOfLastMove = World.getInstance().getSimulationTime();
+        this.timeOfLastDrawNeutralization = World.getInstance().getSimulationTime();
+        this.timeBetweenDrawNeutralization = ThreadLocalRandom.current().nextInt(1000) + 3000.0;
     }
 
     public Ambulance(double latitude, double longitude) {
@@ -43,8 +47,10 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
     public Ambulance(double x, double y, double baseTransferSpeed, double basePatrollingSpeed, double basePrivilegedSpeed) {
         this.setLatitude(x);
         this.setLongitude(y);
-        this.basePatrollingSpeed = basePatrollingSpeed;
+        this.basePrivilegedSpeed = basePrivilegedSpeed;
         this.timeOfLastMove = World.getInstance().getSimulationTime();
+        this.timeOfLastDrawNeutralization = World.getInstance().getSimulationTime();
+        this.timeBetweenDrawNeutralization = ThreadLocalRandom.current().nextInt(1000) + 3000.0;
     }
 
     public void updateStateSelf() {
@@ -56,6 +62,8 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
             updateStateIfFiring();
         } else if (state == State.RETURNING_TO_HOSPITAL) {
             updateStateIfReturningToHospital();
+        } else if (state == State.SAVING_HURT_PATROL) {
+            updateStateIfSavingHurtPatrol();
         } else if (state == State.CALCULATING_PATH) {
             updateStateIfCalculatingPath();
         }
@@ -83,9 +91,15 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
             if (action.target == null || !((Firing) action.target).isActive() || !(action.target instanceof Firing)) {
                 this.setState(State.RETURNING_TO_HOSPITAL);
                 this.setAction(new Transfer(World.getInstance().getSimulationTimeLong(), hospital, this.state));
-//                this.takeOrderAmbulance(new Transfer(World.getInstance().getSimulationTimeLong(),
-//                        hospital, State.RETURNING_TO_HOSPITAL));
                 System.out.println("koniec ");
+            } else if (World.getInstance().getSimulationTime() > timeOfLastDrawNeutralization + timeBetweenDrawNeutralization) {
+                if (ThreadLocalRandom.current().nextDouble() < 0.001) {
+                    System.out.println("potrzebny ambulans!");
+                    ((Firing) this.action.target).removeSolvingAmbulance(this);
+                    this.setState(State.SAVING_HURT_PATROL);
+                    this.setAction(new Transfer(World.getInstance().getSimulationTimeLong(), hospital, this.state));
+                }
+                timeOfLastDrawNeutralization = World.getInstance().getSimulationTime();
             }
         } else {
             throw new IllegalStateException("Action should be 'IncidentParticipation' and it is not");
@@ -96,7 +110,16 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
     private void updateStateIfReturningToHospital() {
         if (action instanceof Ambulance.Transfer) {
             if (((Ambulance.Transfer) action).pathNodeList.isEmpty()) {
-                System.out.println("elo wrocilem do szpitala");
+                System.out.println("hej wrocilem do szpitala ze strzelaniny");
+                setState(State.AVAILABLE);
+            }
+        }
+    }
+
+    private void updateStateIfSavingHurtPatrol() {
+        if (action instanceof Ambulance.Transfer) {
+            if (((Ambulance.Transfer) action).pathNodeList.isEmpty()) {
+                System.out.println("hej wrocilem do szpitala z rannym");
                 setState(State.AVAILABLE);
             }
         }
@@ -108,7 +131,7 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
             case AVAILABLE, ACCIDENT, CALCULATING_PATH:
                 //empty
                 break;
-            case RETURNING_TO_HOSPITAL:
+            case RETURNING_TO_HOSPITAL, SAVING_HURT_PATROL:
                 if (action instanceof Ambulance.Transfer && ((Ambulance.Transfer) this.action).pathNodeList != null) {
                     if (((Ambulance.Transfer) action).pathNodeList.isEmpty()) {
 //                        World.getInstance().removeEntity(this);
@@ -179,13 +202,13 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
 
     public double getSpeed() {
         switch (state) {
-            case TRANSFER_TO_ACCIDENT, RETURNING_TO_HOSPITAL:
-                return basePatrollingSpeed - (ThreadLocalRandom.current().nextBoolean() ? ThreadLocalRandom.current().nextDouble(basePatrollingSpeed * 10 / 100) : 0);
+            case TRANSFER_TO_ACCIDENT, RETURNING_TO_HOSPITAL, SAVING_HURT_PATROL:
+                return basePrivilegedSpeed + (ThreadLocalRandom.current().nextBoolean() ? ThreadLocalRandom.current().nextDouble(basePrivilegedSpeed * 10 / 100) : 0);
             case AVAILABLE:
-                return basePatrollingSpeed - (ThreadLocalRandom.current().nextBoolean() ? ThreadLocalRandom.current().nextDouble(basePatrollingSpeed * 10 / 100) : 0);
+                return basePrivilegedSpeed + (ThreadLocalRandom.current().nextBoolean() ? ThreadLocalRandom.current().nextDouble(basePrivilegedSpeed * 10 / 100) : 0);
             default:
                 Logger.getInstance().logNewOtherMessage("The patrol is currently not moving");
-                return basePatrollingSpeed;
+                return basePrivilegedSpeed;
         }
     }
 
@@ -216,6 +239,7 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
             case ACCIDENT -> g.setColor(new Color(255, 87, 36)); // yellowish
             case CALCULATING_PATH -> g.setColor(new Color(255, 123, 255)); // pink
             case RETURNING_TO_HOSPITAL -> g.setColor(new Color(255, 255, 0)); // orangeish
+            case SAVING_HURT_PATROL -> g.setColor(new Color(155, 55, 55)); // orangeish
             default -> {
                 g.setColor(Color.BLACK); // black
                 throw new IllegalStateException("the patrol has no State");
@@ -233,6 +257,7 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
     public enum State {
         AVAILABLE,
         TRANSFER_TO_ACCIDENT,
+        SAVING_HURT_PATROL,
         ACCIDENT,
         RETURNING_TO_HOSPITAL,
         CALCULATING_PATH
