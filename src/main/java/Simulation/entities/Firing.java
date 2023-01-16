@@ -21,6 +21,7 @@ public class Firing extends Incident implements IDrawable {
     private List<Ambulance> ambulancesSolving = new ArrayList<>();
     private List<Patrol> patrolsReaching = new ArrayList<>();
     private List<Ambulance> ambulancesReaching = new ArrayList<>();
+    private int neutralized = 0;
     private District district;
     private Ambulance ambulance;
 
@@ -31,11 +32,12 @@ public class Firing extends Incident implements IDrawable {
         this.strength = requiredPatrols * 15 * 60.0;
     }
 
-    public Firing(double latitude, double longitude, int requiredPatrols, double initialStrength, District district) {
+    public Firing(double latitude, double longitude, int requiredPatrols, double initialStrength, District district, int neutralized) {
         super(latitude, longitude);
         this.requiredPatrols = requiredPatrols;
         this.strength = initialStrength;
         this.district = district;
+        this.neutralized = neutralized;
     }
 
     public int getRequiredPatrols() {
@@ -85,6 +87,16 @@ public class Firing extends Incident implements IDrawable {
 
     public void removeSolvingPatrol(Patrol patrol) {
         patrolsSolving.remove(patrol);
+    }
+
+    public void addNeutralizedPatrol() {
+        neutralized++;
+    }
+    public int getNeutralizedPatrol() {
+        return neutralized;
+    }
+    public void removeNeutralizedPatrol() {
+        neutralized = 0;
     }
 
     public double getStrength() {

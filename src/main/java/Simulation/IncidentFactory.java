@@ -40,7 +40,7 @@ public class IncidentFactory {
         var numberOfRequiredPatrols = ThreadLocalRandom.current().nextInt(ceil > 4 ? ceil - 3 : 1, ceil + 1);
         strength *= numberOfRequiredPatrols;
 
-        return new Firing(intervention.getLatitude(), intervention.getLongitude(), numberOfRequiredPatrols, strength, intervention.getDistrict());
+        return new Firing(intervention.getLatitude(), intervention.getLongitude(), numberOfRequiredPatrols, strength, intervention.getDistrict(), 0);
     }
 
     private static double threatLevelToFiringChance(District.ThreatLevelEnum threatLevel) {

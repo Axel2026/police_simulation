@@ -92,15 +92,15 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
                 this.setState(State.RETURNING_TO_HOSPITAL);
                 this.setAction(new Transfer(World.getInstance().getSimulationTimeLong(), hospital, this.state));
                 System.out.println("koniec ");
-            } else if (World.getInstance().getSimulationTime() > timeOfLastDrawNeutralization + timeBetweenDrawNeutralization) {
-                if (ThreadLocalRandom.current().nextDouble() < 0.001) {
-                    System.out.println("potrzebny ambulans!");
-                    ((Firing) this.action.target).removeSolvingAmbulance(this);
-                    this.setState(State.SAVING_HURT_PATROL);
-                    this.setAction(new Transfer(World.getInstance().getSimulationTimeLong(), hospital, this.state));
-                }
-                timeOfLastDrawNeutralization = World.getInstance().getSimulationTime();
+            } else if (((Firing) this.action.target).getNeutralizedPatrol() > 0) {
+                System.out.println("potrzebny ambulans!");
+                ((Firing) this.action.target).removeSolvingAmbulance(this);
+                ((Firing) this.action.target).removeNeutralizedPatrol();
+                this.setState(State.SAVING_HURT_PATROL);
+                this.setAction(new Transfer(World.getInstance().getSimulationTimeLong(), hospital, this.state));
             }
+            timeOfLastDrawNeutralization = World.getInstance().getSimulationTime();
+
         } else {
             throw new IllegalStateException("Action should be 'IncidentParticipation' and it is not");
         }
