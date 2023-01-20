@@ -39,11 +39,10 @@ public class IncidentFactory {
         var ceil = (int) Math.ceil(strength / (15 * 60.0));
         var numberOfRequiredPatrols = ThreadLocalRandom.current().nextInt(ceil > 4 ? ceil - 3 : 1, ceil + 1);
         strength *= numberOfRequiredPatrols;
-        Firing newFiring = new Firing(intervention.getLatitude(), intervention.getLongitude(), numberOfRequiredPatrols, strength, intervention.getDistrict());
+        Firing newFiring = new Firing(intervention.getLatitude(), intervention.getLongitude(), numberOfRequiredPatrols, strength, intervention.getDistrict(), 0);
         intervention.getDistrict().getSwatHeadquarters().summonSWATSquad(newFiring);
-//        return newFiring;
-
-        return new Firing(intervention.getLatitude(), intervention.getLongitude(), numberOfRequiredPatrols, strength, intervention.getDistrict(), 0);
+        return newFiring;
+//        return new Firing(intervention.getLatitude(), intervention.getLongitude(), numberOfRequiredPatrols, strength, intervention.getDistrict(), 0);
     }
 
     private static double threatLevelToFiringChance(District.ThreatLevelEnum threatLevel) {

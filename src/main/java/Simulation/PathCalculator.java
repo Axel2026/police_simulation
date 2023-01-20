@@ -34,7 +34,7 @@ public class PathCalculator extends Thread {
     public void run() {
         var pathNodeList = getPathNodeList(source.getLatitude(), source.getLongitude(), target.getLatitude(), target.getLongitude());
 
-        if(source.getType() == EntityTypes.PATROL) {
+        if (source.getType() == EntityTypes.PATROL) {
             if (pathNodeList.size() == 1) {
                 var pathNodeList2 = new ArrayList<Node>();
                 pathNodeList2.add(pathNodeList.get(0));
@@ -42,7 +42,7 @@ public class PathCalculator extends Thread {
             } else {
                 ((Patrol.Transfer) ((Patrol) source).getAction()).setPathNodeList(pathNodeList);
             }
-        } else if(source.getType() == EntityTypes.SWAT) {
+        } else if (source.getType() == EntityTypes.SWAT) {
             if (pathNodeList.size() == 1) {
                 var pathNodeList2 = new ArrayList<Node>();
                 pathNodeList2.add(pathNodeList.get(0));
@@ -50,7 +50,8 @@ public class PathCalculator extends Thread {
             } else {
                 ((SWAT.Transfer) ((SWAT) source).getAction()).setPathNodeList(pathNodeList);
             }
-        if (pathNodeList.size() == 1 && source.toString().contains("Ambulance")) {
+        }
+        else if (pathNodeList.size() == 1 && source.toString().contains("Ambulance")) {
             System.out.println("pathNodeList amb " + pathNodeList);
             var pathNodeList2 = new ArrayList<Node>();
             pathNodeList2.add(pathNodeList.get(0));
@@ -68,7 +69,8 @@ public class PathCalculator extends Thread {
         }
     }
 
-    public List<Node> getPathNodeList(double sourceLatitude, double sourceLongitude, double targetLatitude, double targetLongitude) {
+    public List<Node> getPathNodeList(double sourceLatitude, double sourceLongitude, double targetLatitude,
+                                      double targetLongitude) {
         Node nearSourceNode = findNearestNode(new OsmLatLon(sourceLatitude, sourceLongitude));
         Node nearTargetNode1 = findNearestNode(new OsmLatLon(targetLatitude, targetLongitude));
         GraphPath<Node, ImportedEdge> path = pathCalc.getPath(nearSourceNode, nearTargetNode1);

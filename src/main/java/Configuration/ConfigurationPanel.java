@@ -83,7 +83,7 @@ public class ConfigurationPanel {
         this.mainFrame = panel;
         this.mapPanel = mapPanel;
         this.mainFrame.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        this.mainFrame.setPreferredSize(new Dimension(1000, 580));
+        this.mainFrame.setPreferredSize(new Dimension(1000, 710));
         this.mainFrame.setBackground(new Color(255, 255, 255, 255));
     }
 
