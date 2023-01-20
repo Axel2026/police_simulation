@@ -1,5 +1,6 @@
 package Simulation.entities;
 
+import Visualisation.Ambulance;
 import Visualisation.District;
 import Visualisation.IDrawable;
 import Visualisation.Patrol;
@@ -18,10 +19,14 @@ public class Firing extends Incident implements IDrawable {
     private final int requiredPatrols;
     private double strength;
     private List<Patrol> patrolsSolving = new ArrayList<>();
+    private List<Ambulance> ambulancesSolving = new ArrayList<>();
     private List<Patrol> patrolsReaching = new ArrayList<>();
     private List<SWAT> swatSolving = new ArrayList<>();
     private List<SWAT> swatReaching = new ArrayList<>();
+    private List<Ambulance> ambulancesReaching = new ArrayList<>();
+    private int neutralized = 0;
     private District district;
+    private Ambulance ambulance;
 
     public Firing(double latitude, double longitude) {
         super(latitude, longitude);
@@ -30,11 +35,12 @@ public class Firing extends Incident implements IDrawable {
         this.strength = requiredPatrols * 15 * 60.0;
     }
 
-    public Firing(double latitude, double longitude, int requiredPatrols, double initialStrength, District district) {
+    public Firing(double latitude, double longitude, int requiredPatrols, double initialStrength, District district, int neutralized) {
         super(latitude, longitude);
         this.requiredPatrols = requiredPatrols;
         this.strength = initialStrength;
         this.district = district;
+        this.neutralized = neutralized;
     }
 
     public int getRequiredPatrols() {
@@ -44,9 +50,15 @@ public class Firing extends Incident implements IDrawable {
     public List<Patrol> getPatrolsSolving() {
         return patrolsSolving;
     }
+    public List<Ambulance> getAmbulancesSolving() {
+        return ambulancesSolving;
+    }
 
     public List<Patrol> getPatrolsReaching() {
         return patrolsReaching;
+    }
+    public List<Ambulance> getAmbulancesReaching() {
+        return ambulancesReaching;
     }
 
     public boolean getIsSWATSolving() {
@@ -60,9 +72,24 @@ public class Firing extends Incident implements IDrawable {
     public void addReachingPatrol(Patrol patrol) {
         patrolsReaching.add(patrol);
     }
+    public void addReachingAmbulance(Ambulance ambulance) {
+        ambulancesReaching.add(ambulance);
+    }
 
     public void removeReachingPatrol(Patrol patrol) {
         patrolsReaching.remove(patrol);
+    }
+
+    public void addSolvingAmbulance(Ambulance ambulance) {
+        ambulancesSolving.add(ambulance);
+    }
+
+    public void removeSolvingAmbulance(Ambulance ambulance) {
+        ambulancesSolving.remove(ambulance);
+    }
+
+    public void removeReachingAmbulance(Ambulance ambulance) {
+        ambulancesReaching.remove(ambulance);
     }
 
     public void addSolvingPatrol(Patrol patrol) {
@@ -87,6 +114,16 @@ public class Firing extends Incident implements IDrawable {
 
     public void removeSolvingSWATSquad(SWAT swat) {
         swatSolving.remove(swat);
+    }
+
+    public void addNeutralizedPatrol() {
+        neutralized++;
+    }
+    public int getNeutralizedPatrol() {
+        return neutralized;
+    }
+    public void removeNeutralizedPatrol() {
+        neutralized = 0;
     }
 
     public double getStrength() {

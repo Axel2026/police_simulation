@@ -1,6 +1,7 @@
 package Simulation;
 
 import Visualisation.SWAT;
+import Visualisation.Ambulance;
 import de.westnordost.osmapi.map.data.LatLon;
 import de.westnordost.osmapi.map.data.Node;
 import de.westnordost.osmapi.map.data.OsmLatLon;
@@ -49,6 +50,21 @@ public class PathCalculator extends Thread {
             } else {
                 ((SWAT.Transfer) ((SWAT) source).getAction()).setPathNodeList(pathNodeList);
             }
+        if (pathNodeList.size() == 1 && source.toString().contains("Ambulance")) {
+            System.out.println("pathNodeList amb " + pathNodeList);
+            var pathNodeList2 = new ArrayList<Node>();
+            pathNodeList2.add(pathNodeList.get(0));
+            ((Ambulance.Transfer) ((Ambulance) source).getAction()).setPathNodeList(pathNodeList2);
+        } else if (pathNodeList.size() != 1 && source.toString().contains("Ambulance")) {
+            System.out.println("pathNodeList amb 2 " + pathNodeList);
+            ((Ambulance.Transfer) ((Ambulance) source).getAction()).setPathNodeList(pathNodeList);
+
+        } else if (pathNodeList.size() == 1 && source.toString().contains("Patrol")) {
+            var pathNodeList2 = new ArrayList<Node>();
+            pathNodeList2.add(pathNodeList.get(0));
+            ((Patrol.Transfer) ((Patrol) source).getAction()).setPathNodeList(pathNodeList2);
+        } else if (pathNodeList.size() != 1 && source.toString().contains("Patrol")) {
+            ((Patrol.Transfer) ((Patrol) source).getAction()).setPathNodeList(pathNodeList);
         }
     }
 

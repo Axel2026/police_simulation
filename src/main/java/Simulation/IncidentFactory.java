@@ -1,8 +1,11 @@
 package Simulation;
 
+import Simulation.entities.Hospital;
+import Visualisation.Ambulance;
 import Visualisation.District;
 import Simulation.entities.Firing;
 import Simulation.entities.Intervention;
+import Visualisation.Patrol;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -38,7 +41,9 @@ public class IncidentFactory {
         strength *= numberOfRequiredPatrols;
         Firing newFiring = new Firing(intervention.getLatitude(), intervention.getLongitude(), numberOfRequiredPatrols, strength, intervention.getDistrict());
         intervention.getDistrict().getSwatHeadquarters().summonSWATSquad(newFiring);
-        return newFiring;
+//        return newFiring;
+
+        return new Firing(intervention.getLatitude(), intervention.getLongitude(), numberOfRequiredPatrols, strength, intervention.getDistrict(), 0);
     }
 
     private static double threatLevelToFiringChance(District.ThreatLevelEnum threatLevel) {
