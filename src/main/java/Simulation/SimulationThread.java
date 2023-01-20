@@ -31,13 +31,12 @@ public class SimulationThread extends Thread {
             }
         }
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < world.getConfig().getNumberOfAmbulances(); i++) {
             var hospital = world.getAllEntities().stream().filter(Hospital.class::isInstance).findFirst().orElse(null);
             if (hospital != null) {
                 var newAmbulance = new Ambulance(hospital.getPosition());
                 newAmbulance.setState(Ambulance.State.AVAILABLE);
                 world.addEntity(newAmbulance);
-                System.out.println("ambulans " + i);
             } else {
                 try {
                     throw new IllegalStateException("HQ location is not defined");

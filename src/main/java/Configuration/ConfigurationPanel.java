@@ -38,6 +38,7 @@ public class ConfigurationPanel {
     private final HashMap<String, Integer> districtAdminLevelForAvailablePlaces = new HashMap<>();
     private final JTextField numberOfCityPatrolsTextField = new JTextField();
     private final JTextField minimumPatrollingUnitsTextField = new JTextField();
+    private final JTextField amountOfAmbulancesTextField = new JTextField();
     private final JTextField timeRateTextField = new JTextField();
     private final JTextField simulationDurationDaysTextField = new JTextField();
     private final JTextField simulationDurationHoursTextField = new JTextField();
@@ -79,7 +80,7 @@ public class ConfigurationPanel {
         this.mainFrame = panel;
         this.mapPanel = mapPanel;
         this.mainFrame.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        this.mainFrame.setPreferredSize(new Dimension(1000, 570));
+        this.mainFrame.setPreferredSize(new Dimension(1000, 580));
         this.mainFrame.setBackground(new Color(255, 255, 255, 255));
     }
 
@@ -145,6 +146,7 @@ public class ConfigurationPanel {
         timeRateTextField.setText(Integer.toString(worldConfig.getTimeRate()));
         numberOfCityPatrolsTextField.setText(Integer.toString(worldConfig.getNumberOfPolicePatrols()));
         minimumPatrollingUnitsTextField.setText(Integer.toString(worldConfig.getMinimumNumberOfPatrollingUnits()));
+        amountOfAmbulancesTextField.setText(Integer.toString(worldConfig.getNumberOfAmbulances()));
         basicSearchDistanceTextField.setText(Double.toString(worldConfig.getBasicSearchDistance()));
         drawDistrictsBoundariesCheckBox.setSelected(worldConfig.isDrawDistrictsBorders());
         drawFiringDetailsCheckBox.setSelected(worldConfig.isDrawFiringDetails());
@@ -631,6 +633,16 @@ public class ConfigurationPanel {
         minimumPatrollingUnits.add(minimumPatrollingUnitsTextField);
         buttonsPanel.add(minimumPatrollingUnits);
 // ----------------------------------------------------
+        var amountOfAmbulances = new JPanel();
+        amountOfAmbulances.setLayout(new BoxLayout(amountOfAmbulances, BoxLayout.Y_AXIS));
+        amountOfAmbulances.setBackground(new Color(255, 255, 255, 255));
+        amountOfAmbulances.setPreferredSize(new Dimension(270, 40));
+        amountOfAmbulances.add(new JLabel("                       Number of ambulances"));
+        addRestrictionOfEnteringOnlyIntegers(amountOfAmbulancesTextField);
+        amountOfAmbulances.setInputVerifier(new PositiveIntegerInputVerifier());
+        amountOfAmbulances.add(amountOfAmbulancesTextField);
+        buttonsPanel.add(amountOfAmbulances);
+// ----------------------------------------------------
 
         var runSimulationButton = new JButton("Start!");
         GridBagConstraints gbc = new GridBagConstraints();
@@ -723,6 +735,7 @@ public class ConfigurationPanel {
     private void setDataFromConfigurationPanel(WorldConfiguration config) {
         config.setNumberOfPolicePatrols(numberOfCityPatrolsTextField.getText().equals("") ? 1 : convertInputToInteger(numberOfCityPatrolsTextField, 1));
         config.setMinimumNumberOfPatrollingUnits(minimumPatrollingUnitsTextField.getText().equals("") ? 1 : convertInputToInteger(minimumPatrollingUnitsTextField, 1));
+        config.setNumberOfAmbulances(amountOfAmbulancesTextField.getText().equals("") ? 1 : convertInputToInteger(amountOfAmbulancesTextField, 1));
         config.setBasicSearchDistance(basicSearchDistanceTextField.getText().equals("") ? 1.0 : convertInputToDouble(basicSearchDistanceTextField, 1.0));
         config.setPeriodOfTimeToExportDetails(periodOfTimeToExportDetails.getText().equals("") ? 2.0 : convertInputToDouble(periodOfTimeToExportDetails, 1.0));
         config.setTimeRate(timeRateTextField.getText().equals("") ? 1 : convertInputToInteger(timeRateTextField, 1));
