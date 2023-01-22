@@ -94,6 +94,7 @@ public class Intervention extends Incident implements IDrawable {
     public void setPatrolSolving(Patrol patrolSolving) {
         this.patrolSolving = patrolSolving;
     }
+
     public void setAmbulanceSolving(Ambulance ambulanceSolving) {
         this.ambulanceSolving = ambulanceSolving;
     }

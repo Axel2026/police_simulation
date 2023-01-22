@@ -178,7 +178,7 @@ public class MapPanel {
         JOptionPane.showMessageDialog(panel, "Please select HQ location.");
     }
 
-    public void addAmbulances(GeoPosition position, int amountOfAmbulances){
+    public void addAmbulances(GeoPosition position, int amountOfAmbulances) {
         for (int i = 0; i < amountOfAmbulances; i++) {
             Ambulance ambulance = new Ambulance(position.getLatitude(), position.getLongitude());
             World.getInstance().addEntity(ambulance);
@@ -340,16 +340,22 @@ public class MapPanel {
 
         generateIntervention.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                var districtAmount = world.getDistricts().size();
-                var district = ThreadLocalRandom.current().nextInt(0, districtAmount + 1);
-                var intervention = new Intervention(
-                        position.getLatitude(),
-                        position.getLongitude(),
-                        (long) (Integer.parseInt(interventionDurationInput.getText()) * (60.0)),
-                        willChangeIntoFiringCheckbox.isSelected(),
-                        (long) (Integer.parseInt(timeToChangeIntoFiringInput.getText()) * (60.0)),
-                        world.getDistricts().get(district)
-                );
+                var allDistricts = world.getDistricts();
+                Intervention intervention = null;
+
+                for (var district : allDistricts) {
+                    if (district.contains(position.getLatitude(), position.getLongitude())) {
+                        intervention = new Intervention(
+                                position.getLatitude(),
+                                position.getLongitude(),
+                                (long) (Integer.parseInt(interventionDurationInput.getText()) * (60.0)),
+                                willChangeIntoFiringCheckbox.isSelected(),
+                                (long) (Integer.parseInt(timeToChangeIntoFiringInput.getText()) * (60.0)),
+                                district
+                        );
+                    }
+                }
+
                 World.getInstance().addEntity(intervention);
                 willChangeIntoFiringCheckbox.setSelected(false);
                 frame.setVisible(false);
