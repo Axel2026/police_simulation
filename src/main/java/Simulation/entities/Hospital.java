@@ -10,6 +10,7 @@ import org.jxmapviewer.viewer.GeoPosition;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -39,7 +40,7 @@ public class Hospital extends Entity implements IDrawable {
         final var size = 10;
         var point = mapViewer.convertGeoPositionToPoint(new GeoPosition(getLatitude(), getLongitude()));
 
-        var mark = new Ellipse2D.Double((int) (point.getX() - size / 2.0), (int) (point.getY() - size / 2.0), size, size);
+        var mark = new Rectangle2D.Double((int) (point.getX() - size / 2.0), (int) (point.getY() - size / 2.0), size, size);
         g.fill(mark);
 
         g.setColor(oldColor);
