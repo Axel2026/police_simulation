@@ -159,6 +159,7 @@ public class Patrol extends Entity implements IAgent, IDrawable {
             } else if (World.getInstance().getSimulationTime() > timeOfLastDrawNeutralization + timeBetweenDrawNeutralization) {
                 if (ThreadLocalRandom.current().nextDouble() < 0.001) {
                     ((Firing) this.action.target).removeSolvingPatrol(this);
+                    ((Firing) this.action.target).addNeutralizedPatrol();
                     setState(State.NEUTRALIZED);
                 }
                 timeOfLastDrawNeutralization = World.getInstance().getSimulationTime();
@@ -263,6 +264,11 @@ public class Patrol extends Entity implements IAgent, IDrawable {
         this.action = action;
     }
 
+    @Override
+    public void takeOrderAmbulance(Ambulance.Action action) {
+
+    }
+
     private double getDistanceToNearestNode() {
         if (((Transfer) action).pathNodeList.isEmpty()) throw new IllegalStateException("pathNodeList is empty!");
 
@@ -290,6 +296,11 @@ public class Patrol extends Entity implements IAgent, IDrawable {
 
     public State getState() {
         return state;
+    }
+
+    @Override
+    public Ambulance.State getStateAmbulance() {
+        return null;
     }
 
     public void setState(State state) {

@@ -18,6 +18,7 @@ public class WorldConfiguration {
     private long simulationDuration = 259200;
     private int numberOfPolicePatrols = 40;
     private int minimumNumberOfPatrollingUnits = 5;
+    private int numberOfAmbulances = 8;
     private double basicSearchDistance = 1200.0;
     private boolean drawDistrictsBorders = true;
     private boolean drawFiringDetails = true;
@@ -92,6 +93,14 @@ public class WorldConfiguration {
 
     public void setMinimumNumberOfPatrollingUnits(int minimumNumberOfPatrollingUnits) {
         this.minimumNumberOfPatrollingUnits = minimumNumberOfPatrollingUnits;
+    }
+
+    public int getNumberOfAmbulances() {
+        return numberOfAmbulances;
+    }
+
+    public void setNumberOfAmbulances(int numberOfAmbulances) {
+        this.numberOfAmbulances = numberOfAmbulances;
     }
 
     public double getBasicSearchDistance() {

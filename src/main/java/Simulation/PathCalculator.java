@@ -1,6 +1,7 @@
 package Simulation;
 
 import Visualisation.SWAT;
+import Visualisation.Ambulance;
 import de.westnordost.osmapi.map.data.LatLon;
 import de.westnordost.osmapi.map.data.Node;
 import de.westnordost.osmapi.map.data.OsmLatLon;
@@ -33,7 +34,7 @@ public class PathCalculator extends Thread {
     public void run() {
         var pathNodeList = getPathNodeList(source.getLatitude(), source.getLongitude(), target.getLatitude(), target.getLongitude());
 
-        if(source.getType() == EntityTypes.PATROL) {
+        if (source.getType() == EntityTypes.PATROL) {
             if (pathNodeList.size() == 1) {
                 var pathNodeList2 = new ArrayList<Node>();
                 pathNodeList2.add(pathNodeList.get(0));
@@ -41,7 +42,7 @@ public class PathCalculator extends Thread {
             } else {
                 ((Patrol.Transfer) ((Patrol) source).getAction()).setPathNodeList(pathNodeList);
             }
-        } else if(source.getType() == EntityTypes.SWAT) {
+        } else if (source.getType() == EntityTypes.SWAT) {
             if (pathNodeList.size() == 1) {
                 var pathNodeList2 = new ArrayList<Node>();
                 pathNodeList2.add(pathNodeList.get(0));
@@ -50,9 +51,26 @@ public class PathCalculator extends Thread {
                 ((SWAT.Transfer) ((SWAT) source).getAction()).setPathNodeList(pathNodeList);
             }
         }
+        else if (pathNodeList.size() == 1 && source.toString().contains("Ambulance")) {
+            System.out.println("pathNodeList amb " + pathNodeList);
+            var pathNodeList2 = new ArrayList<Node>();
+            pathNodeList2.add(pathNodeList.get(0));
+            ((Ambulance.Transfer) ((Ambulance) source).getAction()).setPathNodeList(pathNodeList2);
+        } else if (pathNodeList.size() != 1 && source.toString().contains("Ambulance")) {
+            System.out.println("pathNodeList amb 2 " + pathNodeList);
+            ((Ambulance.Transfer) ((Ambulance) source).getAction()).setPathNodeList(pathNodeList);
+
+        } else if (pathNodeList.size() == 1 && source.toString().contains("Patrol")) {
+            var pathNodeList2 = new ArrayList<Node>();
+            pathNodeList2.add(pathNodeList.get(0));
+            ((Patrol.Transfer) ((Patrol) source).getAction()).setPathNodeList(pathNodeList2);
+        } else if (pathNodeList.size() != 1 && source.toString().contains("Patrol")) {
+            ((Patrol.Transfer) ((Patrol) source).getAction()).setPathNodeList(pathNodeList);
+        }
     }
 
-    public List<Node> getPathNodeList(double sourceLatitude, double sourceLongitude, double targetLatitude, double targetLongitude) {
+    public List<Node> getPathNodeList(double sourceLatitude, double sourceLongitude, double targetLatitude,
+                                      double targetLongitude) {
         Node nearSourceNode = findNearestNode(new OsmLatLon(sourceLatitude, sourceLongitude));
         Node nearTargetNode1 = findNearestNode(new OsmLatLon(targetLatitude, targetLongitude));
         GraphPath<Node, ImportedEdge> path = pathCalc.getPath(nearSourceNode, nearTargetNode1);

@@ -46,6 +46,10 @@ public class District implements IDrawable {
         return this.boundaries.contains(latLon.getLatitude(), latLon.getLongitude());
     }
 
+    public boolean contains(double lat, double lon) {
+        return this.boundaries.contains(lat, lon);
+    }
+
     public void addNodeToDistrict(Node node) {
         allNodesInDistrict.add(node);
     }
