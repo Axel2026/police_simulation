@@ -88,7 +88,7 @@ public class SimulationThread extends Thread {
         var allPatrols = world.getAllEntities().stream().filter(Patrol.class::isInstance).map(Patrol.class::cast).collect(Collectors.toList());
         var hq = world.getAllEntities().stream().filter(Headquarters.class::isInstance).findFirst().orElse(null);
 
-        while(allPatrols.stream().filter(x -> x.getState() == Patrol.State.PATROLLING).count() < world.getConfig().getMinimumNumberOfPatrollingUnits()) {
+        while((allPatrols.stream().filter(x -> x.getState() == Patrol.State.PATROLLING).count() + allPatrols.stream().filter(x -> x.getState() == Patrol.State.CALCULATING_PATH).count() + allPatrols.stream().filter(x -> x.getState() == Patrol.State.RETURNING_TO_HQ).count()) < world.getConfig().getMinimumNumberOfPatrollingUnits()) {
             var newPatrol = new Patrol(hq.getPosition());
             newPatrol.setState(Patrol.State.PATROLLING);
             world.addEntity(newPatrol);
