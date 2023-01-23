@@ -79,6 +79,7 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
                 setState(State.ACCIDENT);
                 ((Firing) action.target).removeReachingAmbulance(this);
                 ((Firing) action.target).addSolvingAmbulance(this);
+                world.addAmbulanceInUse();
                 action = new Ambulance.IncidentParticipation(World.getInstance().getSimulationTimeLong(), (Incident) action.target);
             }
         } else {

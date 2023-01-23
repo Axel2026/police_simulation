@@ -1,24 +1,19 @@
 package Simulation.entities;
 
 import Simulation.World;
-import Simulation.exported_data.ExportFiringDetails;
-import Simulation.exported_data.ExportRevokingPatrolsDetails;
-import Simulation.exported_data.ExportSupportSummonDetails;
+import Simulation.exported_data.*;
 import Visualisation.Ambulance;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
 
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import Visualisation.IDrawable;
-import utils.Logger;
 
 public class Hospital extends Entity implements IDrawable {
     private final World world = World.getInstance();
@@ -76,6 +71,7 @@ public class Hospital extends Entity implements IDrawable {
     }
 
     private void giveOrdersToFoundAmbulance(Incident firing, Ambulance foundAmbulance) {
+        ExportAmbulanceDistanceAndTimeToReachFiring.getInstance().writeToCsvFile((Firing) firing, foundAmbulance);
         foundAmbulance.setState(Ambulance.State.TRANSFER_TO_ACCIDENT);
         foundAmbulance.takeOrderAmbulance((
                 foundAmbulance.new Transfer(World.getInstance().getSimulationTimeLong(),

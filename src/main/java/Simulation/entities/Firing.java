@@ -26,7 +26,6 @@ public class Firing extends Incident implements IDrawable {
     private List<Ambulance> ambulancesReaching = new ArrayList<>();
     private int neutralized = 0;
     private District district;
-    private Ambulance ambulance;
 
     public Firing(double latitude, double longitude) {
         super(latitude, longitude);
@@ -50,6 +49,7 @@ public class Firing extends Incident implements IDrawable {
     public List<Patrol> getPatrolsSolving() {
         return patrolsSolving;
     }
+
     public List<Ambulance> getAmbulancesSolving() {
         return ambulancesSolving;
     }
@@ -57,6 +57,7 @@ public class Firing extends Incident implements IDrawable {
     public List<Patrol> getPatrolsReaching() {
         return patrolsReaching;
     }
+
     public List<Ambulance> getAmbulancesReaching() {
         return ambulancesReaching;
     }
@@ -72,6 +73,7 @@ public class Firing extends Incident implements IDrawable {
     public void addReachingPatrol(Patrol patrol) {
         patrolsReaching.add(patrol);
     }
+
     public void addReachingAmbulance(Ambulance ambulance) {
         ambulancesReaching.add(ambulance);
     }
@@ -119,9 +121,11 @@ public class Firing extends Incident implements IDrawable {
     public void addNeutralizedPatrol() {
         neutralized++;
     }
+
     public int getNeutralizedPatrol() {
         return neutralized;
     }
+
     public void removeNeutralizedPatrol() {
         neutralized = 0;
     }
@@ -147,7 +151,7 @@ public class Firing extends Incident implements IDrawable {
         g.fill(mark);
 
         if (World.getInstance().getConfig().isDrawFiringDetails()) {
-            drawString(g,(int) point.getX() + 5, (int) point.getY(), String.format("Time left: %.2f [minutes]", strength / 60 / patrolsSolving.size()));
+            drawString(g, (int) point.getX() + 5, (int) point.getY(), String.format("Time left: %.2f [minutes]", strength / 60 / patrolsSolving.size()));
             drawString(g, (int) point.getX() + 5, (int) point.getY() - 15, String.format("Patrols Required: %d", requiredPatrols));
             drawString(g, (int) point.getX() + 5, (int) point.getY() - 30, String.format("Patrols Reaching: %d", patrolsReaching.size()));
             drawString(g, (int) point.getX() + 5, (int) point.getY() - 45, String.format("Patrols Solving :%d", patrolsSolving.size()));
