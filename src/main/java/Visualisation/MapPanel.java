@@ -23,6 +23,7 @@ import utils.Logger;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.util.*;
 import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
@@ -607,51 +608,115 @@ public class MapPanel {
             // Draw background
             var oldColor = g.getColor();
             g.setColor(new Color(244, 226, 198, 225));
-            g.fillRect(topLeftCornerX, 0, 1450 - topLeftCornerX, 240);
+            g.fillRect(topLeftCornerX, 0, 1465 - topLeftCornerX, 470);
             g.setColor(oldColor);
 
-            var patrolStates = new HashMap<String, Color>();
-            patrolStates.put("PATROLLING", new Color(0, 153, 0));
-            patrolStates.put("RETURNING_TO_HQ", new Color(0, 100, 0));
-            patrolStates.put("TXFR_TO_INTERVENTION", new Color(255, 87, 36));
-            patrolStates.put("TRANSFER_TO_FIRING", new Color(255, 131, 54));
-            patrolStates.put("INTERVENTION", new Color(0, 92, 230));
-            patrolStates.put("FIRING", new Color(153, 0, 204));
-            patrolStates.put("NEUTRALIZED", new Color(255, 255, 255));
-            patrolStates.put("CALCULATING_PATH", new Color(255, 123, 255));
+            var swatStates = new HashMap<String, Color>();
+            swatStates.put("CALCULATING_PATH", new Color(255, 123, 255));
+            swatStates.put("RETURNING_TO_HQ", new Color(222, 205, 0));
+            swatStates.put("INTERVENTION", new Color(0, 92, 230));
+            swatStates.put("TRANSFER_TO_FIRING", new Color(102, 0, 224 ));
+            swatStates.put("WAITING_FOR_ORDERS", new Color(224, 0, 180));
 
             int i = 0;
-            for (Map.Entry<String, Color> entry : patrolStates.entrySet()) {
+
+            for (Map.Entry<String, Color> entry : swatStates.entrySet()) {
                 g.setColor(entry.getValue());
-                var mark = new Ellipse2D.Double((int) 1475, 260 - 50 - i * 15.0, size, size);
+                var mark = new Ellipse2D.Double((int) 1475, 470 - 30 - i * 15.0, size, size);
                 g.fill(mark);
 
                 g.setColor(oldColor);
-                g.drawString(entry.getKey(), 1475 + 18, 260 - 40 - i * 15);
+                g.drawString(entry.getKey(), 1475 + 18, 470 - 20 - i * 15);
                 i++;
             }
+
             var oldFont = g.getFont();
             g.setFont(new Font(newFont, Font.BOLD, 13));
-            g.drawString("Patrol's states:", 1475, 260 - 40 - i * 15);
+            g.drawString("SWAT's states:", 1475, 470 - 20 - i * 15);
+            g.setFont(oldFont);
+            i++;
+
+            var ambulanceStates = new HashMap<String, Color>();
+            ambulanceStates.put("CALCULATING_PATH", new Color(255, 123, 255));
+            ambulanceStates.put("SAVING_HURT_PATROL", new Color(155, 55, 55));
+            ambulanceStates.put("RETURNING_TO_HOSPITAL", new Color(222, 161, 0));
+            ambulanceStates.put("ACCIDENT", new Color(255, 87, 36));
+            ambulanceStates.put("TRANSFER_TO_ACCIDENT", new Color(30, 180, 200));
+            ambulanceStates.put("AVAILABLE", new Color(70, 100, 200));
+
+            for (Map.Entry<String, Color> entry : ambulanceStates.entrySet()) {
+                g.setColor(entry.getValue());
+                var mark = new Ellipse2D.Double((int) 1475, 470 - 40 - i * 15.0, size, size);
+                g.fill(mark);
+
+                g.setColor(oldColor);
+                g.drawString(entry.getKey(), 1475 + 18, 470 - 30 - i * 15);
+                i++;
+            }
+
+            oldFont = g.getFont();
+            g.setFont(new Font(newFont, Font.BOLD, 13));
+            g.drawString("Ambulance's states:", 1475, 470 - 30 - i * 15);
+            g.setFont(oldFont);
+            i++;
+
+            var patrolStates = new HashMap<String, Color>();
+            patrolStates.put("CALCULATING_PATH", new Color(255, 123, 255));
+            patrolStates.put("NEUTRALIZED", new Color(255, 255, 255));
+            patrolStates.put("RETURNING_TO_HQ", new Color(0, 100, 0));
+            patrolStates.put("FIRING", new Color(153, 0, 204));
+            patrolStates.put("TRANSFER_TO_FIRING", new Color(255, 131, 54));
+            patrolStates.put("INTERVENTION", new Color(0, 92, 230));
+            patrolStates.put("TXFR_TO_INTERVENTION", new Color(255, 87, 36));
+            patrolStates.put("PATROLLING", new Color(0, 153, 0));
+
+            for (Map.Entry<String, Color> entry : patrolStates.entrySet()) {
+                g.setColor(entry.getValue());
+                var mark = new Ellipse2D.Double((int) 1475, 470 - 50 - i * 15.0, size, size);
+                g.fill(mark);
+
+                g.setColor(oldColor);
+                g.drawString(entry.getKey(), 1475 + 18, 470 - 40 - i * 15);
+                i++;
+            }
+
+
+            oldFont = g.getFont();
+            g.setFont(new Font(newFont, Font.BOLD, 13));
+            g.drawString("Patrol's states:", 1475, 470 - 40 - i * 15);
             g.setFont(oldFont);
             i++;
             var places = new HashMap<String, Color>();
+            var places2 = new HashMap<String, Color>();
+            places.put("SWAT", Color.PINK);
+            places.put("HOSPITAL", Color.CYAN);
             places.put("HQ", Color.BLUE);
-            places.put("INTERVENTION", Color.RED);
-            places.put("FIRING", Color.BLACK);
+            places2.put("INTERVENTION", Color.RED);
+            places2.put("FIRING", Color.BLACK);
 
-            for (Map.Entry<String, Color> entry : places.entrySet()) {
+            for (Map.Entry<String, Color> entry : places2.entrySet()) {
                 g.setColor(entry.getValue());
-                var mark = new Ellipse2D.Double((int) 1475, 260 - 60 - i * 15.0, size, size);
+                var mark = new Ellipse2D.Double((int) 1475, 470 - 60 - i * 15.0, size, size);
                 g.fill(mark);
 
                 g.setColor(oldColor);
-                g.drawString(entry.getKey(), 1475 + 18, 260 - 50 - i * 15);
+                g.drawString(entry.getKey(), 1475 + 18, 470 - 50 - i * 15);
                 i++;
             }
+
+            for (Map.Entry<String, Color> entry : places.entrySet()) {
+                g.setColor(entry.getValue());
+                var mark = new Rectangle2D.Double((int) 1475, 470 - 60 - i * 15.0, size, size);
+                g.fill(mark);
+
+                g.setColor(oldColor);
+                g.drawString(entry.getKey(), 1475 + 18, 470 - 50 - i * 15);
+                i++;
+            }
+
             oldFont = g.getFont();
             g.setFont(new Font(newFont, Font.BOLD, 13));
-            g.drawString("Places:", 1475, 260 - 50 - i * 15);
+            g.drawString("Places:", 1475, 470 - 50 - i * 15);
             g.setFont(oldFont);
         }
     }

@@ -299,10 +299,10 @@ public class SWAT extends Entity implements IDrawable {
         var oldColor = g.getColor();
 
         switch (this.state) {
-            case WAITING_FOR_ORDERS -> g.setColor(new Color(255, 131, 54, 255)); // transparent
-            case TRANSFER_TO_FIRING -> g.setColor(new Color(255, 131, 54)); // orangeish
+            case WAITING_FOR_ORDERS -> g.setColor(new Color(224, 0, 180)); // transparent
+            case TRANSFER_TO_FIRING -> g.setColor(new Color(102, 0, 224)); // orangeish
             case INTERVENTION -> g.setColor(new Color(0, 92, 230)); // blue
-            case RETURNING_TO_HQ -> g.setColor(new Color(153, 0, 204)); // purple
+            case RETURNING_TO_HQ -> g.setColor(new Color(222, 205, 0)); // purple
             case CALCULATING_PATH -> g.setColor(new Color(255, 123, 255)); // pink
             default -> {
                 g.setColor(Color.BLACK); // black

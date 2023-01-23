@@ -239,7 +239,7 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
             case TRANSFER_TO_ACCIDENT -> g.setColor(new Color(30, 180, 200)); // green
             case ACCIDENT -> g.setColor(new Color(255, 87, 36)); // yellowish
             case CALCULATING_PATH -> g.setColor(new Color(255, 123, 255)); // pink
-            case RETURNING_TO_HOSPITAL -> g.setColor(new Color(255, 255, 0)); // orangeish
+            case RETURNING_TO_HOSPITAL -> g.setColor(new Color(222, 161, 0)); // orangeish
             case SAVING_HURT_PATROL -> g.setColor(new Color(155, 55, 55)); // orangeish
             default -> {
                 g.setColor(Color.BLACK); // black
