@@ -60,9 +60,6 @@ public class ExportAverageAmbulanceDistanceAndTimeToReachFiring extends Thread {
                 var simulationTimeLong = world.getSimulationTimeLong();
                 coveredDistanceSum = world.getCoveredDistance();
                 elapsedTimeSum = world.getElapsedTime();
-                System.out.println("coveredDistanceSum " + coveredDistanceSum);
-                System.out.println("elapsedTimeSum " + elapsedTimeSum);
-                System.out.println("getDistanceAndTimeCounter " + world.getDistanceAndTimeCounter());
                 try {
                     writeToSimulationDetailsCsvFile(simulationTimeLong, coveredDistanceSum / world.getDistanceAndTimeCounter(), elapsedTimeSum / world.getDistanceAndTimeCounter());
                     world.removeCoveredDistance();

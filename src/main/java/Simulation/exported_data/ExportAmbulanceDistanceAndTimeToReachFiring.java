@@ -54,8 +54,6 @@ public class ExportAmbulanceDistanceAndTimeToReachFiring extends AbstractExportD
 
     private void writeToFiringsDetailsCsvFile(long simulationTimeLong, Firing firing, Ambulance summonedAmbulance) throws IOException {
         var csvWriter = new CSVWriter(new FileWriter(averageAmbulanceTimeToReachCsvFile, true));
-        System.out.println("dystans " + (distanceOfSummonedAmbulance(firing, summonedAmbulance)));
-        System.out.println("czas " + ((distanceOfSummonedAmbulance(firing, summonedAmbulance)) / ((World.getInstance().getConfig().getBasePrivilegedSpeed() * 1000) / 3600.0)));
         csvWriter.writeNext(new String[]{
                 String.valueOf(simulationTimeLong),
                 String.valueOf(firing.getUniqueID()),

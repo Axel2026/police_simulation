@@ -92,7 +92,6 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
             if (action.target == null || !((Firing) action.target).isActive() || !(action.target instanceof Firing)) {
                 this.setState(State.RETURNING_TO_HOSPITAL);
                 this.setAction(new Transfer(World.getInstance().getSimulationTimeLong(), hospital, this.state));
-                System.out.println("koniec ");
             } else if (((Firing) this.action.target).getNeutralizedPatrol() > 0) {
                 System.out.println("potrzebny ambulans!");
                 ((Firing) this.action.target).removeSolvingAmbulance(this);

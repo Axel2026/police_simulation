@@ -1,5 +1,6 @@
 package Simulation.entities;
 
+import Simulation.StatisticsCounter;
 import Visualisation.Ambulance;
 import Visualisation.District;
 import Visualisation.IDrawable;
@@ -18,6 +19,7 @@ public class Firing extends Incident implements IDrawable {
 
     private final int requiredPatrols;
     private double strength;
+    private int duration;
     private List<Patrol> patrolsSolving = new ArrayList<>();
     private List<Ambulance> ambulancesSolving = new ArrayList<>();
     private List<Patrol> patrolsReaching = new ArrayList<>();
@@ -26,6 +28,7 @@ public class Firing extends Incident implements IDrawable {
     private List<Ambulance> ambulancesReaching = new ArrayList<>();
     private int neutralized = 0;
     private District district;
+    private int durationCounter = 0;
 
     public Firing(double latitude, double longitude) {
         super(latitude, longitude);
@@ -34,9 +37,10 @@ public class Firing extends Incident implements IDrawable {
         this.strength = requiredPatrols * 15 * 60.0;
     }
 
-    public Firing(double latitude, double longitude, int requiredPatrols, double initialStrength, District district, int neutralized) {
+    public Firing(double latitude, double longitude, int requiredPatrols, double initialStrength, int duration, District district, int neutralized) {
         super(latitude, longitude);
         this.requiredPatrols = requiredPatrols;
+        this.duration = duration;
         this.strength = initialStrength;
         this.district = district;
         this.neutralized = neutralized;
@@ -146,7 +150,10 @@ public class Firing extends Incident implements IDrawable {
 
         final var size = 10;
         var point = mapViewer.convertGeoPositionToPoint(new GeoPosition(getLatitude(), getLongitude()));
-
+        if (durationCounter < 1) {
+            StatisticsCounter.getInstance().increaseDurationOfFirings(duration / 60);
+            durationCounter = 1;
+        }
         var mark = new Ellipse2D.Double((int) (point.getX() - size / 2.0), (int) (point.getY() - size / 2.0), size, size);
         g.fill(mark);
 

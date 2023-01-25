@@ -1,6 +1,7 @@
 package Simulation.entities;
 
 import Simulation.IncidentFactory;
+import Simulation.StatisticsCounter;
 import Visualisation.Ambulance;
 import Visualisation.District;
 import Visualisation.IDrawable;
@@ -17,7 +18,7 @@ public class Intervention extends Incident implements IDrawable {
     private final boolean willChangeIntoFiring;
     private final long timeToChange;
     private District district;
-
+    private int durationCounter = 0;
     private Patrol patrolSolving;
     private Ambulance ambulanceSolving;
 
@@ -72,6 +73,10 @@ public class Intervention extends Incident implements IDrawable {
     public void drawSelf(Graphics2D g, JXMapViewer mapViewer) {
         super.drawSelf(g, mapViewer);
         var point = mapViewer.convertGeoPositionToPoint(new GeoPosition(getLatitude(), getLongitude()));
+        if (durationCounter < 1) {
+            StatisticsCounter.getInstance().increaseDurationOfInterventions((int) (duration / 60));
+            durationCounter = 1;
+        }
         if (World.getInstance().isSimulationPaused() && World.getInstance().getConfig().isDrawInterventionDetails()) {
             drawString(g, (int) point.getX() + 5, (int) point.getY(), "Duration:" + duration / 60 + " [minutes]");
             drawString(g, (int) point.getX() + 5, (int) point.getY() - 15, "Will change into firing: " + willChangeIntoFiring);

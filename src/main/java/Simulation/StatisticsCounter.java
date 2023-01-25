@@ -29,6 +29,8 @@ public class StatisticsCounter {
     private int numberOfSolvedInterventions = 0;
     private int numberOfSolvedFirings = 0;
     private int numberOfNeutralizedPatrols = 0;
+    private int durationOfInterventions = 0;
+    private int durationOfFirings = 0;
 
     public void reset() {
         this.numberOfPatrols = 0;
@@ -38,6 +40,8 @@ public class StatisticsCounter {
         this.numberOfSolvedInterventions = 0;
         this.numberOfSolvedFirings = 0;
         this.numberOfNeutralizedPatrols = 0;
+        this.durationOfInterventions = 0;
+        this.durationOfFirings = 0;
     }
 
     public void increaseNumberOfPatrols() {
@@ -68,6 +72,14 @@ public class StatisticsCounter {
         this.numberOfNeutralizedPatrols++;
     }
 
+    public void increaseDurationOfInterventions(int duration) {
+        this.durationOfInterventions += duration;
+    }
+
+    public void increaseDurationOfFirings(int duration) {
+        this.durationOfFirings += duration;
+    }
+
     public int getNumberOfPatrols() {
         return numberOfPatrols;
     }
@@ -94,5 +106,13 @@ public class StatisticsCounter {
 
     public int getNumberOfNeutralizedPatrols() {
         return numberOfNeutralizedPatrols;
+    }
+
+    public int getDurationOfInterventions() {
+        return durationOfInterventions;
+    }
+
+    public int getDurationOfFirings() {
+        return durationOfFirings;
     }
 }

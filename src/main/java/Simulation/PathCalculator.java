@@ -52,12 +52,10 @@ public class PathCalculator extends Thread {
             }
         }
         else if (pathNodeList.size() == 1 && source.toString().contains("Ambulance")) {
-            System.out.println("pathNodeList amb " + pathNodeList);
             var pathNodeList2 = new ArrayList<Node>();
             pathNodeList2.add(pathNodeList.get(0));
             ((Ambulance.Transfer) ((Ambulance) source).getAction()).setPathNodeList(pathNodeList2);
         } else if (pathNodeList.size() != 1 && source.toString().contains("Ambulance")) {
-            System.out.println("pathNodeList amb 2 " + pathNodeList);
             ((Ambulance.Transfer) ((Ambulance) source).getAction()).setPathNodeList(pathNodeList);
 
         } else if (pathNodeList.size() == 1 && source.toString().contains("Patrol")) {

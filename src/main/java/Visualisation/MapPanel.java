@@ -183,7 +183,6 @@ public class MapPanel {
         for (int i = 0; i < amountOfAmbulances; i++) {
             Ambulance ambulance = new Ambulance(position.getLatitude(), position.getLongitude());
             World.getInstance().addEntity(ambulance);
-            System.out.println("ambulances added " + ambulance);
         }
     }
 
