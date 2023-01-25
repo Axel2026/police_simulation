@@ -1,5 +1,12 @@
 package Simulation;
 
+import Simulation.entities.Intervention;
+import Visualisation.District;
+import Visualisation.Patrol;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class StatisticsCounter {
 
     private StatisticsCounter() {
@@ -31,6 +38,8 @@ public class StatisticsCounter {
     private int numberOfNeutralizedPatrols = 0;
     private int durationOfInterventions = 0;
     private int durationOfFirings = 0;
+    private List<String> interventionsDistricts = new ArrayList<>();
+    private List<String> firingDistricts = new ArrayList<>();
 
     public void reset() {
         this.numberOfPatrols = 0;
@@ -114,5 +123,21 @@ public class StatisticsCounter {
 
     public int getDurationOfFirings() {
         return durationOfFirings;
+    }
+
+    public List<String> getInterventionsDistricts() {
+        return interventionsDistricts;
+    }
+
+    public void addInterventionsDistricts(String district) {
+        interventionsDistricts.add(district);
+    }
+
+    public List<String> getFiringDistricts() {
+        return firingDistricts;
+    }
+
+    public void addFiringDistricts(String district) {
+        firingDistricts.add(district);
     }
 }

@@ -152,6 +152,7 @@ public class Firing extends Incident implements IDrawable {
         var point = mapViewer.convertGeoPositionToPoint(new GeoPosition(getLatitude(), getLongitude()));
         if (durationCounter < 1) {
             StatisticsCounter.getInstance().increaseDurationOfFirings(duration / 60);
+            StatisticsCounter.getInstance().addFiringDistricts(district.getName());
             durationCounter = 1;
         }
         var mark = new Ellipse2D.Double((int) (point.getX() - size / 2.0), (int) (point.getY() - size / 2.0), size, size);

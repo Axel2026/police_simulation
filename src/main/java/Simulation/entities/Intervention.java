@@ -11,6 +11,11 @@ import org.jxmapviewer.viewer.GeoPosition;
 import Simulation.World;
 
 import java.awt.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Intervention extends Incident implements IDrawable {
 
@@ -75,6 +80,7 @@ public class Intervention extends Incident implements IDrawable {
         var point = mapViewer.convertGeoPositionToPoint(new GeoPosition(getLatitude(), getLongitude()));
         if (durationCounter < 1) {
             StatisticsCounter.getInstance().increaseDurationOfInterventions((int) (duration / 60));
+            StatisticsCounter.getInstance().addInterventionsDistricts(district.getName());
             durationCounter = 1;
         }
         if (World.getInstance().isSimulationPaused() && World.getInstance().getConfig().isDrawInterventionDetails()) {

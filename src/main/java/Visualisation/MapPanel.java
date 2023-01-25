@@ -1,10 +1,10 @@
 package Visualisation;
 
 import Simulation.World;
-import Simulation.entities.Entity;
-import Simulation.entities.Headquarters;
-import Simulation.entities.Hospital;
-import Simulation.entities.Intervention;
+import Simulation.entities.*;
+import Simulation.exported_data.ExportAmbulanceDistanceAndTimeToReachFiring;
+import Simulation.exported_data.ExportDistrictFirings;
+import Simulation.exported_data.ExportDistrictIterventions;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import main.LineChart;
@@ -550,7 +550,8 @@ public class MapPanel {
 
     private void showSummary() throws IOException {
         showSimulationCharts();
-
+        ExportDistrictIterventions.getInstance().writeToCsvFile();
+        ExportDistrictFirings.getInstance().writeToCsvFile();
         String simulationSummaryMessage = "Simulation has finished.\n\n" +
                 "Simulated Patrols: " + StatisticsCounter.getInstance().getNumberOfPatrols() + "\n" +
                 "Simulated Interventions: " + StatisticsCounter.getInstance().getNumberOfInterventions() + "\n" +
