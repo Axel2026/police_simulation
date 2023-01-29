@@ -1,6 +1,7 @@
 package Simulation;
 
 import Simulation.entities.Hospital;
+import Simulation.exported_data.ExportSWATDistanceToShootings;
 import Visualisation.Ambulance;
 import Visualisation.District;
 import Simulation.entities.Firing;
@@ -17,14 +18,14 @@ public class IncidentFactory {
     private static final int MIN_FIRING_STRENGTH = world.getConfig().getMinimumFiringStrength() * 60;
     private static final int MAX_FIRING_STRENGTH = world.getConfig().getMaximumFiringStrength() * 60;
 
-    private IncidentFactory() {
-    }
+    private IncidentFactory(){}
 
     public static Intervention createRandomInterventionForDistrict(District district) {
         var randomNode = district.getAllNodesInDistrict().get(ThreadLocalRandom.current().nextInt(0, district.getAllNodesInDistrict().size()));
         var latitude = randomNode.getPosition().getLatitude();
         var longitude = randomNode.getPosition().getLongitude();
         var duration = calculateDurationOfIncident(district, MIN_EVENT_DURATION, MAX_EVENT_DURATION + 1);
+
         // Will change into firing
         if (ThreadLocalRandom.current().nextDouble() < threatLevelToFiringChance(district.getThreatLevel())) {
             var timeToChange = ThreadLocalRandom.current().nextInt(0, duration);
@@ -41,8 +42,9 @@ public class IncidentFactory {
         var strength = duration * numberOfRequiredPatrols;
         Firing newFiring = new Firing(intervention.getLatitude(), intervention.getLongitude(), numberOfRequiredPatrols, strength,duration, intervention.getDistrict(), 0);
         intervention.getDistrict().getSwatHeadquarters().summonSWATSquad(newFiring);
+        var summonedSwat = intervention.getDistrict().getSwatHeadquarters().summonSWATSquad(newFiring);
+        ExportSWATDistanceToShootings.getInstance().writeToCsvFile(newFiring, summonedSwat, intervention.getDistrict(), intervention.getDistrict().getSwatHeadquarters());
         return newFiring;
-//        return new Firing(intervention.getLatitude(), intervention.getLongitude(), numberOfRequiredPatrols, strength, intervention.getDistrict(), 0);
     }
 
     private static double threatLevelToFiringChance(District.ThreatLevelEnum threatLevel) {

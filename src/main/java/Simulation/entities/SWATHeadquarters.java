@@ -3,6 +3,7 @@ package Simulation.entities;
 import Simulation.World;
 import Simulation.exported_data.ExportFiringDetails;
 import Simulation.exported_data.ExportRevokingPatrolsDetails;
+import Simulation.exported_data.ExportSWATDistanceToShootings;
 import Simulation.exported_data.ExportSupportSummonDetails;
 import Visualisation.District;
 import Visualisation.IDrawable;
@@ -91,11 +92,13 @@ public class SWATHeadquarters extends Entity implements IDrawable {
         }
     }
 
-    public void summonSWATSquad(Firing firing) {
+    public SWAT summonSWATSquad(Firing firing) {
         SWAT summonedSWATSquad = removeAvailableSWATSquad();
         if(summonedSWATSquad != null) {
             giveOrdersToFoundSQUAD(firing, summonedSWATSquad);
         }
+
+        return summonedSWATSquad;
     }
 
     private void giveOrdersToFoundSQUAD(Incident firing, SWAT swatSquad) {

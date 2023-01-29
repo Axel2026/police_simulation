@@ -399,6 +399,7 @@ public class ConfigurationPanel {
         threatLevelToMaxIncidentsConfigurationPanel.setLayout(new BoxLayout(threatLevelToMaxIncidentsConfigurationPanel, BoxLayout.Y_AXIS));
         threatLevelToMaxIncidentsConfigurationPanel.setBorder(new LineBorder(Color.BLACK, 1));
         threatLevelToMaxIncidentsConfigurationPanel.setPreferredSize(new Dimension(270, 100));
+        threatLevelToMaxIncidentsConfigurationPanel.setBackground(new Color(255, 255, 255, 255));
         JLabel descriptionLabel = new JLabel("Set the maximum number of incidents per");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         threatLevelToMaxIncidentsConfigurationPanel.add(descriptionLabel);
@@ -408,6 +409,7 @@ public class ConfigurationPanel {
 
         var panel = new JPanel();
         panel.setLayout(new GridLayout(3, 2));
+        panel.setBackground(new Color(255, 255, 255, 255));
         panel.add(new JLabel(District.ThreatLevelEnum.NOT_SAFE + ": "));
         threatLevelMaxIncidentsTextFieldNOTSAFE.setColumns(11);
 //        threatLevelMaxIncidentsTextFieldNOTSAFE.setPreferredSize(new Dimension(270, 25));
@@ -434,10 +436,12 @@ public class ConfigurationPanel {
         var threatLevelToFiringChanceConfigurationPanel = new JPanel();
         threatLevelToFiringChanceConfigurationPanel.setLayout(new BoxLayout(threatLevelToFiringChanceConfigurationPanel, BoxLayout.Y_AXIS));
         threatLevelToFiringChanceConfigurationPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        threatLevelToFiringChanceConfigurationPanel.setBackground(new Color(255, 255, 255, 255));
         threatLevelToFiringChanceConfigurationPanel.setPreferredSize(new Dimension(270, 120));
 
         descriptionLabel = new JLabel("Set the chance for the intervention to");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        descriptionLabel.setBackground(new Color(255, 255, 255, 255));
         threatLevelToFiringChanceConfigurationPanel.add(descriptionLabel);
         descriptionLabel = new JLabel("turn into a firing for the given");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -448,6 +452,7 @@ public class ConfigurationPanel {
 
         panel = new JPanel();
         panel.setLayout(new GridLayout(3, 2));
+        panel.setBackground(new Color(255, 255, 255, 255));
         panel.add(new JLabel(District.ThreatLevelEnum.NOT_SAFE + ": "));
         threatLevelFiringChanceTextFieldNOTSAFE.setColumns(11);
         threatLevelFiringChanceTextFieldNOTSAFE.setText(String.valueOf(World.getInstance().getConfig().getFiringChanceForThreatLevel(District.ThreatLevelEnum.NOT_SAFE)));
@@ -478,10 +483,12 @@ public class ConfigurationPanel {
         var interventionDurationConfigurationPanel = new JPanel();
         interventionDurationConfigurationPanel.setLayout(new BoxLayout(interventionDurationConfigurationPanel, BoxLayout.Y_AXIS));
         interventionDurationConfigurationPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        interventionDurationConfigurationPanel.setBackground(new Color(255, 255, 255, 255));
         interventionDurationConfigurationPanel.setPreferredSize(new Dimension(280, 80));
 
         descriptionLabel = new JLabel("Set the time range for the duration");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        descriptionLabel.setBackground(new Color(255, 255, 255, 255));
         interventionDurationConfigurationPanel.add(descriptionLabel);
         descriptionLabel = new JLabel("of the intervention [minutes]:");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -489,6 +496,7 @@ public class ConfigurationPanel {
 
         panel = new JPanel();
         panel.setLayout(new GridLayout(2, 1));
+        panel.setBackground(new Color(255, 255, 255, 255));
         panel.add(new JLabel("MIN: "));
         minimumInterventionDurationTextField.setText(String.valueOf(World.getInstance().getConfig().getMinimumInterventionDuration()));
         addRestrictionOfEnteringOnlyIntegers(minimumInterventionDurationTextField);
@@ -510,10 +518,12 @@ public class ConfigurationPanel {
         var firingStrengthConfigurationPanel = new JPanel();
         firingStrengthConfigurationPanel.setLayout(new BoxLayout(firingStrengthConfigurationPanel, BoxLayout.Y_AXIS));
         firingStrengthConfigurationPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        firingStrengthConfigurationPanel.setBackground(new Color(255, 255, 255, 255));
         firingStrengthConfigurationPanel.setPreferredSize(new Dimension(280, 80));
 
         descriptionLabel = new JLabel("Set the time range for the duration");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        descriptionLabel.setBackground(new Color(255, 255, 255, 255));
         firingStrengthConfigurationPanel.add(descriptionLabel);
         descriptionLabel = new JLabel("of the firing [minutes]:");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -521,6 +531,7 @@ public class ConfigurationPanel {
 
         panel = new JPanel();
         panel.setLayout(new GridLayout(2, 1));
+        panel.setBackground(new Color(255, 255, 255, 255));
         panel.add(new JLabel("MIN: "));
         minimumFiringStrength.setText(String.valueOf(World.getInstance().getConfig().getMinimumFiringStrength()));
         addRestrictionOfEnteringOnlyIntegers(minimumFiringStrength);
@@ -542,10 +553,12 @@ public class ConfigurationPanel {
         var baseSpeedConfigurationPanel = new JPanel();
         baseSpeedConfigurationPanel.setLayout(new BoxLayout(baseSpeedConfigurationPanel, BoxLayout.Y_AXIS));
         baseSpeedConfigurationPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        baseSpeedConfigurationPanel.setBackground(new Color(255, 255, 255, 255));
         baseSpeedConfigurationPanel.setPreferredSize(new Dimension(280, 100));
 
         descriptionLabel = new JLabel("Set the speed of the patrols ");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        descriptionLabel.setBackground(new Color(255, 255, 255, 255));
         baseSpeedConfigurationPanel.add(descriptionLabel);
         descriptionLabel = new JLabel("in the given situation [km/h]:");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -554,6 +567,7 @@ public class ConfigurationPanel {
         panel = new JPanel();
         panel.setLayout(new GridLayout(3, 1));
         panel.add(new JLabel("Patrolling: "));
+        panel.setBackground(new Color(255, 255, 255, 255));
         basePatrollingSpeed.setText(String.valueOf(World.getInstance().getConfig().getBasePatrollingSpeed()));
         baseTransferSpeed.setText(String.valueOf(World.getInstance().getConfig().getBaseTransferSpeed()));
         basePrivilegedSpeed.setText(String.valueOf(World.getInstance().getConfig().getBasePrivilegedSpeed()));
@@ -579,10 +593,12 @@ public class ConfigurationPanel {
         var considerTimeOfDayPanel = new JPanel();
         considerTimeOfDayPanel.setLayout(new BoxLayout(considerTimeOfDayPanel, BoxLayout.Y_AXIS));
         considerTimeOfDayPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        considerTimeOfDayPanel.setBackground(new Color(255, 255, 255, 255));
         considerTimeOfDayPanel.setPreferredSize(new Dimension(280, 110));
 
         var label = new JPanel();
         label.add(new JLabel("Consider the time of day (day/night)"));
+        label.setBackground(new Color(255, 255, 255, 255));
         considerTimeOfDayCheckBox.setSelected(true);
         considerTimeOfDayCheckBox.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -596,6 +612,7 @@ public class ConfigurationPanel {
 
         descriptionLabel = new JLabel("The hours from 16:00 to 24:00 are assumed");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        descriptionLabel.setBackground(new Color(255, 255, 255, 255));
         considerTimeOfDayPanel.add(descriptionLabel);
         descriptionLabel = new JLabel("as night for each simulation day");
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -603,6 +620,7 @@ public class ConfigurationPanel {
 
         panel = new JPanel();
         panel.setLayout(new GridLayout(2, 1));
+        panel.setBackground(new Color(255, 255, 255, 255));
         panel.add(new JLabel("        Set a multiplier of statistics for the night: "));
         nightStatisticMultiplier.setText(String.valueOf(World.getInstance().getConfig().getNightStatisticMultiplier()));
         addRestrictionOfEnteringOnlyFloats(nightStatisticMultiplier);
@@ -618,7 +636,7 @@ public class ConfigurationPanel {
 
         var periodOfTimeToExportDetailsPanel = new JPanel();
         periodOfTimeToExportDetailsPanel.setLayout(new BoxLayout(periodOfTimeToExportDetailsPanel, BoxLayout.Y_AXIS));
-        periodOfTimeToExportDetailsPanel.setBorder(new LineBorder(Color.BLACK, 1));
+        periodOfTimeToExportDetailsPanel.setBackground(new Color(255, 255, 255, 255));
         periodOfTimeToExportDetailsPanel.setPreferredSize(new Dimension(280, 55));
         periodOfTimeToExportDetailsPanel.add(new JLabel("      Set the period of time to export simulation"));
         periodOfTimeToExportDetailsPanel.add(new JLabel("       and districts details [simulated minutes]"));
