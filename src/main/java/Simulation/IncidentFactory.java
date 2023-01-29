@@ -1,6 +1,7 @@
 package Simulation;
 
 import Simulation.entities.Hospital;
+import Simulation.exported_data.ExportSWATDistanceToShootings;
 import Visualisation.Ambulance;
 import Visualisation.District;
 import Simulation.entities.Firing;
@@ -40,9 +41,9 @@ public class IncidentFactory {
         var numberOfRequiredPatrols = ThreadLocalRandom.current().nextInt(ceil > 4 ? ceil - 3 : 1, ceil + 1);
         strength *= numberOfRequiredPatrols;
         Firing newFiring = new Firing(intervention.getLatitude(), intervention.getLongitude(), numberOfRequiredPatrols, strength, intervention.getDistrict(), 0);
-        intervention.getDistrict().getSwatHeadquarters().summonSWATSquad(newFiring);
-        return newFiring;
-//        return new Firing(intervention.getLatitude(), intervention.getLongitude(), numberOfRequiredPatrols, strength, intervention.getDistrict(), 0);
+        var summonedSwat = intervention.getDistrict().getSwatHeadquarters().summonSWATSquad(newFiring);
+        ExportSWATDistanceToShootings.getInstance().writeToCsvFile(newFiring, summonedSwat, intervention.getDistrict(), intervention.getDistrict().getSwatHeadquarters());
+        return newFiring; 
     }
 
     private static double threatLevelToFiringChance(District.ThreatLevelEnum threatLevel) {
