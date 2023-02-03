@@ -18,7 +18,8 @@ public class IncidentFactory {
     private static final int MIN_FIRING_STRENGTH = world.getConfig().getMinimumFiringStrength() * 60;
     private static final int MAX_FIRING_STRENGTH = world.getConfig().getMaximumFiringStrength() * 60;
 
-    private IncidentFactory(){}
+    private IncidentFactory() {
+    }
 
     public static Intervention createRandomInterventionForDistrict(District district) {
         var randomNode = district.getAllNodesInDistrict().get(ThreadLocalRandom.current().nextInt(0, district.getAllNodesInDistrict().size()));
@@ -40,10 +41,10 @@ public class IncidentFactory {
         var ceil = (int) Math.ceil(duration / (15 * 60.0));
         var numberOfRequiredPatrols = ThreadLocalRandom.current().nextInt(ceil > 4 ? ceil - 3 : 1, ceil + 1);
         var strength = duration * numberOfRequiredPatrols;
-        Firing newFiring = new Firing(intervention.getLatitude(), intervention.getLongitude(), numberOfRequiredPatrols, strength,duration, intervention.getDistrict(), 0);
+        Firing newFiring = new Firing(intervention.getLatitude(), intervention.getLongitude(), numberOfRequiredPatrols, strength, duration, intervention.getDistrict(), 0);
         intervention.getDistrict().getSwatHeadquarters().summonSWATSquad(newFiring);
         var summonedSwat = intervention.getDistrict().getSwatHeadquarters().summonSWATSquad(newFiring);
-        ExportSWATDistanceToShootings.getInstance().writeToCsvFile(newFiring, summonedSwat, intervention.getDistrict(), intervention.getDistrict().getSwatHeadquarters());
+//        ExportSWATDistanceToShootings.getInstance().writeToCsvFile(newFiring, summonedSwat, intervention.getDistrict(), intervention.getDistrict().getSwatHeadquarters());
         return newFiring;
     }
 
