@@ -37,6 +37,8 @@ public class StatisticsCounter {
     private int numberOfSolvedFirings = 0;
     private int numberOfNeutralizedPatrols = 0;
     private int durationOfInterventions = 0;
+    private int durationMoreThanHour = 0;
+    private int durationLessThanHour = 0;
     private int durationOfFirings = 0;
     private List<String> interventionsDistricts = new ArrayList<>();
     private List<String> firingDistricts = new ArrayList<>();
@@ -51,6 +53,8 @@ public class StatisticsCounter {
         this.numberOfNeutralizedPatrols = 0;
         this.durationOfInterventions = 0;
         this.durationOfFirings = 0;
+        this.durationMoreThanHour = 0;
+        this.durationLessThanHour = 0;
     }
 
     public void increaseNumberOfPatrols() {
@@ -85,6 +89,14 @@ public class StatisticsCounter {
         this.durationOfInterventions += duration;
     }
 
+    public void increaseDurationMoreThanHour() {
+        this.durationMoreThanHour++;
+    }
+
+    public void increaseDurationLessThanHour() {
+        this.durationLessThanHour++;
+    }
+
     public void increaseDurationOfFirings(int duration) {
         this.durationOfFirings += duration;
     }
@@ -99,6 +111,14 @@ public class StatisticsCounter {
 
     public int getNumberOfInterventions() {
         return numberOfInterventions;
+    }
+
+    public int getAmountOfDurationMoreThanHour() {
+        return durationMoreThanHour;
+    }
+
+    public int getAmountOfDurationLessThanHour() {
+        return durationLessThanHour;
     }
 
     public int getNumberOfFirings() {

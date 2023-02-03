@@ -2,10 +2,7 @@ package Simulation;
 
 import Configuration.ConfigurationPanel;
 import Configuration.WorldConfiguration;
-import Simulation.exported_data.ExportAmbulancesInUsePerHour;
-import Simulation.exported_data.ExportAverageAmbulanceDistanceAndTimeToReachFiring;
-import Simulation.exported_data.ExportAverageIncidentDataOnShift;
-import Simulation.exported_data.ExportSimulationAndDistrictDetails;
+import Simulation.exported_data.*;
 import Visualisation.District;
 import Visualisation.Map;
 import Visualisation.Patrol;
@@ -31,6 +28,8 @@ public class World {
     private final WorldConfiguration worldConfig = new WorldConfiguration();
     private ExportSimulationAndDistrictDetails exportSimulationAndDistrictDetails = null;
     private ExportAmbulancesInUsePerHour exportAmbulancesInUsePerHour = null;
+    private ExportDistrictsFiringsPerHour exportDistrictsFiringsPerHour = null;
+    private ExportDistrictInterventionsPerHour exportDistrictInterventionsPerHour = null;
     private ExportAverageIncidentDataOnShift exportAverageIncidentDataOnShift = null;
     private ExportAverageAmbulanceDistanceAndTimeToReachFiring exportAverageAmbulanceDistanceAndTimeToReachFiring = null;
     private LocalDateTime startTime;
@@ -78,8 +77,24 @@ public class World {
         return exportAmbulancesInUsePerHour;
     }
 
+    public ExportDistrictsFiringsPerHour getExportDistrictsFiringsPerHour() {
+        return exportDistrictsFiringsPerHour;
+    }
+
+    public ExportDistrictInterventionsPerHour getExportDistrictInterventionsPerHour() {
+        return exportDistrictInterventionsPerHour;
+    }
+
     public void setExportAmbulancesInUsePerHour(ExportAmbulancesInUsePerHour exportAmbulancesInUsePerHour) {
         this.exportAmbulancesInUsePerHour = exportAmbulancesInUsePerHour;
+    }
+
+    public void setExportDistrictsFiringsPerHour(ExportDistrictsFiringsPerHour exportDistrictsFiringsPerHour) {
+        this.exportDistrictsFiringsPerHour = exportDistrictsFiringsPerHour;
+    }
+
+    public void setExportDistrictInterventionsPerHour(ExportDistrictInterventionsPerHour exportDistrictInterventionsPerHour) {
+        this.exportDistrictInterventionsPerHour = exportDistrictInterventionsPerHour;
     }
     public void setExportAverageIncidentDataOnShift(ExportAverageIncidentDataOnShift exportAverageIncidentDataOnShift) {
         this.exportAverageIncidentDataOnShift = exportAverageIncidentDataOnShift;
@@ -291,10 +306,14 @@ public class World {
         new EventUpdater().start();
         setExportSimulationAndDistrictDetails(new ExportSimulationAndDistrictDetails());
         setExportAmbulancesInUsePerHour(new ExportAmbulancesInUsePerHour());
+        setExportDistrictsFiringsPerHour(new ExportDistrictsFiringsPerHour());
+        setExportDistrictInterventionsPerHour(new ExportDistrictInterventionsPerHour());
         setExportAverageIncidentDataOnShift(new ExportAverageIncidentDataOnShift());
         setExportAverageAmbulanceDistanceAndTimeToReachFiring(new ExportAverageAmbulanceDistanceAndTimeToReachFiring());
         getExportSimulationAndDistrictDetails().start();
         getExportAmbulancesInUsePerHour().start();
+        getExportDistrictsFiringsPerHour().start();
+        getExportDistrictInterventionsPerHour().start();
         getExportAverageAmbulanceDistanceAndTimeToReachFiring().start();
         getExportAverageIncidentDataOnShift().start();
         Logger.getInstance().logNewOtherMessage("Simulation has started.");

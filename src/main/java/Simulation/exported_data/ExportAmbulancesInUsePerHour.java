@@ -23,8 +23,6 @@ public class ExportAmbulancesInUsePerHour extends Thread {
     private final World world = World.getInstance();
     private final File ambulancesInUsePerHourHeaderCsvFile;
     public int previousAmountOfAmbulances = 0;
-
-    private final int periodOfTimeToExportDetailsInSeconds = (int) (world.getConfig().getPeriodOfTimeToExportDetails() * 60);
     private int exportCounter = 1;
 
     public String getAmbulancesInUsePerHourCsvFileName() {
@@ -54,7 +52,7 @@ public class ExportAmbulancesInUsePerHour extends Thread {
     @Override
     public void run() {
         while (!world.hasSimulationDurationElapsed() && !world.isSimulationFinished()) {
-            if (!world.isSimulationPaused() && exportCounter <= (world.getSimulationTimeLong() / periodOfTimeToExportDetailsInSeconds)) {
+            if (!world.isSimulationPaused() && exportCounter <= (world.getSimulationTimeLong() / 3600)) {
                 exportCounter++;
                 var usedAmbulances = world.getAmbulancesInUse();
                 var simulationTimeLong = world.getSimulationTimeLong();
@@ -66,7 +64,7 @@ public class ExportAmbulancesInUsePerHour extends Thread {
                 }
 
                 // sleep for next 'periodOfTimeToExportDetails' minutes in simulation time
-                var sleepTime = ((periodOfTimeToExportDetailsInSeconds - (world.getSimulationTime() % periodOfTimeToExportDetailsInSeconds)) * 1000) / world.getConfig().getTimeRate();
+                var sleepTime = ((3600 - (world.getSimulationTime() % 3600)) * 1000) / world.getConfig().getTimeRate();
                 try {
                     sleep((long) sleepTime, (int) ((sleepTime - (long) sleepTime) * 1000000));
                 } catch (InterruptedException e) {

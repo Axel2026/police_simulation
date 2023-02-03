@@ -26,7 +26,6 @@ public class IncidentFactory {
         var latitude = randomNode.getPosition().getLatitude();
         var longitude = randomNode.getPosition().getLongitude();
         var duration = calculateDurationOfIncident(district, MIN_EVENT_DURATION, MAX_EVENT_DURATION + 1);
-
         // Will change into firing
         if (ThreadLocalRandom.current().nextDouble() < threatLevelToFiringChance(district.getThreatLevel())) {
             var timeToChange = ThreadLocalRandom.current().nextInt(0, duration);

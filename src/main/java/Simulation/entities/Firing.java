@@ -153,6 +153,11 @@ public class Firing extends Incident implements IDrawable {
         if (durationCounter < 1) {
             StatisticsCounter.getInstance().increaseDurationOfFirings(duration / 60);
             StatisticsCounter.getInstance().addFiringDistricts(district.getName());
+            if (duration >= 3600) {
+                StatisticsCounter.getInstance().increaseDurationMoreThanHour();
+            } else {
+                StatisticsCounter.getInstance().increaseDurationLessThanHour();
+            }
             durationCounter = 1;
         }
         var mark = new Ellipse2D.Double((int) (point.getX() - size / 2.0), (int) (point.getY() - size / 2.0), size, size);

@@ -81,6 +81,12 @@ public class Intervention extends Incident implements IDrawable {
         if (durationCounter < 1) {
             StatisticsCounter.getInstance().increaseDurationOfInterventions((int) (duration / 60));
             StatisticsCounter.getInstance().addInterventionsDistricts(district.getName());
+
+            if (duration >= 3600) {
+                StatisticsCounter.getInstance().increaseDurationMoreThanHour();
+            } else {
+                StatisticsCounter.getInstance().increaseDurationLessThanHour();
+            }
             durationCounter = 1;
         }
         if (World.getInstance().isSimulationPaused() && World.getInstance().getConfig().isDrawInterventionDetails()) {
