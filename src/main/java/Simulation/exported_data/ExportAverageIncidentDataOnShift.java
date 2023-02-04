@@ -24,12 +24,13 @@ public class ExportAverageIncidentDataOnShift extends Thread {
     private static final String[] averageIncidentDataOnShiftCsvFileNameFiringHeader = new String[]{
             "amountOfInterventions",
             "amountOfInterventionsPerPatrol",
-            "durationOfInterventions",
-            "durationOfInterventionsPerPatrol",
+            "durationOfInterventions[min]",
+            "durationOfInterventionsPerPatrol[min]",
             "amountOfFirings",
             "amountOfFiringsPerPatrol",
-            "durationOfFirings",
-            "durationOfFiringsPerPatrol",
+            "durationOfFirings[min]",
+            "durationOfFiringsPerPatrol[min]",
+            "amountOfPatrols"
     };
 
     private final World world = World.getInstance();
@@ -81,8 +82,8 @@ public class ExportAverageIncidentDataOnShift extends Thread {
                             amountOfFirings - previousAmountOfFirings,
                             ((amountOfFirings - previousAmountOfFirings) / (amountOfPatrols - previousAmountOfPatrols)),
                             durationOfFiringsSum - previousDurationOfFiringsSum,
-                            ((durationOfFiringsSum - previousDurationOfFiringsSum) / (amountOfPatrols - previousAmountOfPatrols))
-
+                            ((durationOfFiringsSum - previousDurationOfFiringsSum) / (amountOfPatrols - previousAmountOfPatrols)),
+                            amountOfPatrols - previousAmountOfPatrols
                     );
                     previousAmountOfInterventions = StatisticsCounter.getInstance().getNumberOfInterventions();
                     previousDurationOfInterventionsSum = StatisticsCounter.getInstance().getDurationOfInterventions();
@@ -112,7 +113,8 @@ public class ExportAverageIncidentDataOnShift extends Thread {
                                                  double amountOfFirings,
                                                  double amountOfFiringsPerPatrol,
                                                  double durationOfFirings,
-                                                 double durationOfFiringsPerPatrol
+                                                 double durationOfFiringsPerPatrol,
+                                                 double amountOfPatrols
     ) throws IOException {
         var csvWriter = new CSVWriter(new FileWriter(averageIncidentDataOnShift, true));
         csvWriter.writeNext(new String[]{
@@ -124,6 +126,7 @@ public class ExportAverageIncidentDataOnShift extends Thread {
                 String.valueOf(amountOfFiringsPerPatrol),
                 String.valueOf(durationOfFirings),
                 String.valueOf(durationOfFiringsPerPatrol),
+                String.valueOf(amountOfPatrols),
         }, false);
         csvWriter.close();
     }
