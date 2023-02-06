@@ -549,6 +549,8 @@ public class MapPanel {
     private void showSummary() throws IOException {
         showSimulationCharts();
         ExportDistrictIterventions.getInstance().writeToCsvFile();
+        ExportNeutralizedPatrolsBySafetyLevel.getInstance().writeToCsvFile();
+        ExportNeutralizedPatrolsPerDistrict.getInstance().writeToCsvFile();
         ExportDistrictFirings.getInstance().writeToCsvFile();
         ExportFiringsPerAmbulance.getInstance().writeToCsvFile();
         ExportIncidentsHourDuration.getInstance().writeToCsvFile();
@@ -556,7 +558,7 @@ public class MapPanel {
                 "Simulated Patrols: " + StatisticsCounter.getInstance().getNumberOfPatrols() + "\n" +
                 "Simulated Interventions: " + StatisticsCounter.getInstance().getNumberOfInterventions() + "\n" +
                 "Simulated Firings: " + StatisticsCounter.getInstance().getNumberOfFirings() + "\n" +
-                "Neutralized Patrols: " + StatisticsCounter.getInstance().getNumberOfNeutralizedPatrols() + "\n" +
+                "Neutralized Patrols: " + StatisticsCounter.getInstance().getNeutralizedPatrolDistrict().size() + "\n" +
                 "Solved Interventions: " + StatisticsCounter.getInstance().getNumberOfSolvedInterventions() + "\n" +
                 "Solved Firings: " + StatisticsCounter.getInstance().getNumberOfSolvedFirings() + "\n";
         JOptionPane.showMessageDialog(panel, simulationSummaryMessage);

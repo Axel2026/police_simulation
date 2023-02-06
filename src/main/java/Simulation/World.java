@@ -31,6 +31,7 @@ public class World {
     private ExportSummonedPatrolsPerHour exportSummonedPatrolsPerHour = null;
     private ExportDistrictsFiringsPerHour exportDistrictsFiringsPerHour = null;
     private ExportDistrictInterventionsPerHour exportDistrictInterventionsPerHour = null;
+    private ExportPatrolsSolvingFiringBySafetyLevelPerHour exportPatrolsSolvingFiringBySafetyLevelPerHour = null;
     private ExportAverageIncidentDataOnShift exportAverageIncidentDataOnShift = null;
     private ExportCoveredDistancePerPatrolOnShift exportCoveredDistancePerPatrolOnShift = null;
     private ExportAverageDurationOfIncidentsPerHour exportAverageDurationOfIncidentsPerHour = null;
@@ -91,6 +92,9 @@ public class World {
     public ExportDistrictInterventionsPerHour getExportDistrictInterventionsPerHour() {
         return exportDistrictInterventionsPerHour;
     }
+    public ExportPatrolsSolvingFiringBySafetyLevelPerHour getExportPatrolsSolvingFiringBySafetyLevelPerHour() {
+        return exportPatrolsSolvingFiringBySafetyLevelPerHour;
+    }
 
     public void setExportAmbulancesInUsePerHour(ExportAmbulancesInUsePerHour exportAmbulancesInUsePerHour) {
         this.exportAmbulancesInUsePerHour = exportAmbulancesInUsePerHour;
@@ -106,6 +110,10 @@ public class World {
 
     public void setExportDistrictInterventionsPerHour(ExportDistrictInterventionsPerHour exportDistrictInterventionsPerHour) {
         this.exportDistrictInterventionsPerHour = exportDistrictInterventionsPerHour;
+    }
+
+    public void setExportPatrolsSolvingFiringBySafetyLevelPerHour(ExportPatrolsSolvingFiringBySafetyLevelPerHour exportPatrolsSolvingFiringBySafetyLevelPerHour) {
+        this.exportPatrolsSolvingFiringBySafetyLevelPerHour = exportPatrolsSolvingFiringBySafetyLevelPerHour;
     }
 
     public void setExportAverageIncidentDataOnShift(ExportAverageIncidentDataOnShift exportAverageIncidentDataOnShift) {
@@ -338,6 +346,7 @@ public class World {
         setExportSummonedPatrolsPerHour(new ExportSummonedPatrolsPerHour());
         setExportDistrictsFiringsPerHour(new ExportDistrictsFiringsPerHour());
         setExportDistrictInterventionsPerHour(new ExportDistrictInterventionsPerHour());
+        setExportPatrolsSolvingFiringBySafetyLevelPerHour(new ExportPatrolsSolvingFiringBySafetyLevelPerHour());
         setExportAverageIncidentDataOnShift(new ExportAverageIncidentDataOnShift());
         setExportCoveredDistancePerPatrolOnShift(new ExportCoveredDistancePerPatrolOnShift());
         setExportAverageDurationOfIncidentsPerHour(new ExportAverageDurationOfIncidentsPerHour());
@@ -347,6 +356,7 @@ public class World {
         getExportSummonedPatrolsPerHour().start();
         getExportDistrictsFiringsPerHour().start();
         getExportDistrictInterventionsPerHour().start();
+        getExportPatrolsSolvingFiringBySafetyLevelPerHour().start();
         getExportAverageAmbulanceDistanceAndTimeToReachFiring().start();
         getExportAverageIncidentDataOnShift().start();
         getExportCoveredDistancePerPatrolOnShift().start();

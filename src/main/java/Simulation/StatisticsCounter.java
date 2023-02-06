@@ -44,7 +44,10 @@ public class StatisticsCounter {
     private int sumonedPatrols = 0;
     private int coveredDistanceByAmbulance = 0;
     private List<String> interventionsDistricts = new ArrayList<>();
+    private List<String> patrolsSolvingFiringLevel = new ArrayList<>();
     private List<String> firingDistricts = new ArrayList<>();
+    private List<String> neutralizedPatrolDistrict = new ArrayList<>();
+    private List<String> neutralizedPatrolSafetyLevel = new ArrayList<>();
 
     public void reset() {
         this.numberOfPatrols = 0;
@@ -183,11 +186,35 @@ public class StatisticsCounter {
         interventionsDistricts.add(district);
     }
 
+    public List<String> getPatrolsSolvingFiringLevel() {
+        return patrolsSolvingFiringLevel;
+    }
+
+    public void addPatrolsSolvingFiringLevel(String safetyLevel) {
+        patrolsSolvingFiringLevel.add(safetyLevel);
+    }
+
     public List<String> getFiringDistricts() {
         return firingDistricts;
     }
 
     public void addFiringDistricts(String district) {
         firingDistricts.add(district);
+    }
+
+    public List<String> getNeutralizedPatrolDistrict() {
+        return neutralizedPatrolDistrict;
+    }
+
+    public void addNeutralizedPatrolDistrict(String district) {
+        neutralizedPatrolDistrict.add(district);
+    }
+
+    public List<String> getNeutralizedPatrolSafetyLevel() {
+        return neutralizedPatrolSafetyLevel;
+    }
+
+    public void addNeutralizedPatrolSafetyLevel(String district) {
+        neutralizedPatrolSafetyLevel.add(district);
     }
 }

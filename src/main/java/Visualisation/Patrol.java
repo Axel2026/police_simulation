@@ -161,6 +161,9 @@ public class Patrol extends Entity implements IAgent, IDrawable {
                 if (ThreadLocalRandom.current().nextDouble() < 0.001) {
                     ((Firing) this.action.target).removeSolvingPatrol(this);
                     ((Firing) this.action.target).addNeutralizedPatrol();
+
+                    StatisticsCounter.getInstance().addNeutralizedPatrolDistrict(((Firing) this.action.target).getDistrict().getName());
+                    StatisticsCounter.getInstance().addNeutralizedPatrolSafetyLevel(((Firing) this.action.target).getDistrict().getThreatLevel().toString());
                     setState(State.NEUTRALIZED);
                 }
                 timeOfLastDrawNeutralization = World.getInstance().getSimulationTime();

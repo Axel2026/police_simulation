@@ -1,9 +1,7 @@
 package Simulation.entities;
 
 import Simulation.StatisticsCounter;
-import Simulation.exported_data.ExportFiringDetails;
-import Simulation.exported_data.ExportRevokingPatrolsDetails;
-import Simulation.exported_data.ExportSupportSummonDetails;
+import Simulation.exported_data.*;
 import Visualisation.IDrawable;
 import Visualisation.Patrol;
 import org.jxmapviewer.JXMapViewer;
@@ -129,6 +127,8 @@ public class Headquarters extends Entity implements IDrawable {
                             availablePatrol.new Transfer(World.getInstance().getSimulationTimeLong(),
                                     intervention, Patrol.State.TRANSFER_TO_INTERVENTION));
                     StatisticsCounter.getInstance().increaseSumonedPatrols();
+                    ExportPatrolDistanceToReachIncident.getInstance().writeToCsvFileIntervention((Intervention) intervention, availablePatrol);
+
                     ((Intervention) intervention).setPatrolSolving(availablePatrol);
                 }
             }
@@ -141,6 +141,7 @@ public class Headquarters extends Entity implements IDrawable {
             Logger.getInstance().logNewMessageChangingState(p, p.getState().toString(), "TRANSFER_TO_FIRING");
             ExportSupportSummonDetails.getInstance().writeToCsvFile((Firing) firing, p, p.getState().name(), numberOfIteration);
             p.takeOrder(p.new Transfer(World.getInstance().getSimulationTimeLong(), firing, Patrol.State.TRANSFER_TO_FIRING));
+            ExportPatrolDistanceToReachIncident.getInstance().writeToCsvFileFiring((Firing) firing, p);
             StatisticsCounter.getInstance().increaseSumonedPatrols();
             ((Firing) firing).addReachingPatrol(p);
         }
