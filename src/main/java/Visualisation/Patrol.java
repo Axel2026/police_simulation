@@ -1,5 +1,6 @@
 package Visualisation;
 
+import Simulation.StatisticsCounter;
 import de.westnordost.osmapi.map.data.LatLon;
 import de.westnordost.osmapi.map.data.Node;
 import Simulation.entities.*;
@@ -241,12 +242,14 @@ public class Patrol extends Entity implements IAgent, IDrawable {
                 Node removedNode = ((Transfer) action).pathNodeList.remove(0);
                 setPosition(removedNode.getPosition());
                 distanceToNearestNode = getDistanceToNearestNode();
+                StatisticsCounter.getInstance().increaseCoveredDistanceByPatrol(distanceToNearestNode);
             }
             LatLon nearestNodePosition = ((Transfer) action).pathNodeList.get(0).getPosition();
             if (distanceToNearestNode > traveledDistance) {
                 double distanceFactor = traveledDistance / distanceToNearestNode;
                 setLatitude((getLatitude() + (nearestNodePosition.getLatitude() - getLatitude()) * distanceFactor));
                 setLongitude((getLongitude() + (nearestNodePosition.getLongitude() - getLongitude()) * distanceFactor));
+                StatisticsCounter.getInstance().increaseCoveredDistanceByPatrol(distanceFactor);
             } else {
                 setPosition(nearestNodePosition);
                 ((Transfer) action).pathNodeList.remove(0);

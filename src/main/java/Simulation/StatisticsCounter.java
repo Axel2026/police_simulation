@@ -40,6 +40,9 @@ public class StatisticsCounter {
     private int durationMoreThanHour = 0;
     private int durationLessThanHour = 0;
     private int durationOfFirings = 0;
+    private int coveredDistanceByPatrol = 0;
+    private int sumonedPatrols = 0;
+    private int coveredDistanceByAmbulance = 0;
     private List<String> interventionsDistricts = new ArrayList<>();
     private List<String> firingDistricts = new ArrayList<>();
 
@@ -53,6 +56,9 @@ public class StatisticsCounter {
         this.numberOfNeutralizedPatrols = 0;
         this.durationOfInterventions = 0;
         this.durationOfFirings = 0;
+        this.coveredDistanceByPatrol = 0;
+        this.sumonedPatrols = 0;
+        this.coveredDistanceByAmbulance = 0;
         this.durationMoreThanHour = 0;
         this.durationLessThanHour = 0;
     }
@@ -99,6 +105,30 @@ public class StatisticsCounter {
 
     public void increaseDurationOfFirings(int duration) {
         this.durationOfFirings += duration;
+    }
+
+    public void increaseCoveredDistanceByPatrol(double distance) {
+        this.coveredDistanceByPatrol += distance;
+    }
+
+    public int getCoveredDistanceByPatrol() {
+        return coveredDistanceByPatrol;
+    }
+
+    public void increaseCoveredDistanceByAmbulance(double distance) {
+        this.coveredDistanceByAmbulance += distance;
+    }
+
+    public void increaseSumonedPatrols() {
+        this.sumonedPatrols++;
+    }
+
+    public int getSumonedPatrols() {
+        return sumonedPatrols;
+    }
+
+    public int getCoveredDistanceByAmbulance() {
+        return coveredDistanceByAmbulance;
     }
 
     public int getNumberOfPatrols() {
