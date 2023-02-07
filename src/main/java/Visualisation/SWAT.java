@@ -1,6 +1,7 @@
 package Visualisation;
 
 import Simulation.PathCalculator;
+import Simulation.StatisticsCounter;
 import Simulation.World;
 import Simulation.entities.*;
 import Simulation.entities.Point;
@@ -31,6 +32,7 @@ public class SWAT extends Entity implements IDrawable {
     static AtomicInteger nextId = new AtomicInteger();
     private final int id = nextId.incrementAndGet();
     private District district;
+    private int transferToFiringOnlyOnce = 0;
 
     public SWAT() {
         this.basePrivilegedSpeed = World.getInstance().getConfig().getBasePrivilegedSpeed();
@@ -76,15 +78,18 @@ public class SWAT extends Entity implements IDrawable {
             if (action.target == null || !((Firing) action.target).isActive() || !(action.target instanceof Firing)) {
                 System.out.println("RETURNING_TO_HQ from updateStateIfIntervention()");
                 setState(State.RETURNING_TO_HQ);
+
                 var swatHQs = World.getInstance().getAllEntities().stream().filter(SWATHeadquarters.class::isInstance).map(SWATHeadquarters.class::cast).collect(Collectors.toList());
 
                 for (SWATHeadquarters hq : swatHQs) {
                     if (hq.getDistrict().getName().equals(this.getDistrict().getName())) {
                         setState(State.RETURNING_TO_HQ);
+                        StatisticsCounter.getInstance().addSwatState("RETURNING_TO_HQ");
                         System.out.println("Latitude: " + hq.getLatitude());
                         System.out.println("Longitude: " + hq.getLongitude());
                         setAction(new Transfer(World.getInstance().getSimulationTimeLong(), hq, this.state));
                         hq.addAvailableSWATSquad(this);
+                        StatisticsCounter.getInstance().addSwatState("WAITING_FOR_ORDERS");
                     }
                 }
             } else if (World.getInstance().getSimulationTime() > timeOfLastDrawNeutralization + timeBetweenDrawNeutralization) {
@@ -101,8 +106,14 @@ public class SWAT extends Entity implements IDrawable {
     private void updateStateIfTransferToFiring() {
         // if patrol has reached his destination, patrol changes state to FIRING
         if (action instanceof Transfer) {
+            if (transferToFiringOnlyOnce < 1) {
+                StatisticsCounter.getInstance().addSwatState("TRANSFER_TO_FIRING");
+                transferToFiringOnlyOnce = 1;
+            }
             if (((Transfer) action).pathNodeList != null && ((Transfer) action).pathNodeList.isEmpty()) {
                 setState(State.INTERVENTION);
+                StatisticsCounter.getInstance().addSwatState(this.state.toString());
+                System.out.println("swat states " + StatisticsCounter.getInstance().getSwatStates());
                 ((Firing) action.target).removeReachingSWATSquad(this);
                 ((Firing) action.target).addSolvingSWATSquad(this);
                 action = new IncidentParticipation(World.getInstance().getSimulationTimeLong(), (Incident) action.target);
@@ -126,8 +137,10 @@ public class SWAT extends Entity implements IDrawable {
             for (SWATHeadquarters hq : swatHQs) {
                 if (hq.getDistrict().getName().equals(this.getDistrict().getName())) {
                     setState(State.RETURNING_TO_HQ);
+                    StatisticsCounter.getInstance().addSwatState(this.state.toString());
                     setAction(new Transfer(World.getInstance().getSimulationTimeLong(), hq, this.state));
                     hq.addAvailableSWATSquad(this);
+                    StatisticsCounter.getInstance().addSwatState("WAITING_FOR_ORDERS");
                 }
             }
         } else if (!(action instanceof Transfer)) {
@@ -152,9 +165,21 @@ public class SWAT extends Entity implements IDrawable {
         logChangingState(previousStateToLog != null ? previousStateToLog.toString() : " ", this.state.toString());
     }
 
+    public double getSpeed() {
+        switch (state) {
+            case TRANSFER_TO_FIRING, RETURNING_TO_HQ:
+                return basePrivilegedSpeed + (ThreadLocalRandom.current().nextBoolean() ? ThreadLocalRandom.current().nextDouble(basePrivilegedSpeed * 10 / 100) : 0);
+            case WAITING_FOR_ORDERS:
+                return basePrivilegedSpeed + (ThreadLocalRandom.current().nextBoolean() ? ThreadLocalRandom.current().nextDouble(basePrivilegedSpeed * 10 / 100) : 0);
+            default:
+                Logger.getInstance().logNewOtherMessage("The patrol is currently not moving");
+                return basePrivilegedSpeed;
+        }
+    }
+
     private void move(double simulationTime) {
         // speed changed from km/h to m/s
-        double traveledDistance = this.basePrivilegedSpeed * 1000 / 3600 * Math.abs(simulationTime - timeOfLastMove);
+        double traveledDistance = getSpeed() * 1000 / 3600 * Math.abs(simulationTime - timeOfLastMove);
         if (action instanceof SWAT.Transfer) {
 
             double distanceToNearestNode = getDistanceToNearestNode();
@@ -165,12 +190,16 @@ public class SWAT extends Entity implements IDrawable {
                 Node removedNode = ((SWAT.Transfer) action).pathNodeList.remove(0);
                 setPosition(removedNode.getPosition());
                 distanceToNearestNode = getDistanceToNearestNode();
+                StatisticsCounter.getInstance().increaseCoveredDistanceBySWAT(distanceToNearestNode);
+                StatisticsCounter.getInstance().increaseElapsedTimeBySWAT(distanceToNearestNode / ((World.getInstance().getConfig().getBasePrivilegedSpeed() * 1000) / 3600.0));
             }
             LatLon nearestNodePosition = ((SWAT.Transfer) action).pathNodeList.get(0).getPosition();
             if (distanceToNearestNode > traveledDistance) {
                 double distanceFactor = traveledDistance / distanceToNearestNode;
                 setLatitude((getLatitude() + (nearestNodePosition.getLatitude() - getLatitude()) * distanceFactor));
                 setLongitude((getLongitude() + (nearestNodePosition.getLongitude() - getLongitude()) * distanceFactor));
+                StatisticsCounter.getInstance().increaseCoveredDistanceBySWAT(distanceFactor);
+                StatisticsCounter.getInstance().increaseElapsedTimeBySWAT(distanceFactor / ((World.getInstance().getConfig().getBasePrivilegedSpeed() * 1000) / 3600.0));
             } else {
                 setPosition(nearestNodePosition);
                 ((SWAT.Transfer) action).pathNodeList.remove(0);

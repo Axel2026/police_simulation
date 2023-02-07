@@ -553,6 +553,8 @@ public class MapPanel {
         ExportNeutralizedPatrolsPerDistrict.getInstance().writeToCsvFile();
         ExportDistrictFirings.getInstance().writeToCsvFile();
         ExportFiringsPerAmbulance.getInstance().writeToCsvFile();
+        ExportFiringsPerSwat.getInstance().writeToCsvFile();
+        ExportAverageSwatDistanceAndTime.getInstance().writeToCsvFile();
         ExportIncidentsHourDuration.getInstance().writeToCsvFile();
         String simulationSummaryMessage = "Simulation has finished.\n\n" +
                 "Simulated Patrols: " + StatisticsCounter.getInstance().getNumberOfPatrols() + "\n" +

@@ -1,10 +1,8 @@
 package Simulation.entities;
 
+import Simulation.StatisticsCounter;
 import Simulation.World;
-import Simulation.exported_data.ExportFiringDetails;
-import Simulation.exported_data.ExportRevokingPatrolsDetails;
-import Simulation.exported_data.ExportSWATDistanceToShootings;
-import Simulation.exported_data.ExportSupportSummonDetails;
+import Simulation.exported_data.*;
 import Visualisation.District;
 import Visualisation.IDrawable;
 import Visualisation.Patrol;
@@ -93,8 +91,10 @@ public class SWATHeadquarters extends Entity implements IDrawable {
     }
 
     public SWAT summonSWATSquad(Firing firing) {
+        System.out.println("availableSWATSquads " + availableSWATSquads);
         SWAT summonedSWATSquad = removeAvailableSWATSquad();
-        if(summonedSWATSquad != null) {
+        StatisticsCounter.getInstance().increaseUsedSWAT();
+        if (summonedSWATSquad != null) {
             giveOrdersToFoundSQUAD(firing, summonedSWATSquad);
         }
 
@@ -102,6 +102,7 @@ public class SWATHeadquarters extends Entity implements IDrawable {
     }
 
     private void giveOrdersToFoundSQUAD(Incident firing, SWAT swatSquad) {
+//        ExportAmbulanceDistanceAndTimeToReachFiring.getInstance().writeToCsvFile((Firing) firing, swatSquad);
         Logger.getInstance().logNewOtherMessage(swatSquad + " took order from HQ.");
         Logger.getInstance().logNewMessageChangingState(swatSquad, swatSquad.getState().toString(), "TRANSFER_TO_FIRING");
         swatSquad.takeOrder(swatSquad.new Transfer(World.getInstance().getSimulationTimeLong(), firing, SWAT.State.TRANSFER_TO_FIRING));

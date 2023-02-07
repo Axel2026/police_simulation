@@ -35,12 +35,15 @@ public class StatisticsCounter {
     private int numberOfFirings = 0;
     private int numberOfSolvedInterventions = 0;
     private int numberOfSolvedFirings = 0;
+    private int usedSwat = 0;
     private int numberOfNeutralizedPatrols = 0;
     private int durationOfInterventions = 0;
     private int durationMoreThanHour = 0;
     private int durationLessThanHour = 0;
     private int durationOfFirings = 0;
     private int coveredDistanceByPatrol = 0;
+    private int coveredDistanceBySWAT = 0;
+    private int elapsedTimeBySWAT = 0;
     private int sumonedPatrols = 0;
     private int coveredDistanceByAmbulance = 0;
     private List<String> interventionsDistricts = new ArrayList<>();
@@ -48,6 +51,7 @@ public class StatisticsCounter {
     private List<String> firingDistricts = new ArrayList<>();
     private List<String> neutralizedPatrolDistrict = new ArrayList<>();
     private List<String> neutralizedPatrolSafetyLevel = new ArrayList<>();
+    private List<String> swatStates = new ArrayList<>();
 
     public void reset() {
         this.numberOfPatrols = 0;
@@ -56,10 +60,13 @@ public class StatisticsCounter {
         this.numberOfFirings = 0;
         this.numberOfSolvedInterventions = 0;
         this.numberOfSolvedFirings = 0;
+        this.usedSwat = 0;
         this.numberOfNeutralizedPatrols = 0;
         this.durationOfInterventions = 0;
         this.durationOfFirings = 0;
         this.coveredDistanceByPatrol = 0;
+        this.coveredDistanceBySWAT = 0;
+        this.elapsedTimeBySWAT = 0;
         this.sumonedPatrols = 0;
         this.coveredDistanceByAmbulance = 0;
         this.durationMoreThanHour = 0;
@@ -116,6 +123,30 @@ public class StatisticsCounter {
 
     public int getCoveredDistanceByPatrol() {
         return coveredDistanceByPatrol;
+    }
+
+    public void increaseCoveredDistanceBySWAT(double distance) {
+        this.coveredDistanceBySWAT += distance;
+    }
+
+    public int getCoveredDistanceBySWAT() {
+        return coveredDistanceBySWAT;
+    }
+
+    public void increaseUsedSWAT() {
+        this.usedSwat++;
+    }
+
+    public int getUsedSWAT() {
+        return usedSwat;
+    }
+
+    public void increaseElapsedTimeBySWAT(double distance) {
+        this.elapsedTimeBySWAT += distance;
+    }
+
+    public int getElapsedTimeBySWAT() {
+        return elapsedTimeBySWAT;
     }
 
     public void increaseCoveredDistanceByAmbulance(double distance) {
@@ -216,5 +247,13 @@ public class StatisticsCounter {
 
     public void addNeutralizedPatrolSafetyLevel(String district) {
         neutralizedPatrolSafetyLevel.add(district);
+    }
+
+    public List<String> getSwatStates() {
+        return swatStates;
+    }
+
+    public void addSwatState(String state) {
+        swatStates.add(state);
     }
 }
