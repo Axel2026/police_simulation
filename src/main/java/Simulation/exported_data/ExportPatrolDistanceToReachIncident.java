@@ -3,7 +3,6 @@ package Simulation.exported_data;
 import Simulation.World;
 import Simulation.entities.Firing;
 import Simulation.entities.Intervention;
-import Visualisation.Ambulance;
 import Visualisation.Patrol;
 import com.opencsv.CSVWriter;
 import utils.Haversine;
@@ -63,9 +62,6 @@ public class ExportPatrolDistanceToReachIncident extends AbstractExportData {
                 String.valueOf(distanceOfSummonedPatrolFiring(firing, summonedPatrol)).replace(".", ","),
         }, false);
 
-//        world.addCoveredDistance(distanceOfSummonedPatrolFiring(firing, summonedPatrol));
-//        world.addDistanceAndTimeCounter();
-
         csvWriter.close();
     }
 
@@ -87,9 +83,6 @@ public class ExportPatrolDistanceToReachIncident extends AbstractExportData {
                 String.valueOf(intervention.getDistrict().getThreatLevel()),
                 String.valueOf(distanceOfSummonedPatrolIntervention(intervention, summonedPatrol)).replace(".", ","),
         }, false);
-
-//        world.addCoveredDistance(distanceOfSummonedPatrolIntervention(intervention, summonedPatrol));
-//        world.addDistanceAndTimeCounter();
 
         csvWriter.close();
     }

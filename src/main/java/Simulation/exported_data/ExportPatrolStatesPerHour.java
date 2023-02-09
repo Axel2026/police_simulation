@@ -82,7 +82,6 @@ public class ExportPatrolStatesPerHour extends Thread {
                     e.printStackTrace();
                 }
 
-                // sleep for next 'periodOfTimeToExportDetails' minutes in simulation time
                 var sleepTime = ((3600 - (world.getSimulationTime() % 3600)) * 1000) / world.getConfig().getTimeRate();
                 try {
                     sleep((long) sleepTime, (int) ((sleepTime - (long) sleepTime) * 1000000));

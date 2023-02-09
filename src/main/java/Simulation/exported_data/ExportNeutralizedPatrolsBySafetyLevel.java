@@ -1,21 +1,13 @@
 package Simulation.exported_data;
 
 import Simulation.StatisticsCounter;
-import Simulation.World;
-import Simulation.entities.Firing;
-import Visualisation.Ambulance;
 import com.opencsv.CSVWriter;
 import org.apache.commons.lang3.StringUtils;
-import utils.Haversine;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -23,9 +15,8 @@ import java.util.stream.Collectors;
 
 
 public class ExportNeutralizedPatrolsBySafetyLevel extends AbstractExportData {
-    private final World world = World.getInstance();
     private static final String CSV_DIRECTORY_PATH = "results";
-    private List neutralizedPatrolsBySafetyLevelHeader = new ArrayList<String>(){
+    private List neutralizedPatrolsBySafetyLevelHeader = new ArrayList<String>() {
         {
             add("Safe");
             add("RatherSafe");
@@ -41,6 +32,7 @@ public class ExportNeutralizedPatrolsBySafetyLevel extends AbstractExportData {
         neutralizedPatrolsBySafetyLevelHeader.toArray(array); // fill the array
         neutralizedPatrolsBySafetyLevelHeaderCsvFile = createExportFile(CSV_DIRECTORY_PATH, array, "--Neutralized Patrols By Safety Level.csv");
     }
+
     public static ExportNeutralizedPatrolsBySafetyLevel getInstance() {
         // Result variable here may seem pointless, but it's needed for DCL (Double-checked locking).
         var result = instance;

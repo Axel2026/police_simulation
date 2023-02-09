@@ -35,10 +35,10 @@ public class Main {
 
         JPanel configurationPanelTab = new JPanel();
         configurationPanelTab.setLayout(new FlowLayout());
-        configurationPanelTab.setPreferredSize(new Dimension( 1620,900));
+        configurationPanelTab.setPreferredSize(new Dimension(1620, 900));
         JScrollPane scrollFrame = new JScrollPane(configurationPanelTab);
         configurationPanelTab.setAutoscrolls(true);
-        scrollFrame.setPreferredSize(new Dimension( 800,300));
+        scrollFrame.setPreferredSize(new Dimension(800, 300));
 
         JPanel LoggerPanelTab = new JPanel();
         LoggerPanelTab.setLayout(new GridLayout(1, 1));

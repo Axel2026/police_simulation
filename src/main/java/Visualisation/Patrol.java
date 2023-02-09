@@ -31,11 +31,6 @@ public class Patrol extends Entity implements IAgent, IDrawable {
     private State previousState;
     private Action action;
     private double timeOfLastDrawNeutralization;
-    private int transferToFiringOnlyOnce = 0;
-    private int transferToFiringOnlyOnceStop = 0;
-    private int transferToInterventionOnlyOnceStop = 0;
-    private double startSimulationTime = 0.0;
-    private final World world = World.getInstance();
 
     public Patrol() {
         this.basePatrollingSpeed = World.getInstance().getConfig().getBasePatrollingSpeed();
@@ -117,8 +112,6 @@ public class Patrol extends Entity implements IAgent, IDrawable {
             if (((Transfer) action).pathNodeList.isEmpty()) {
                 setState(State.INTERVENTION);
                 StatisticsCounter.getInstance().addPatrolState("INTERVENTION");
-                System.out.println("getTransferToInterventionTimeInMinutes " + StatisticsCounter.getInstance().getTransferToInterventionTime());
-                System.out.println("getTransferToFiringTimeInMinutes " + StatisticsCounter.getInstance().getTransferToFiringTimeInMinutes());
                 action = new IncidentParticipation(World.getInstance().getSimulationTimeLong(), (Incident) action.target);
             }
         } else {
@@ -169,7 +162,6 @@ public class Patrol extends Entity implements IAgent, IDrawable {
             if (action.target == null || !((Firing) action.target).isActive() || !(action.target instanceof Firing)) {
                 setState(State.PATROLLING);
                 StatisticsCounter.getInstance().addPatrolState("PATROLLING");
-                System.out.println("get patrol states " + StatisticsCounter.getInstance().getPatrolStates());
 
                 drawNewTarget(null);
             } else if (World.getInstance().getSimulationTime() > timeOfLastDrawNeutralization + timeBetweenDrawNeutralization) {

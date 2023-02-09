@@ -24,6 +24,9 @@ public class Headquarters extends Entity implements IDrawable {
     private final double durationOfTheShift;
     private List<Incident> incidents = new ArrayList<>();
     private double endOfCurrentShift;
+    private final World world = World.getInstance();
+    private String firstPatrolState = "PATROLLING";
+    private double previousSimulationTime = 0.0;
 
     public Headquarters(double latitude, double longitude) {
         super(latitude, longitude);
@@ -48,6 +51,18 @@ public class Headquarters extends Entity implements IDrawable {
     }
 
     public void assignTasks() {
+        var allEntities = world.getAllEntities();
+        var allPatrols = allEntities.stream()
+                .filter(Patrol.class::isInstance)
+                .map(Patrol.class::cast)
+                .collect(Collectors.toList());
+        var firstPatrolNewState = allPatrols.get(0).getState().toString();
+        if (!firstPatrolState.equals(firstPatrolNewState)) {
+            var timeInState = world.getSimulationTimeLong() - previousSimulationTime;
+            ExportFirstPatrolData.getInstance().writeToCsvFileFirstPatrolData(world.getSimulationTimeLong(), allPatrols.get(0).getState().toString(), timeInState);
+            firstPatrolState = firstPatrolNewState;
+            previousSimulationTime = world.getSimulationTimeLong();
+        }
         checkIfTheShiftIsOver();
 
         updateListOfIncidents();
@@ -130,7 +145,11 @@ public class Headquarters extends Entity implements IDrawable {
                     StatisticsCounter.getInstance().addPatrolState("TRANSFER_TO_INTERVENTION");
                     StatisticsCounter.getInstance().increaseSumonedPatrols();
                     ExportPatrolDistanceToReachIncident.getInstance().writeToCsvFileIntervention((Intervention) intervention, availablePatrol);
-
+                    var allEntities = world.getAllEntities();
+                    var allPatrols = allEntities.stream()
+                            .filter(Patrol.class::isInstance)
+                            .map(Patrol.class::cast)
+                            .collect(Collectors.toList());
                     ((Intervention) intervention).setPatrolSolving(availablePatrol);
                 }
             }

@@ -69,7 +69,6 @@ public class ExportAverageAmbulanceDistanceAndTimeToReachFiring extends Thread {
                     e.printStackTrace();
                 }
 
-                // sleep for next 'periodOfTimeToExportDetails' minutes in simulation time
                 var sleepTime = ((periodOfTimeToExportDetailsInSeconds - (world.getSimulationTime() % periodOfTimeToExportDetailsInSeconds)) * 1000) / world.getConfig().getTimeRate();
                 try {
                     sleep((long) sleepTime, (int) ((sleepTime - (long) sleepTime) * 1000000));

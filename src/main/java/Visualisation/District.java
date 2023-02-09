@@ -70,7 +70,7 @@ public class District implements IDrawable {
     }
 
     public void createSWATHeadquarters() {
-        if(World.getInstance().getConfig().getEnableSWATIntervention()){
+        if (World.getInstance().getConfig().getEnableSWATIntervention()) {
             this.swatHeadquarters = new SWATHeadquarters(this.getBoundaries().getBounds2D().getCenterX(), this.getBoundaries().getBounds2D().getCenterY(), this);
             System.out.println(this.getName());
             System.out.println("Latitude: " + this.getBoundaries().getBounds2D().getCenterX());
@@ -79,7 +79,7 @@ public class District implements IDrawable {
         }
     }
 
-    public SWATHeadquarters getSwatHeadquarters(){
+    public SWATHeadquarters getSwatHeadquarters() {
         return swatHeadquarters;
     }
 

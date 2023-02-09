@@ -281,7 +281,7 @@ public class WorldConfiguration {
         this.nightStatisticMultiplier = nightStatisticMultiplier;
     }
 
-    public boolean getConsiderTimeOfDay(){
+    public boolean getConsiderTimeOfDay() {
         return considerTimeOfDay;
     }
 

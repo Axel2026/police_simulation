@@ -50,8 +50,7 @@ public class PathCalculator extends Thread {
             } else {
                 ((SWAT.Transfer) ((SWAT) source).getAction()).setPathNodeList(pathNodeList);
             }
-        }
-        else if (pathNodeList.size() == 1 && source.toString().contains("Ambulance")) {
+        } else if (pathNodeList.size() == 1 && source.toString().contains("Ambulance")) {
             var pathNodeList2 = new ArrayList<Node>();
             pathNodeList2.add(pathNodeList.get(0));
             ((Ambulance.Transfer) ((Ambulance) source).getAction()).setPathNodeList(pathNodeList2);

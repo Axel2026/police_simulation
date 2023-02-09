@@ -7,6 +7,7 @@ public class DelayedActionWithTargetSimulationTime extends Thread {
     private final long targetSimulationTime;
     private final World world = World.getInstance();
     private final Thunk function;
+
     public DelayedActionWithTargetSimulationTime(long targetSimulationTime, Thunk function) {
         this.targetSimulationTime = targetSimulationTime;
         this.function = function;

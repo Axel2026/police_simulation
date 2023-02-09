@@ -54,20 +54,20 @@ public class Hospital extends Entity implements IDrawable {
 
     private void checkAllFirings(List<Incident> allFirings) {
         for (var firing : allFirings) {
-            if(((Firing) firing).getAmbulancesSolving().size() == 1 && ((Firing) firing).getAmbulancesReaching().size() < 1) {
+            if (((Firing) firing).getAmbulancesSolving().size() == 1 && ((Firing) firing).getAmbulancesReaching().size() < 1) {
                 summonSupportForFiring((Firing) firing);
             }
         }
     }
 
     public void summonSupportForFiring(Firing firing) {
-            var availableAmbulance = World.getInstance().getAllEntities()
-                    .stream()
-                    .filter(x -> x instanceof Ambulance && ((Ambulance) x).getStateAmbulance() == Ambulance.State.AVAILABLE).findFirst()
-                    .map(Ambulance.class::cast).orElse(null);
-            if (availableAmbulance != null) {
-                giveOrdersToFoundAmbulance(firing, availableAmbulance);
-            }
+        var availableAmbulance = World.getInstance().getAllEntities()
+                .stream()
+                .filter(x -> x instanceof Ambulance && ((Ambulance) x).getStateAmbulance() == Ambulance.State.AVAILABLE).findFirst()
+                .map(Ambulance.class::cast).orElse(null);
+        if (availableAmbulance != null) {
+            giveOrdersToFoundAmbulance(firing, availableAmbulance);
+        }
     }
 
     private void giveOrdersToFoundAmbulance(Incident firing, Ambulance foundAmbulance) {

@@ -58,7 +58,7 @@ public abstract class Entity {
         return this.type;
     }
 
-    public void setType(EntityTypes type){
+    public void setType(EntityTypes type) {
         this.type = type;
     }
 

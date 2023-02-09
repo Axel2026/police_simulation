@@ -128,29 +128,6 @@ public class MapPanel {
                 World.getInstance().addEntity(hq);
                 selectInterventionLocation();
                 selectHospitalLocation();
-                // GUI Drawing thread
-//                new Thread(() -> {
-//                    while (!World.getInstance().hasSimulationDurationElapsed() && !World.getInstance().isSimulationFinished()) {
-//                        mapViewer.repaint();
-//                        try {
-//                            Thread.sleep(1000 / 30);
-//                        } catch (Exception exception) {
-//                            // Ignore
-//                            exception.printStackTrace();
-//                            Thread.currentThread().interrupt();
-//                        }
-//                    }
-//
-//                    try {
-//                        showSummary();
-//                    } catch (IOException ioException) {
-//                        ioException.printStackTrace();
-//                    }
-//                }).start();
-//
-//                // Simulation thread
-//                new SimulationThread().start();
-
                 mapViewer.removeMouseListener(this);
             }
 
@@ -193,7 +170,6 @@ public class MapPanel {
                 hospitalPosition = mapViewer.convertPointToGeoPosition(e.getPoint());
                 var hospital = new Hospital(position.getLatitude(), position.getLongitude());
                 World.getInstance().addEntity(hospital);
-//                addAmbulances(hospitalPosition, 5);
                 // GUI Drawing thread
                 new Thread(() -> {
                     while (!World.getInstance().hasSimulationDurationElapsed() && !World.getInstance().isSimulationFinished()) {
@@ -619,7 +595,7 @@ public class MapPanel {
             swatStates.put("CALCULATING_PATH", new Color(255, 123, 255));
             swatStates.put("RETURNING_TO_HQ", new Color(222, 205, 0));
             swatStates.put("INTERVENTION", new Color(0, 92, 230));
-            swatStates.put("TRANSFER_TO_FIRING", new Color(102, 0, 224 ));
+            swatStates.put("TRANSFER_TO_FIRING", new Color(102, 0, 224));
             swatStates.put("WAITING_FOR_ORDERS", new Color(224, 0, 180));
 
             int i = 0;

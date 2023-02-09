@@ -12,11 +12,10 @@ public class EventUpdater extends Thread {
             if (!world.isSimulationPaused()) {
                 var activeEvents = world.getEvents();
                 for (var incident : activeEvents) {
-                    if (incident.isActive()){
+                    if (incident.isActive()) {
                         incident.updateState();
-                    }
-                    else {
-                        world.removeEntity((Incident)incident);
+                    } else {
+                        world.removeEntity((Incident) incident);
                     }
                 }
             }

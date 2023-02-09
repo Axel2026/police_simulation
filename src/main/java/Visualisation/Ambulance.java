@@ -111,7 +111,7 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
     private void updateStateIfReturningToHospital() {
         if (action instanceof Ambulance.Transfer) {
             if (((Ambulance.Transfer) action).pathNodeList.isEmpty()) {
-                System.out.println("hej wrocilem do szpitala ze strzelaniny");
+                System.out.println("Ambulans wrócił do szpitala");
                 setState(State.AVAILABLE);
             }
         }
@@ -120,7 +120,7 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
     private void updateStateIfSavingHurtPatrol() {
         if (action instanceof Ambulance.Transfer) {
             if (((Ambulance.Transfer) action).pathNodeList.isEmpty()) {
-                System.out.println("hej wrocilem do szpitala z rannym");
+                System.out.println("Ambulans wrócił do szpitala z rannym");
                 setState(State.AVAILABLE);
             }
         }
@@ -135,7 +135,6 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
             case RETURNING_TO_HOSPITAL, SAVING_HURT_PATROL:
                 if (action instanceof Ambulance.Transfer && ((Ambulance.Transfer) this.action).pathNodeList != null) {
                     if (((Ambulance.Transfer) action).pathNodeList.isEmpty()) {
-//                        World.getInstance().removeEntity(this);
                     } else {
                         move(simulationTime);
                     }
@@ -237,14 +236,14 @@ public class Ambulance extends Entity implements IAgent, IDrawable {
         var oldColor = g.getColor();
 
         switch (this.state) {
-            case AVAILABLE -> g.setColor(new Color(70, 100, 200)); // green
-            case TRANSFER_TO_ACCIDENT -> g.setColor(new Color(30, 180, 200)); // green
-            case ACCIDENT -> g.setColor(new Color(255, 87, 36)); // yellowish
-            case CALCULATING_PATH -> g.setColor(new Color(255, 123, 255)); // pink
-            case RETURNING_TO_HOSPITAL -> g.setColor(new Color(222, 161, 0)); // orangeish
-            case SAVING_HURT_PATROL -> g.setColor(new Color(155, 55, 55)); // orangeish
+            case AVAILABLE -> g.setColor(new Color(70, 100, 200));
+            case TRANSFER_TO_ACCIDENT -> g.setColor(new Color(30, 180, 200));
+            case ACCIDENT -> g.setColor(new Color(255, 87, 36));
+            case CALCULATING_PATH -> g.setColor(new Color(255, 123, 255));
+            case RETURNING_TO_HOSPITAL -> g.setColor(new Color(222, 161, 0));
+            case SAVING_HURT_PATROL -> g.setColor(new Color(155, 55, 55));
             default -> {
-                g.setColor(Color.BLACK); // black
+                g.setColor(Color.BLACK);
                 throw new IllegalStateException("the patrol has no State");
             }
         }

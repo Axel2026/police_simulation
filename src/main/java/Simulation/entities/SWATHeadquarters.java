@@ -102,7 +102,6 @@ public class SWATHeadquarters extends Entity implements IDrawable {
     }
 
     private void giveOrdersToFoundSQUAD(Incident firing, SWAT swatSquad) {
-//        ExportAmbulanceDistanceAndTimeToReachFiring.getInstance().writeToCsvFile((Firing) firing, swatSquad);
         Logger.getInstance().logNewOtherMessage(swatSquad + " took order from HQ.");
         Logger.getInstance().logNewMessageChangingState(swatSquad, swatSquad.getState().toString(), "TRANSFER_TO_FIRING");
         swatSquad.takeOrder(swatSquad.new Transfer(World.getInstance().getSimulationTimeLong(), firing, SWAT.State.TRANSFER_TO_FIRING));

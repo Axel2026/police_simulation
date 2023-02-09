@@ -66,11 +66,11 @@ public abstract class Incident extends Entity implements IEvent, IDrawable {
         timeOfLastUpdate = World.getInstance().getSimulationTime();
     }
 
-    void drawString(Graphics2D g, int x, int y, String str1){
+    void drawString(Graphics2D g, int x, int y, String str1) {
 
         var oldColor = g.getColor();
 
-        Color bgColor = new Color(1,1,1,0.8f );
+        Color bgColor = new Color(1, 1, 1, 0.8f);
         FontMetrics fm = g.getFontMetrics();
         Rectangle2D rect = fm.getStringBounds(str1, g);
         g.setColor(bgColor);

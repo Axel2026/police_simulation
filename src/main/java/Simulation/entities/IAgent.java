@@ -9,8 +9,10 @@ public interface IAgent {
     void performAction() throws IllegalStateException;
 
     void takeOrder(Patrol.Action action);
+
     void takeOrderAmbulance(Ambulance.Action action);
 
     Patrol.State getState();
+
     Ambulance.State getStateAmbulance();
 }

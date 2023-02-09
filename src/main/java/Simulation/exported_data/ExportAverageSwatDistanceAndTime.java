@@ -1,7 +1,6 @@
 package Simulation.exported_data;
 
 import Simulation.StatisticsCounter;
-import Simulation.World;
 import com.opencsv.CSVWriter;
 
 import java.io.File;
@@ -16,7 +15,6 @@ public class ExportAverageSwatDistanceAndTime extends AbstractExportData {
             "averageTimeElapsedReachingFiring[s]",
     };
     private static ExportAverageSwatDistanceAndTime instance;
-    private final World world = World.getInstance();
     private final File averageSwatDistanceAndTimeHeaderCsvFile;
 
     private ExportAverageSwatDistanceAndTime() {

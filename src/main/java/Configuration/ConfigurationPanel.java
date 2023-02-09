@@ -214,7 +214,7 @@ public class ConfigurationPanel {
         // drop-down list with country selection
         countrySelectionComboBox = new JComboBox<>(availablePlaces.keySet().toArray(new String[0]));
         countrySelectionComboBox.setBackground(Color.decode("#FFFFFF"));
-        countrySelectionComboBox.setBorder(new EmptyBorder(0, 0,0,0));
+        countrySelectionComboBox.setBorder(new EmptyBorder(0, 0, 0, 0));
         countrySelectionComboBox.addActionListener(e -> {
             var selectedItem = countrySelectionComboBox.getSelectedItem().toString();
             var newModel = new DefaultComboBoxModel<>(availablePlaces.get(selectedItem));
@@ -777,7 +777,8 @@ public class ConfigurationPanel {
             scrollContent.setBackground(Color.decode("#FFFFFF"));
             scrollContent.removeAll();
             for (var district : World.getInstance().getMap().getDistricts()) {
-                scrollContent.add(new DistrictConfigComponent(district)).setBackground(Color.decode("#FFFFFF"));;
+                scrollContent.add(new DistrictConfigComponent(district)).setBackground(Color.decode("#FFFFFF"));
+                ;
             }
             scrollContent.revalidate();
 
@@ -799,7 +800,7 @@ public class ConfigurationPanel {
         mapPanel.selectHQLocation();
         var allDistricts = World.getInstance().getDistricts();
 
-        for(var district : allDistricts) {
+        for (var district : allDistricts) {
             district.createSWATHeadquarters();
         }
     }

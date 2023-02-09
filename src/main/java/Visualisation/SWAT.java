@@ -76,7 +76,6 @@ public class SWAT extends Entity implements IDrawable {
     private void updateStateIfIntervention() {
         if (action instanceof IncidentParticipation) {
             if (action.target == null || !((Firing) action.target).isActive() || !(action.target instanceof Firing)) {
-                System.out.println("RETURNING_TO_HQ from updateStateIfIntervention()");
                 setState(State.RETURNING_TO_HQ);
 
                 var swatHQs = World.getInstance().getAllEntities().stream().filter(SWATHeadquarters.class::isInstance).map(SWATHeadquarters.class::cast).collect(Collectors.toList());
@@ -132,7 +131,6 @@ public class SWAT extends Entity implements IDrawable {
         var swatHQs = World.getInstance().getAllEntities().stream().filter(SWATHeadquarters.class::isInstance).map(SWATHeadquarters.class::cast).collect(Collectors.toList());
 
         if (action == null) {
-            System.out.println("Test69");
             for (SWATHeadquarters hq : swatHQs) {
                 if (hq.getDistrict().getName().equals(this.getDistrict().getName())) {
                     setState(State.RETURNING_TO_HQ);
@@ -327,11 +325,11 @@ public class SWAT extends Entity implements IDrawable {
         var oldColor = g.getColor();
 
         switch (this.state) {
-            case WAITING_FOR_ORDERS -> g.setColor(new Color(224, 0, 180)); // transparent
-            case TRANSFER_TO_FIRING -> g.setColor(new Color(102, 0, 224)); // orangeish
-            case INTERVENTION -> g.setColor(new Color(0, 92, 230)); // blue
-            case RETURNING_TO_HQ -> g.setColor(new Color(222, 205, 0)); // purple
-            case CALCULATING_PATH -> g.setColor(new Color(255, 123, 255)); // pink
+            case WAITING_FOR_ORDERS -> g.setColor(new Color(224, 0, 180));
+            case TRANSFER_TO_FIRING -> g.setColor(new Color(102, 0, 224));
+            case INTERVENTION -> g.setColor(new Color(0, 92, 230));
+            case RETURNING_TO_HQ -> g.setColor(new Color(222, 205, 0));
+            case CALCULATING_PATH -> g.setColor(new Color(255, 123, 255));
             default -> {
                 g.setColor(Color.BLACK); // black
                 throw new IllegalStateException("the patrol has no State");
