@@ -33,9 +33,11 @@ public class World {
     private ExportDistrictInterventionsPerHour exportDistrictInterventionsPerHour = null;
     private ExportPatrolsSolvingFiringBySafetyLevelPerHour exportPatrolsSolvingFiringBySafetyLevelPerHour = null;
     private ExportSwatStatesPerHour exportSwatStatesPerHour = null;
+    private ExportPatrolStatesPerHour exportPatrolStatesPerHour = null;
     private ExportAverageIncidentDataOnShift exportAverageIncidentDataOnShift = null;
     private ExportCoveredDistancePerPatrolOnShift exportCoveredDistancePerPatrolOnShift = null;
     private ExportAverageDurationOfIncidentsPerHour exportAverageDurationOfIncidentsPerHour = null;
+    private ExportAverageDurationPatrolsHeadingTowardsIncidentsPerHour exportAverageDurationPatrolsHeadingTowardsIncidentsPerHour = null;
     private ExportAverageAmbulanceDistanceAndTimeToReachFiring exportAverageAmbulanceDistanceAndTimeToReachFiring = null;
     private ExportAverageSwatDistanceAndTimeToReachFiring exportAverageSwatDistanceAndTimeToReachFiring = null;
     private ExportUsedSwatPerHour exportUsedSwatPerHour = null;
@@ -100,8 +102,13 @@ public class World {
     public ExportPatrolsSolvingFiringBySafetyLevelPerHour getExportPatrolsSolvingFiringBySafetyLevelPerHour() {
         return exportPatrolsSolvingFiringBySafetyLevelPerHour;
     }
+
     public ExportSwatStatesPerHour getExportSwatStatesPerHour() {
         return exportSwatStatesPerHour;
+    }
+
+    public ExportPatrolStatesPerHour getExportPatrolStatesPerHour() {
+        return exportPatrolStatesPerHour;
     }
 
     public void setExportAmbulancesInUsePerHour(ExportAmbulancesInUsePerHour exportAmbulancesInUsePerHour) {
@@ -123,8 +130,13 @@ public class World {
     public void setExportPatrolsSolvingFiringBySafetyLevelPerHour(ExportPatrolsSolvingFiringBySafetyLevelPerHour exportPatrolsSolvingFiringBySafetyLevelPerHour) {
         this.exportPatrolsSolvingFiringBySafetyLevelPerHour = exportPatrolsSolvingFiringBySafetyLevelPerHour;
     }
+
     public void setExportSwatStatesPerHour(ExportSwatStatesPerHour exportSwatStatesPerHour) {
         this.exportSwatStatesPerHour = exportSwatStatesPerHour;
+    }
+
+    public void setExportPatrolStatesPerHour(ExportPatrolStatesPerHour exportPatrolStatesPerHour) {
+        this.exportPatrolStatesPerHour = exportPatrolStatesPerHour;
     }
 
     public void setExportAverageIncidentDataOnShift(ExportAverageIncidentDataOnShift exportAverageIncidentDataOnShift) {
@@ -139,6 +151,10 @@ public class World {
         this.exportAverageDurationOfIncidentsPerHour = exportAverageDurationOfIncidentsPerHour;
     }
 
+    public void setExportAverageDurationPatrolsHeadingTowardsIncidentsPerHour(ExportAverageDurationPatrolsHeadingTowardsIncidentsPerHour exportAverageDurationPatrolsHeadingTowardsIncidentsPerHour) {
+        this.exportAverageDurationPatrolsHeadingTowardsIncidentsPerHour = exportAverageDurationPatrolsHeadingTowardsIncidentsPerHour;
+    }
+
     public ExportAverageAmbulanceDistanceAndTimeToReachFiring getExportAverageAmbulanceDistanceAndTimeToReachFiring() {
         return exportAverageAmbulanceDistanceAndTimeToReachFiring;
     }
@@ -146,6 +162,7 @@ public class World {
     public ExportAverageSwatDistanceAndTimeToReachFiring getExportAverageSwatDistanceAndTimeToReachFiring() {
         return exportAverageSwatDistanceAndTimeToReachFiring;
     }
+
     public ExportUsedSwatPerHour getExportUsedSwatPerHour() {
         return exportUsedSwatPerHour;
     }
@@ -162,6 +179,10 @@ public class World {
         return exportAverageDurationOfIncidentsPerHour;
     }
 
+    public ExportAverageDurationPatrolsHeadingTowardsIncidentsPerHour getExportAverageDurationPatrolsHeadingTowardsIncidentsPerHour() {
+        return exportAverageDurationPatrolsHeadingTowardsIncidentsPerHour;
+    }
+
     public void setExportAverageAmbulanceDistanceAndTimeToReachFiring(ExportAverageAmbulanceDistanceAndTimeToReachFiring exportAverageAmbulanceDistanceAndTimeToReachFiring) {
         this.exportAverageAmbulanceDistanceAndTimeToReachFiring = exportAverageAmbulanceDistanceAndTimeToReachFiring;
     }
@@ -169,6 +190,7 @@ public class World {
     public void setExportAverageSwatDistanceAndTimeToReachFiring(ExportAverageSwatDistanceAndTimeToReachFiring exportAverageSwatDistanceAndTimeToReachFiring) {
         this.exportAverageSwatDistanceAndTimeToReachFiring = exportAverageSwatDistanceAndTimeToReachFiring;
     }
+
     public void setExportUsedSwatPerHour(ExportUsedSwatPerHour exportUsedSwatPerHour) {
         this.exportUsedSwatPerHour = exportUsedSwatPerHour;
     }
@@ -385,9 +407,11 @@ public class World {
         setExportDistrictInterventionsPerHour(new ExportDistrictInterventionsPerHour());
         setExportPatrolsSolvingFiringBySafetyLevelPerHour(new ExportPatrolsSolvingFiringBySafetyLevelPerHour());
         setExportSwatStatesPerHour(new ExportSwatStatesPerHour());
+        setExportPatrolStatesPerHour(new ExportPatrolStatesPerHour());
         setExportAverageIncidentDataOnShift(new ExportAverageIncidentDataOnShift());
         setExportCoveredDistancePerPatrolOnShift(new ExportCoveredDistancePerPatrolOnShift());
         setExportAverageDurationOfIncidentsPerHour(new ExportAverageDurationOfIncidentsPerHour());
+        setExportAverageDurationPatrolsHeadingTowardsIncidentsPerHour(new ExportAverageDurationPatrolsHeadingTowardsIncidentsPerHour());
         setExportAverageAmbulanceDistanceAndTimeToReachFiring(new ExportAverageAmbulanceDistanceAndTimeToReachFiring());
         setExportAverageSwatDistanceAndTimeToReachFiring(new ExportAverageSwatDistanceAndTimeToReachFiring());
         setExportUsedSwatPerHour(new ExportUsedSwatPerHour());
@@ -398,12 +422,14 @@ public class World {
         getExportDistrictInterventionsPerHour().start();
         getExportPatrolsSolvingFiringBySafetyLevelPerHour().start();
         getExportSwatStatesPerHour().start();
+        getExportPatrolStatesPerHour().start();
         getExportAverageAmbulanceDistanceAndTimeToReachFiring().start();
         getExportAverageSwatDistanceAndTimeToReachFiring().start();
         getExportUsedSwatPerHour().start();
         getExportAverageIncidentDataOnShift().start();
         getExportCoveredDistancePerPatrolOnShift().start();
         getExportAverageDurationOfIncidentsPerHour().start();
+        getExportAverageDurationPatrolsHeadingTowardsIncidentsPerHour().start();
         Logger.getInstance().logNewOtherMessage("Simulation has started.");
     }
 

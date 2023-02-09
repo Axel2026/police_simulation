@@ -1,9 +1,5 @@
 package Simulation;
 
-import Simulation.entities.Intervention;
-import Visualisation.District;
-import Visualisation.Patrol;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +40,8 @@ public class StatisticsCounter {
     private int coveredDistanceByPatrol = 0;
     private int coveredDistanceBySWAT = 0;
     private int elapsedTimeBySWAT = 0;
+    private int transferToInterventionTime = 0;
+    private int transferToFiringTimeInMinutes = 0;
     private int sumonedPatrols = 0;
     private int coveredDistanceByAmbulance = 0;
     private List<String> interventionsDistricts = new ArrayList<>();
@@ -52,6 +50,7 @@ public class StatisticsCounter {
     private List<String> neutralizedPatrolDistrict = new ArrayList<>();
     private List<String> neutralizedPatrolSafetyLevel = new ArrayList<>();
     private List<String> swatStates = new ArrayList<>();
+    private List<String> patrolStates = new ArrayList<>();
 
     public void reset() {
         this.numberOfPatrols = 0;
@@ -67,6 +66,8 @@ public class StatisticsCounter {
         this.coveredDistanceByPatrol = 0;
         this.coveredDistanceBySWAT = 0;
         this.elapsedTimeBySWAT = 0;
+        this.transferToInterventionTime = 0;
+        this.transferToFiringTimeInMinutes = 0;
         this.sumonedPatrols = 0;
         this.coveredDistanceByAmbulance = 0;
         this.durationMoreThanHour = 0;
@@ -147,6 +148,22 @@ public class StatisticsCounter {
 
     public int getElapsedTimeBySWAT() {
         return elapsedTimeBySWAT;
+    }
+
+    public void increaseTransferToInterventionTime(double time) {
+        this.transferToInterventionTime += time;
+    }
+
+    public int getTransferToInterventionTime() {
+        return transferToInterventionTime;
+    }
+
+    public void increaseTransferToFiringTimeInMinutes(double time) {
+        this.transferToFiringTimeInMinutes += time;
+    }
+
+    public int getTransferToFiringTimeInMinutes() {
+        return transferToFiringTimeInMinutes;
     }
 
     public void increaseCoveredDistanceByAmbulance(double distance) {
@@ -255,5 +272,13 @@ public class StatisticsCounter {
 
     public void addSwatState(String state) {
         swatStates.add(state);
+    }
+
+    public List<String> getPatrolStates() {
+        return patrolStates;
+    }
+
+    public void addPatrolState(String state) {
+        patrolStates.add(state);
     }
 }

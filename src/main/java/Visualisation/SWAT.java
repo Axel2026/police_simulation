@@ -113,7 +113,6 @@ public class SWAT extends Entity implements IDrawable {
             if (((Transfer) action).pathNodeList != null && ((Transfer) action).pathNodeList.isEmpty()) {
                 setState(State.INTERVENTION);
                 StatisticsCounter.getInstance().addSwatState(this.state.toString());
-                System.out.println("swat states " + StatisticsCounter.getInstance().getSwatStates());
                 ((Firing) action.target).removeReachingSWATSquad(this);
                 ((Firing) action.target).addSolvingSWATSquad(this);
                 action = new IncidentParticipation(World.getInstance().getSimulationTimeLong(), (Incident) action.target);

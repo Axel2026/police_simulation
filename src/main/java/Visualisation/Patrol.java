@@ -31,6 +31,11 @@ public class Patrol extends Entity implements IAgent, IDrawable {
     private State previousState;
     private Action action;
     private double timeOfLastDrawNeutralization;
+    private int transferToFiringOnlyOnce = 0;
+    private int transferToFiringOnlyOnceStop = 0;
+    private int transferToInterventionOnlyOnceStop = 0;
+    private double startSimulationTime = 0.0;
+    private final World world = World.getInstance();
 
     public Patrol() {
         this.basePatrollingSpeed = World.getInstance().getConfig().getBasePatrollingSpeed();
@@ -91,6 +96,7 @@ public class Patrol extends Entity implements IAgent, IDrawable {
         String currentStateToLog = "PATROLLING";
         if (isShiftOver()) {
             setState(State.RETURNING_TO_HQ);
+            StatisticsCounter.getInstance().addPatrolState("RETURNING_TO_HQ");
             var hq = World.getInstance().getAllEntities().stream().filter(Headquarters.class::isInstance).findFirst().orElse(null);
             setAction(new Transfer(World.getInstance().getSimulationTimeLong(), hq, this.state));
         } else if (action == null) {
@@ -110,6 +116,9 @@ public class Patrol extends Entity implements IAgent, IDrawable {
         if (action instanceof Transfer) {
             if (((Transfer) action).pathNodeList.isEmpty()) {
                 setState(State.INTERVENTION);
+                StatisticsCounter.getInstance().addPatrolState("INTERVENTION");
+                System.out.println("getTransferToInterventionTimeInMinutes " + StatisticsCounter.getInstance().getTransferToInterventionTime());
+                System.out.println("getTransferToFiringTimeInMinutes " + StatisticsCounter.getInstance().getTransferToFiringTimeInMinutes());
                 action = new IncidentParticipation(World.getInstance().getSimulationTimeLong(), (Incident) action.target);
             }
         } else {
@@ -127,9 +136,11 @@ public class Patrol extends Entity implements IAgent, IDrawable {
             if (action.target == null) {
                 setState(State.PATROLLING);
                 drawNewTarget(null);
+                StatisticsCounter.getInstance().addPatrolState("PATROLLING");
             } else if (!(((Intervention) (action).target).isActive())) {
                 World.getInstance().removeEntity((action.target));
                 setState(State.PATROLLING);
+                StatisticsCounter.getInstance().addPatrolState("PATROLLING");
                 drawNewTarget(null);
             }
         } else {
@@ -142,6 +153,7 @@ public class Patrol extends Entity implements IAgent, IDrawable {
         if (action instanceof Transfer) {
             if (((Transfer) action).pathNodeList != null && ((Transfer) action).pathNodeList.isEmpty()) {
                 setState(State.FIRING);
+                StatisticsCounter.getInstance().addPatrolState("FIRING");
                 ((Firing) action.target).removeReachingPatrol(this);
                 ((Firing) action.target).addSolvingPatrol(this);
                 action = new IncidentParticipation(World.getInstance().getSimulationTimeLong(), (Incident) action.target);
@@ -156,6 +168,9 @@ public class Patrol extends Entity implements IAgent, IDrawable {
         if (action instanceof IncidentParticipation) {
             if (action.target == null || !((Firing) action.target).isActive() || !(action.target instanceof Firing)) {
                 setState(State.PATROLLING);
+                StatisticsCounter.getInstance().addPatrolState("PATROLLING");
+                System.out.println("get patrol states " + StatisticsCounter.getInstance().getPatrolStates());
+
                 drawNewTarget(null);
             } else if (World.getInstance().getSimulationTime() > timeOfLastDrawNeutralization + timeBetweenDrawNeutralization) {
                 if (ThreadLocalRandom.current().nextDouble() < 0.001) {
@@ -165,6 +180,7 @@ public class Patrol extends Entity implements IAgent, IDrawable {
                     StatisticsCounter.getInstance().addNeutralizedPatrolDistrict(((Firing) this.action.target).getDistrict().getName());
                     StatisticsCounter.getInstance().addNeutralizedPatrolSafetyLevel(((Firing) this.action.target).getDistrict().getThreatLevel().toString());
                     setState(State.NEUTRALIZED);
+                    StatisticsCounter.getInstance().addPatrolState("NEUTRALIZED");
                 }
                 timeOfLastDrawNeutralization = World.getInstance().getSimulationTime();
             }
@@ -181,7 +197,7 @@ public class Patrol extends Entity implements IAgent, IDrawable {
 
     private void updateStateIfReturningToHQ() {
         if (action == null) {
-            System.out.println("Test68 ");
+//            StatisticsCounter.getInstance().addPatrolState("RETURNING_TO_HQ");
             World.getInstance().getAllEntities()
                     .stream()
                     .filter(Headquarters.class::isInstance)
@@ -325,6 +341,10 @@ public class Patrol extends Entity implements IAgent, IDrawable {
 
     public double getTimeSinceLastActive() {
         return World.getInstance().getSimulationTime() - timeOfLastMove;
+    }
+
+    private double distanceOfSummonedPatrolIntervention(Firing firing, Ambulance summonedAmbulance) {
+        return Haversine.distance(firing.getLatitude(), firing.getLongitude(), summonedAmbulance.getLatitude(), summonedAmbulance.getLongitude());
     }
 
     @Override

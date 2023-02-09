@@ -7,11 +7,11 @@ import Visualisation.Patrol;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
 import utils.EntityTypes;
+import utils.Haversine;
 import utils.Logger;
 import Simulation.World;
 
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -126,6 +126,8 @@ public class Headquarters extends Entity implements IDrawable {
                     availablePatrol.takeOrder(
                             availablePatrol.new Transfer(World.getInstance().getSimulationTimeLong(),
                                     intervention, Patrol.State.TRANSFER_TO_INTERVENTION));
+                    StatisticsCounter.getInstance().increaseTransferToInterventionTime((distanceOfSummonedPatrolToIntervention(intervention, availablePatrol)) / ((World.getInstance().getConfig().getBaseTransferSpeed() * 1000) / 3600.0));
+                    StatisticsCounter.getInstance().addPatrolState("TRANSFER_TO_INTERVENTION");
                     StatisticsCounter.getInstance().increaseSumonedPatrols();
                     ExportPatrolDistanceToReachIncident.getInstance().writeToCsvFileIntervention((Intervention) intervention, availablePatrol);
 
@@ -135,14 +137,21 @@ public class Headquarters extends Entity implements IDrawable {
         }
     }
 
+    private double distanceOfSummonedPatrolToIntervention(Incident incident, Patrol summonedPatrol) {
+        return Haversine.distance(incident.getLatitude(), incident.getLongitude(), summonedPatrol.getLatitude(), summonedPatrol.getLongitude());
+    }
+
     private void giveOrdersToFoundPatrols(Incident firing, List<Patrol> foundPatrols, int numberOfIteration) {
         for (var p : foundPatrols) {
             Logger.getInstance().logNewOtherMessage(p + " took order from HQ.");
             Logger.getInstance().logNewMessageChangingState(p, p.getState().toString(), "TRANSFER_TO_FIRING");
+            StatisticsCounter.getInstance().addPatrolState("TRANSFER_TO_FIRING");
             ExportSupportSummonDetails.getInstance().writeToCsvFile((Firing) firing, p, p.getState().name(), numberOfIteration);
             p.takeOrder(p.new Transfer(World.getInstance().getSimulationTimeLong(), firing, Patrol.State.TRANSFER_TO_FIRING));
             ExportPatrolDistanceToReachIncident.getInstance().writeToCsvFileFiring((Firing) firing, p);
             StatisticsCounter.getInstance().increaseSumonedPatrols();
+            StatisticsCounter.getInstance().increaseTransferToFiringTimeInMinutes((distanceOfSummonedPatrolToIntervention(firing, p)) / ((World.getInstance().getConfig().getBasePrivilegedSpeed() * 1000) / 3600.0));
+
             ((Firing) firing).addReachingPatrol(p);
         }
         if (!foundPatrols.isEmpty()) {
