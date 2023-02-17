@@ -14,7 +14,7 @@ public class ExportAmbulanceDistanceAndTimeToReachFiring extends AbstractExportD
 
     private static final String CSV_DIRECTORY_PATH = "results";
     private static final String[] averageAmbulanceTimeToReachHeader = new String[]{
-            "simulationTime",
+            "simulationTime[s]",
             "firingID",
             "districtName",
             "districtSafetyLevel",

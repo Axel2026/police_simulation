@@ -20,7 +20,7 @@ public class ExportAverageSwatDistanceAndTimeToReachFiring extends Thread {
     public double previousUsedSwats = 0.0;
     private final String averageSwatDistanceAndTimeToReachFiringCsvFileName = dateFormat.format(LocalDateTime.now()) + "--Average Swat Distance And Time To Reach Firing.csv";
     private static final String[] averageSwatDistanceAndTimeToReachFiringHeader = new String[]{
-            "simulationTime",
+            "simulationTime[s]",
             "averageDistanceToReach[m]",
             "averageTimeToReach[s]",
     };
@@ -63,10 +63,15 @@ public class ExportAverageSwatDistanceAndTimeToReachFiring extends Thread {
                 var coveredDistanceBySwatSum = StatisticsCounter.getInstance().getCoveredDistanceBySWAT();
                 var elapsedTimeSum = StatisticsCounter.getInstance().getElapsedTimeBySWAT();
                 var usedSwats = StatisticsCounter.getInstance().getUsedSWAT();
+
+                var finalUsedSwats = usedSwats - previousUsedSwats;
+                if (finalUsedSwats == 0) {
+                    finalUsedSwats = 1;
+                }
                 try {
                     writeToSimulationDetailsCsvFile(simulationTimeLong,
-                            ((coveredDistanceBySwatSum - previousCoveredDistanceBySwatSum)) / (usedSwats - previousUsedSwats),
-                            (elapsedTimeSum - previousElapsedTimeSum) / (usedSwats - previousUsedSwats));
+                            ((coveredDistanceBySwatSum - previousCoveredDistanceBySwatSum)) / (finalUsedSwats),
+                            (elapsedTimeSum - previousElapsedTimeSum) / (finalUsedSwats));
                     previousCoveredDistanceBySwatSum = StatisticsCounter.getInstance().getCoveredDistanceBySWAT();
                     previousElapsedTimeSum = StatisticsCounter.getInstance().getElapsedTimeBySWAT();
                     previousUsedSwats = StatisticsCounter.getInstance().getUsedSWAT();

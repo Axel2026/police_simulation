@@ -186,17 +186,17 @@ public class ConfigurationPanel {
         titlePane.setFont(titlePane.getFont().deriveFont(30f));
         titlePane.setToolTipText("""
                 <html><div style="padding:10; background-color: #FFFFFF;">The purpose of the application is to <br />
-                                
+
                 simulate the work of police units<br />
-                 
+
                 in any chosen city. It is possible<br />
-                                
+
                 to select additional simulation<br />
-                                
+
                 parameters to bring the logic and<br />
-                                
+
                 operation of the police in each city<br />
-                                
+
                 as close as possible.</div></html>""");
         citySelectionPanel.add(titlePane);
         citySelectionPanel.setPreferredSize(new Dimension(200, 200));
@@ -245,7 +245,7 @@ public class ConfigurationPanel {
         JLabel anstarLabel = new JLabel(anstar);
         anstarLabel.setToolTipText("""
                 The purpose of the application is to \s
-                simulate the work of police units\s 
+                simulate the work of police units\s
                 in any chosen city. It is possible\s
                 to select additional simulation\s
                 parameters to bring the logic and\s

@@ -18,9 +18,9 @@ public class ExportAverageDurationPatrolsHeadingTowardsIncidentsPerHour extends 
 
     private final String averageDurationPatrolsHeadingTowardsIncidentsPerHourCsvFileName = dateFormat.format(LocalDateTime.now()) + "--Average Duration Patrols Heading Towards Incidents Per Hour.csv";
     private static final String[] averageDurationPatrolsHeadingTowardsIncidentsPerHourHeader = new String[]{
-            "simulationTime",
-            "averageTransferToInterventionDuration",
-            "averageTransferToFiringDuration",
+            "simulationTime[s]",
+            "averageTransferToInterventionDuration[s]",
+            "averageTransferToFiringDuration[s]",
     };
     private final World world = World.getInstance();
     private final File averageDurationOfIncidentsPerHourHeaderCsvFile;
@@ -64,12 +64,20 @@ public class ExportAverageDurationPatrolsHeadingTowardsIncidentsPerHour extends 
                 double transferToFiringDuration = StatisticsCounter.getInstance().getTransferToFiringTimeInMinutes();
                 double amountOfInterventions = StatisticsCounter.getInstance().getNumberOfInterventions();
                 double amountOfFirings = StatisticsCounter.getInstance().getNumberOfFirings();
+                double finalAmountOfInterventions = amountOfInterventions - previousAmountOfInterventions;
+                double finalAmountOfFirings = amountOfFirings - previousAmountOfFirings;
+                if (finalAmountOfInterventions == 0) {
+                    finalAmountOfInterventions = 1;
+                }
 
+                if (finalAmountOfFirings == 0) {
+                    finalAmountOfFirings = 1;
+                }
                 try {
                     writeToSimulationDetailsCsvFile(
                             simulationTimeLong,
-                            (transferToInterventionDuration - previousTransferToInterventionDuration) / (amountOfInterventions - previousAmountOfInterventions),
-                            (transferToFiringDuration - previousTransferToFiringDuration) / (amountOfFirings - previousAmountOfFirings)
+                            (transferToInterventionDuration - previousTransferToInterventionDuration) / (finalAmountOfInterventions),
+                            (transferToFiringDuration - previousTransferToFiringDuration) / (finalAmountOfFirings)
                     );
 
                     previousAmountOfInterventions = StatisticsCounter.getInstance().getNumberOfInterventions();

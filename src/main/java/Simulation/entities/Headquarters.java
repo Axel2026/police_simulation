@@ -59,7 +59,8 @@ public class Headquarters extends Entity implements IDrawable {
         var firstPatrolNewState = allPatrols.get(0).getState().toString();
         if (!firstPatrolState.equals(firstPatrolNewState)) {
             var timeInState = world.getSimulationTimeLong() - previousSimulationTime;
-            ExportFirstPatrolData.getInstance().writeToCsvFileFirstPatrolData(world.getSimulationTimeLong(), allPatrols.get(0).getState().toString(), timeInState);
+
+            ExportFirstPatrolData.getInstance().writeToCsvFileFirstPatrolData(world.getSimulationTimeLong(), firstPatrolState, timeInState);
             firstPatrolState = firstPatrolNewState;
             previousSimulationTime = world.getSimulationTimeLong();
         }

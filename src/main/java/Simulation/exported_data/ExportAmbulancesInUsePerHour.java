@@ -17,7 +17,7 @@ public class ExportAmbulancesInUsePerHour extends Thread {
 
     private final String ambulancesInUsePerHourCsvFileName = dateFormat.format(LocalDateTime.now()) + "--Ambulances In Use Per Hour.csv";
     private static final String[] ambulancesInUsePerHourHeader = new String[]{
-            "simulationTime",
+            "simulationTime[s]",
             "amountOfSolvingAmbulances",
     };
     private final World world = World.getInstance();

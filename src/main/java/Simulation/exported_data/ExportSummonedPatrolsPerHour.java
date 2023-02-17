@@ -18,7 +18,7 @@ public class ExportSummonedPatrolsPerHour extends Thread {
 
     private final String summonedPatrolsPerHourCsvFileName = dateFormat.format(LocalDateTime.now()) + "--Summoned Patrols Per Hour.csv";
     private static final String[] summonedPatrolsPerHourCsvFileNameHeader = new String[]{
-            "simulationTime",
+            "simulationTime[s]",
             "summonedPatrols",
     };
     private final World world = World.getInstance();

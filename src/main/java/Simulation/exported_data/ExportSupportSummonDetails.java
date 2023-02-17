@@ -14,7 +14,7 @@ public class ExportSupportSummonDetails extends AbstractExportData {
 
     private static final String CSV_DIRECTORY_PATH = "results";
     private static final String[] firingDetailsHeader = new String[]{
-            "simulationTime",
+            "simulationTime[s]",
             "firingID",
             "districtName",
             "districtSafetyLevel",

@@ -44,7 +44,7 @@ public class ExportSimulationAndDistrictDetails extends Thread {
     private final File simulationDetailsCsvFile;
     private final File districtsDetailsCsvFile;
     private final String[] districtsDetailsHeader = new String[]{
-            "simulationTime",
+            "simulationTime[s]",
             "districtName",
             "districtSafetyLevel",
             "amountOfPatrols",

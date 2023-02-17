@@ -45,8 +45,13 @@ public class ExportAverageSwatDistanceAndTime extends AbstractExportData {
 
     private void writeToAverageSwatDistanceAndTimeCsvFile() throws IOException {
         var csvWriter = new CSVWriter(new FileWriter(averageSwatDistanceAndTimeHeaderCsvFile, true));
-        var coveredDistanceBySWAT = (StatisticsCounter.getInstance().getCoveredDistanceBySWAT()) / (StatisticsCounter.getInstance().getUsedSWAT());
-        var elapsedTimeBySWAT = (StatisticsCounter.getInstance().getElapsedTimeBySWAT()) / (StatisticsCounter.getInstance().getUsedSWAT());
+        double finalUsedSwat = StatisticsCounter.getInstance().getUsedSWAT();
+
+        if (StatisticsCounter.getInstance().getUsedSWAT() == 0) {
+            StatisticsCounter.getInstance().increaseUsedSWAT();
+        }
+        var coveredDistanceBySWAT = (StatisticsCounter.getInstance().getCoveredDistanceBySWAT()) / (finalUsedSwat);
+        var elapsedTimeBySWAT = (StatisticsCounter.getInstance().getElapsedTimeBySWAT()) / (finalUsedSwat);
 
         csvWriter.writeNext(new String[]{
                 String.valueOf(coveredDistanceBySWAT),

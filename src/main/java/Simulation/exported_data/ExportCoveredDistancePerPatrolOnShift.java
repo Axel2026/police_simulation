@@ -60,10 +60,14 @@ public class ExportCoveredDistancePerPatrolOnShift extends Thread {
                 exportCounter++;
                 double coveredDistance = StatisticsCounter.getInstance().getCoveredDistanceByPatrol();
                 int amountOfPatrols = StatisticsCounter.getInstance().getNumberOfPatrols();
+                var finalAmountOfPatrols = amountOfPatrols - previousAmountOfPatrols;
+                if (finalAmountOfPatrols == 0) {
+                    finalAmountOfPatrols = 1;
+                }
                 try {
                     writeToSimulationDetailsCsvFile(
-                            (((coveredDistance - previousCoveredDistance) / 1000) / (amountOfPatrols - previousAmountOfPatrols)),
-                            ((((coveredDistance - previousCoveredDistance) / 1000) / (amountOfPatrols - previousAmountOfPatrols)) / 8)
+                            (((coveredDistance - previousCoveredDistance) / 1000) / (finalAmountOfPatrols)),
+                            ((((coveredDistance - previousCoveredDistance) / 1000) / (finalAmountOfPatrols)) / 8)
                     );
                     previousCoveredDistance = StatisticsCounter.getInstance().getCoveredDistanceByPatrol();
                     previousAmountOfPatrols = StatisticsCounter.getInstance().getNumberOfPatrols();

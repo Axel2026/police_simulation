@@ -19,13 +19,13 @@ public class ExportAverageDurationOfIncidentsPerHour extends Thread {
 
     private final String averageDurationOfIncidentsPerHourCsvFileName = dateFormat.format(LocalDateTime.now()) + "--Average Duration Of Incidents Per Hour.csv";
     private static final String[] averageDurationOfIncidentsPerHourHeader = new String[]{
-            "simulationTime",
+            "simulationTime[s]",
             "amountOfInterventions",
-            "interventionsDuration",
-            "averageInterventionDuration",
+            "interventionsDuration[min]",
+            "averageInterventionDuration[min]",
             "amountOfFirings",
-            "firingsDuration",
-            "averageFiringDuration",
+            "firingsDuration[min]",
+            "averageFiringDuration[min]",
     };
     private final World world = World.getInstance();
     private final File averageDurationOfIncidentsPerHourHeaderCsvFile;
@@ -70,16 +70,26 @@ public class ExportAverageDurationOfIncidentsPerHour extends Thread {
                 double durationOfInterventionsSum = StatisticsCounter.getInstance().getDurationOfInterventions();
                 double amountOfFirings = StatisticsCounter.getInstance().getNumberOfFirings();
                 double durationOfFiringsSum = StatisticsCounter.getInstance().getDurationOfFirings();
+                double finalAmountOfInterventions = amountOfInterventions - previousAmountOfInterventions;
+                double finalAmountOfFirings = amountOfFirings - previousAmountOfFirings;
+
+                if (finalAmountOfInterventions == 0) {
+                    finalAmountOfInterventions = 1;
+                }
+
+                if (finalAmountOfFirings == 0) {
+                    finalAmountOfFirings = 1;
+                }
 
                 try {
                     writeToSimulationDetailsCsvFile(
                             simulationTimeLong,
                             amountOfInterventions - previousAmountOfInterventions,
                             durationOfInterventionsSum - previousDurationOfInterventionsSum,
-                            (durationOfInterventionsSum - previousDurationOfInterventionsSum) / (amountOfInterventions - previousAmountOfInterventions),
+                            (durationOfInterventionsSum - previousDurationOfInterventionsSum) / (finalAmountOfInterventions),
                             amountOfFirings - previousAmountOfFirings,
                             durationOfFiringsSum - previousDurationOfFiringsSum,
-                            (durationOfFiringsSum - previousDurationOfFiringsSum) / (amountOfFirings - previousAmountOfFirings)
+                            (durationOfFiringsSum - previousDurationOfFiringsSum) / (finalAmountOfFirings)
                     );
 
                     previousAmountOfInterventions = StatisticsCounter.getInstance().getNumberOfInterventions();

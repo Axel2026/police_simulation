@@ -18,9 +18,9 @@ public class ExportAverageAmbulanceDistanceAndTimeToReachFiring extends Thread {
     public double elapsedTimeSum = 0.0;
     private final String averageAmbulanceDistanceAndTimeToReachFiringCsvFileName = dateFormat.format(LocalDateTime.now()) + "--Average Ambulance Distance And Time To Reach Firing.csv";
     private static final String[] averageAmbulanceDistanceAndTimeToReachFiringHeader = new String[]{
-            "simulationTime",
-            "averageDistanceToReach",
-            "averageTimeToReach",
+            "simulationTime[s]",
+            "averageDistanceToReach[m]",
+            "averageTimeToReach[s]",
     };
     private final World world = World.getInstance();
     private final File averageAmbulanceDistanceAndTimeToReachFiringHeaderCsvFile;
@@ -58,10 +58,14 @@ public class ExportAverageAmbulanceDistanceAndTimeToReachFiring extends Thread {
             if (!world.isSimulationPaused() && exportCounter <= (world.getSimulationTimeLong() / periodOfTimeToExportDetailsInSeconds)) {
                 exportCounter++;
                 var simulationTimeLong = world.getSimulationTimeLong();
+                var distanceAndTimeCounter = world.getDistanceAndTimeCounter();
+                if (distanceAndTimeCounter == 0) {
+                    distanceAndTimeCounter = 1;
+                }
                 coveredDistanceSum = world.getCoveredDistance();
                 elapsedTimeSum = world.getElapsedTime();
                 try {
-                    writeToSimulationDetailsCsvFile(simulationTimeLong, coveredDistanceSum / world.getDistanceAndTimeCounter(), elapsedTimeSum / world.getDistanceAndTimeCounter());
+                    writeToSimulationDetailsCsvFile(simulationTimeLong, coveredDistanceSum / distanceAndTimeCounter, elapsedTimeSum / distanceAndTimeCounter);
                     world.removeCoveredDistance();
                     world.removeElapsedTime();
                     world.removeDistanceAndTimeCounter();

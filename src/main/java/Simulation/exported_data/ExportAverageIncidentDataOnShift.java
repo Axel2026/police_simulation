@@ -73,16 +73,21 @@ public class ExportAverageIncidentDataOnShift extends Thread {
                 double amountOfFirings = StatisticsCounter.getInstance().getNumberOfFirings();
                 double durationOfFiringsSum = StatisticsCounter.getInstance().getDurationOfFirings();
                 int amountOfPatrols = StatisticsCounter.getInstance().getNumberOfPatrols();
+
+                double finalPatrols = amountOfPatrols - previousAmountOfPatrols;
+                if (finalPatrols == 0) {
+                    finalPatrols = 1;
+                }
                 try {
                     writeToSimulationDetailsCsvFile(
                             amountOfInterventions - previousAmountOfInterventions,
-                            ((amountOfInterventions - previousAmountOfInterventions) / (amountOfPatrols - previousAmountOfPatrols)),
+                            ((amountOfInterventions - previousAmountOfInterventions) / (finalPatrols)),
                             durationOfInterventionsSum - previousDurationOfInterventionsSum,
-                            ((durationOfInterventionsSum - previousDurationOfInterventionsSum) / (amountOfPatrols - previousAmountOfPatrols)),
+                            ((durationOfInterventionsSum - previousDurationOfInterventionsSum) / (finalPatrols)),
                             amountOfFirings - previousAmountOfFirings,
-                            ((amountOfFirings - previousAmountOfFirings) / (amountOfPatrols - previousAmountOfPatrols)),
+                            ((amountOfFirings - previousAmountOfFirings) / (finalPatrols)),
                             durationOfFiringsSum - previousDurationOfFiringsSum,
-                            ((durationOfFiringsSum - previousDurationOfFiringsSum) / (amountOfPatrols - previousAmountOfPatrols)),
+                            ((durationOfFiringsSum - previousDurationOfFiringsSum) / (finalPatrols)),
                             amountOfPatrols - previousAmountOfPatrols
                     );
                     previousAmountOfInterventions = StatisticsCounter.getInstance().getNumberOfInterventions();

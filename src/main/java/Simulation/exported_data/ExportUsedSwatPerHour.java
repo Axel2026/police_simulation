@@ -18,7 +18,7 @@ public class ExportUsedSwatPerHour extends Thread {
     public double previousAmountOfUsedSwat = 0.0;
     private final String usedSwatPerHourCsvFileName = dateFormat.format(LocalDateTime.now()) + "--Used Swat Per Hour.csv";
     private static final String[] usedSwatPerHourHeader = new String[]{
-            "simulationTime",
+            "simulationTime[s]",
             "amountOfUsedSwat"
     };
     private final World world = World.getInstance();

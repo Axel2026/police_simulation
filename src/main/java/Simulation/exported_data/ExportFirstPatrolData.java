@@ -11,9 +11,9 @@ public class ExportFirstPatrolData extends AbstractExportData {
 
     private static final String CSV_DIRECTORY_PATH = "results";
     private static final String[] firstPatrolDataHeader = new String[]{
-            "simulationTime",
+            "simulationTime[s]",
             "patrolState",
-            "timeInState"
+            "timeInState[s]"
     };
 
     private static ExportFirstPatrolData instance;
